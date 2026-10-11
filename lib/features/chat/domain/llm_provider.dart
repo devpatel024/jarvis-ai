@@ -8,7 +8,17 @@ class LlmMessage {
   final String text;
 }
 
-enum LlmErrorCode { cancelled, timeout, unavailable, invalidRequest }
+enum LlmErrorCode {
+  cancelled,
+  timeout,
+  unavailable,
+  invalidRequest,
+  modelMissing,
+  requestFailed,
+  malformedResponse,
+  contextLimit,
+  busy,
+}
 
 class LlmFailure {
   const LlmFailure(this.code, this.message);
@@ -38,6 +48,7 @@ class LlmFailed extends LlmEvent {
 class CancellationToken {
   final _signal = Completer<void>();
   bool get isCancelled => _signal.isCompleted;
+  Future<void> get whenCancelled => _signal.future;
   void cancel() {
     if (!isCancelled) _signal.complete();
   }

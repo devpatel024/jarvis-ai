@@ -1,0 +1,218 @@
+{
+  "utc": "2026-10-11T11:38:51Z",
+  "ollama": "0.40.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "cpu": "Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz",
+  "memory_before": {
+    "MemTotal": 7645294592,
+    "MemAvailable": 4739223552,
+    "SwapTotal": 4294963200,
+    "SwapFree": 2753736704
+  },
+  "installed": [
+    {
+      "name": "qwen3:0.6b",
+      "model": "qwen3:0.6b",
+      "modified_at": "2026-10-11T17:06:26.846210524+05:30",
+      "size": 522653767,
+      "digest": "7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen3",
+        "families": [
+          "qwen3"
+        ],
+        "parameter_size": "751.63M",
+        "quantization_level": "Q4_K_M",
+        "context_length": 40960,
+        "embedding_length": 1024,
+        "runner": "ggml"
+      },
+      "capabilities": [
+        "completion",
+        "tools",
+        "thinking"
+      ]
+    },
+    {
+      "name": "qwen2.5:1.5b",
+      "model": "qwen2.5:1.5b",
+      "modified_at": "2026-10-11T17:02:33.478895637+05:30",
+      "size": 986061892,
+      "digest": "65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen2",
+        "families": [
+          "qwen2"
+        ],
+        "parameter_size": "1.5B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 32768,
+        "embedding_length": 1536,
+        "runner": "ggml"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ]
+    },
+    {
+      "name": "llama3.2:3b",
+      "model": "llama3.2:3b",
+      "modified_at": "2026-10-11T13:33:27.754018453+05:30",
+      "size": 2019393189,
+      "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "3.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 3072,
+        "runner": "ggml"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ]
+    },
+    {
+      "name": "llama3.2:1b",
+      "model": "llama3.2:1b",
+      "modified_at": "2026-10-11T13:32:16.005186989+05:30",
+      "size": 1321098329,
+      "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "1.2B",
+        "quantization_level": "Q8_0",
+        "context_length": 131072,
+        "embedding_length": 2048,
+        "runner": "ggml"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ]
+    }
+  ],
+  "options": {
+    "num_ctx": 2048,
+    "num_predict": 256,
+    "num_gpu": 0,
+    "num_thread": 2,
+    "temperature": 0,
+    "seed": 42
+  },
+  "rss_method": "Peak sum of VmRSS for visible ollama and llama-server processes sampled every 100 ms; shared pages may be counted twice. Server + runner, not app RSS.",
+  "system_prompts": {
+    "English": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in English. Do not pretend to execute tools or access live information.",
+    "Gujarati": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in Gujarati using Gujarati script, never Hindi or Devanagari unless the user explicitly requests it. Do not pretend to execute tools or access live information."
+  },
+  "conditions": "First prompt/model cold; later prompts warm. No model pulls. Fixed prompts, one run each; not statistically robust. Alternatives may be Gujarati-only; see recorded prompts.",
+  "results": [
+    {
+      "model": "llama3.2:1b",
+      "language": "Gujarati",
+      "prompt": "નમસ્તે! મારા દિવસ વિશે એક સરળ પ્રશ્ન પૂછો.",
+      "reply": "નમસ્તે! મારા દિવસ વિશે એક સરળ પ્રશ્ન એટલે કે, મારી સંપત્તિ કે સંપત્તિ કે તમામ સંસ્થાઓ માં કેવી ભૂમિકા ભજવે છે?",
+      "cold": true,
+      "measured_utc": "2026-10-11T11:39:49Z",
+      "system_prompt": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in Gujarati using Gujarati script, never Hindi or Devanagari unless the user explicitly requests it. Do not pretend to execute tools or access live information.",
+      "ttft_seconds": 12.614207158999761,
+      "round_trip_seconds": 58.21834819899959,
+      "thinking_disabled": true,
+      "thinking_characters": 0,
+      "done_reason": "stop",
+      "eval_count": 178,
+      "eval_duration_ns": 45775739000,
+      "tokens_per_second": 3.88852269539548,
+      "peak_ollama_rss_bytes": 1514897408,
+      "gujarati_characters": 87,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:1b",
+          "model": "llama3.2:1b",
+          "size": 1450086235,
+          "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "1.2B",
+            "quantization_level": "Q8_0"
+          },
+          "expires_at": "2026-10-11T17:10:19.884054054+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:1b",
+      "language": "Gujarati",
+      "prompt": "મારા દિવસનું આયોજન કરવા બે સરળ પગલાં જણાવો.",
+      "reply": "મારા દિવસનું આયોજન કરવા બાકી છે:\n\n1. મારી સાથે સમય સંપત્તિ સાથે સંપત્તિ સંબંધિત કાર્યક્રમો કરવાનો આયોજન કરો.\n2. મારી સાથે સમય સાથે સંપત્તિ સંબંધિત કાર્યક્રમો",
+      "cold": false,
+      "measured_utc": "2026-10-11T11:41:01Z",
+      "system_prompt": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in Gujarati using Gujarati script, never Hindi or Devanagari unless the user explicitly requests it. Do not pretend to execute tools or access live information.",
+      "ttft_seconds": 3.6720484520001264,
+      "round_trip_seconds": 71.0524679150003,
+      "thinking_disabled": true,
+      "thinking_characters": 0,
+      "done_reason": "length",
+      "eval_count": 256,
+      "eval_duration_ns": 67655133000,
+      "tokens_per_second": 3.7838961901087385,
+      "peak_ollama_rss_bytes": 1525301248,
+      "gujarati_characters": 125,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:1b",
+          "model": "llama3.2:1b",
+          "size": 1450086235,
+          "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "1.2B",
+            "quantization_level": "Q8_0"
+          },
+          "expires_at": "2026-10-11T17:11:30.979198957+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    }
+  ],
+  "resident_after": [],
+  "memory_after": {
+    "MemTotal": 7645294592,
+    "MemAvailable": 4780273664,
+    "SwapTotal": 4294963200,
+    "SwapFree": 2723405824
+  }
+}

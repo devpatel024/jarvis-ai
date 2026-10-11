@@ -1,0 +1,118 @@
+{
+  "verified": "2026-10-11",
+  "release": "https://github.com/simolus3/sqlite3.dart/releases/tag/sqlite3-3.7.0",
+  "package": "sqlite3 3.7.0",
+  "engine": "SQLite 3.53.4 (Linux x64 binary verified; other engine versions unexecuted)",
+  "license": "public domain",
+  "hash_source": "https://github.com/simolus3/sqlite3.dart/blob/sqlite3-3.7.0/sqlite3/lib/src/hook/asset_hashes.dart",
+  "artifacts": [
+    {
+      "name": "libsqlite3.arm.android.so",
+      "bytes": 1872620,
+      "sha256": "a42fa9d0f5c006d30b000d4904bc497705191c5d7330b178618546004295bb49",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm.android.so"
+    },
+    {
+      "name": "libsqlite3.arm.linux.so",
+      "bytes": 1171128,
+      "sha256": "f076c2399d68ac9eb849841088029397948ffc97c461040f2a3ca1d1491355fe",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm.linux.so"
+    },
+    {
+      "name": "libsqlite3.arm64.android.so",
+      "bytes": 1831784,
+      "sha256": "0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.android.so"
+    },
+    {
+      "name": "libsqlite3.arm64.ios.dylib",
+      "bytes": 1668776,
+      "sha256": "1cd28d9f4f2be1d855945d44b68229d2fc7a6a0db4a3fd8e88d7d7f719cd3de0",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.ios.dylib"
+    },
+    {
+      "name": "libsqlite3.arm64.ios_sim.dylib",
+      "bytes": 1714976,
+      "sha256": "1218e774869d673134b8d901dc6654bb1879f4a3682e9bdd4899e20599d21a1b",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.ios_sim.dylib"
+    },
+    {
+      "name": "libsqlite3.arm64.linux.so",
+      "bytes": 1802328,
+      "sha256": "037539c68603ce1dbff411c276945e092b808d48d515e5e15d5266a602d39711",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.linux.so"
+    },
+    {
+      "name": "libsqlite3.arm64.macos.dylib",
+      "bytes": 1713824,
+      "sha256": "649fdf22050829816ebec7dbeab5e7b974bd72487f84cbcf3529f3bd7b756430",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.macos.dylib"
+    },
+    {
+      "name": "libsqlite3.ia32.android.so",
+      "bytes": 1751624,
+      "sha256": "3888ba23a79904b968ad7f7cd3b3f59e856a25dcc90953b5a69ea6a4f9961f59",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.ia32.android.so"
+    },
+    {
+      "name": "libsqlite3.ia32.linux.so",
+      "bytes": 1955688,
+      "sha256": "5df89bac8f446cebef1c0276f470d5c3ac553dba9c2b115d4b4df76a5d4d97b1",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.ia32.linux.so"
+    },
+    {
+      "name": "libsqlite3.riscv64.linux.so",
+      "bytes": 1289928,
+      "sha256": "91b3a9e42b922424c770cf82b27f05772b85d056a4222aa527c5f9170f59d56b",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.riscv64.linux.so"
+    },
+    {
+      "name": "libsqlite3.x64.android.so",
+      "bytes": 1808568,
+      "sha256": "949965f0eba976f707ae364cdcb42c342b5f0626081f8d7f0378fb7b52848772",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.android.so"
+    },
+    {
+      "name": "libsqlite3.x64.ios_sim.dylib",
+      "bytes": 1719720,
+      "sha256": "c41f725b587170f6f899d97710e531af7ff2f49eb757d5246b5af0b8371ced9f",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.ios_sim.dylib"
+    },
+    {
+      "name": "libsqlite3.x64.linux.so",
+      "bytes": 1788664,
+      "sha256": "0f947ebe629e8d9d02d7f408bef36e056bfc63ea47e02e0d45a7bae454f04ace",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.linux.so"
+    },
+    {
+      "name": "libsqlite3.x64.macos.dylib",
+      "bytes": 1718616,
+      "sha256": "5b95619427b111ad23725ec42b48f84e707712d367cf35180e65ff486c4a8ba8",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.macos.dylib"
+    },
+    {
+      "name": "sqlite3.arm64.windows.dll",
+      "bytes": 1601024,
+      "sha256": "8b672eefe9d595b3788548998558f87768ec7373b282bd8c822d2116c5a30c95",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.arm64.windows.dll"
+    },
+    {
+      "name": "sqlite3.debug.wasm",
+      "bytes": 3405586,
+      "sha256": "ccc33e306e9ac69c94785e551e8e1c44e3addf6b930e2e463b262de3e304da3c",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.debug.wasm"
+    },
+    {
+      "name": "sqlite3.ia32.windows.dll",
+      "bytes": 1327104,
+      "sha256": "6f708e62df110fc0a5fd81124be9e6c89e2c39b8364327e94f6ec3f3ea1cf457",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.ia32.windows.dll"
+    },
+    {
+      "name": "sqlite3.x64.windows.dll",
+      "bytes": 1709056,
+      "sha256": "98b4be674137b85ec111a7a29223e87aa41c3e964d61f73602471ddd7b9c56ce",
+      "url": "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.x64.windows.dll"
+    }
+  ]
+}

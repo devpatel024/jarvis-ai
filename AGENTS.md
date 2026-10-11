@@ -26,7 +26,7 @@ Build JARVIS: a useful, voice-first, local-first Flutter assistant for Windows, 
 - Unsupported capabilities require clear explanations and usable alternatives.
 
 ## Dependency approval and Costs
-Pre-approved without asking: Flutter/Dart SDK; pub.dev packages verified MIT, BSD or Apache-2.0 licensed; Ollama and llama3.2:1b/3b. Record exact versions, licenses and costs; review transitive/native licenses and lockfile changes.
+Pre-approved without asking: Flutter/Dart SDK; pub.dev packages verified MIT, BSD or Apache-2.0 licensed; reviewed public-domain native SQLite (explicitly approved for sqlite3 3.7.0 pinned/hash-verified artifacts); Ollama and llama3.2:1b/3b. Record exact versions, licenses and costs; review transitive/native licenses and lockfile changes.
 
 Always ask first for GPL/LGPL/AGPL or noncommercial components, unknown or paid terms, any account/API key, any single download over 1 GB, and new native/system tools needing sudo. These exceptions override pre-approval, including SDK/model downloads. Never split a download to evade the limit. Check current official documentation, platform support, download size, eligibility, redistribution obligations and alternatives before addition. Record approvals; do not re-request unchanged approvals.
 

@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'frame_metrics.dart';
+import '../storage/local_store.dart';
 export 'frame_metrics.dart';
 
 final frameDiagnosticsProvider = Provider((ref) => FrameDiagnostics());
@@ -14,10 +15,12 @@ class QualityChoice {
 class QualitySettings extends Notifier<QualityChoice> {
   QualityGovernor _governor = QualityGovernor();
   @override
-  QualityChoice build() => const QualityChoice();
+  QualityChoice build() =>
+      QualityChoice(manual: savedEnum(ref, 'quality', OrbTier.values));
   void select(OrbTier? tier) {
     _governor = QualityGovernor();
     state = QualityChoice(manual: tier);
+    persistSetting(ref, 'quality', tier?.name ?? 'auto');
   }
 
   void record(OrbTier actual, int build, int raster, {bool reduced = false}) {

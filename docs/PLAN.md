@@ -1,12 +1,12 @@
 # JARVIS plan
 
-Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: accepted Slice A follow-up in three ordered parts, each committed and pushed: (1) small UI fixes, (2) Phase 2 real local Ollama chat and approved persistence, (3) GitHub README redesign. Voice 1b.3 and 1c remain excluded. Stop at a clean completed part if context/credits are low and record the exact resume point in HANDOFF.
+Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: accepted Slice A follow-up in three ordered parts, each committed locally for the user to push: (1) small UI fixes, (2) Phase 2 real local Ollama chat and approved persistence, (3) GitHub README redesign. Voice 1b.3 and 1c remain excluded. Stop at a clean completed part if context/credits are low and record the exact resume point in HANDOFF.
 
 ## Structure and decisions
 
 One Flutter/Dart app: lib/app for bootstrap, navigation, theme and composition; lib/core for contracts, policy, errors, capabilities and tokens; lib/features/<feature>/{presentation,domain,data}; test, integration_test, docs and Android/iOS/Linux/Windows runners. Riverpod, Drift/SQLite and flutter_secure_storage are proposed as required by the mission; proposal is not dependency approval. Domain remains pure Dart. Use SDK widgets, system fonts and a CustomPainter orb initially; omit optional scaffold icons and generators unless approved. No cloud, telemetry or sync.
 
-Reference hardware: Ubuntu 26.04, Intel i5-6300U (2 cores/4 threads), 8 GB RAM, Intel HD 520, no dedicated GPU, 256 GB disk. This is the acceptance target, not evidence that this execution container matches it. Linux desktop and physical Android over USB are primary test paths; no emulator required. Windows builds use GitHub Actions on explicit triggers, subject to quota; iOS validation requires macOS.
+Reference hardware: Ubuntu 26.04, Intel i5-6300U (2 cores/4 threads), 8 GB RAM, Intel HD 520, no dedicated GPU, 256 GB disk. Native Linux runs and Ollama benchmarks have now been measured on this matching reference machine; other desktop load remains uncontrolled. Linux desktop and physical Android over USB are primary test paths; no emulator required. Windows builds use GitHub Actions on explicit triggers, subject to quota; iOS validation requires macOS.
 
 CPU-only Ollama defaults: llama3.2:1b fast and llama3.2:3b quality; never default larger. Start with 2,048 context tokens, one generation at a time and bounded output; tune only with measured memory/latency. Lazy-load features/models, unload idle models with supported keep_alive behavior, serialize embedding/vision work and pause indexing during chat. Do not run text, vision and speech models concurrently on this machine. Developer screen reports measured app/host CPU and memory where available and explicitly marks unavailable host metrics. Use cancellable streaming and immediate state feedback. Lightweight orb, reduced-motion preference and automatic simplified rendering after sustained poor frame timing.
 
@@ -50,7 +50,7 @@ Standing approval from user (2026-10-10): Flutter/Dart SDK, pub.dev packages ver
 
 English is the baseline including voice. Gujarati text is required from Phase 1: font coverage, Unicode input/rendering and lossless note/task storage when Phase 3 ships; UI localization later. No Gujarati voice claim before real reference-hardware audio tests. Phase 5 compares licensed Whisper sizes, Vosk Gujarati if available, Piper/espeak-ng/OS voices, reports accuracy/latency and labels unsatisfactory voice experimental. Phase 2 compares 1b/3b with one or two small local alternatives on matched English/Gujarati prompts before final defaults. No silent cloud fallback; any optional cloud setting off by default with explicit consent.
 
-Current status: Phase 1a checks re-run and passed; already-completed closeout skipped. Phase 1b delivers domain streaming/cancellation/typed events, local scripted English/Gujarati MockProvider, Riverpod session chat with Stop/error/Retry, adaptive Chat destination, dark default/light/system themes, lightweight five-state orb, visual debug controls, reduced motion (app + OS), measured rolling-window static fallback, and phase-specific tests. Chat/appearance remain session-only; microphone and audio are off. No Phase 1c CI work. Native Linux Gujarati dark/light captures visually checked using installed system font fallback; other-platform glyph checks remain manual.
+Current status: Phase 1a checks re-run and passed; already-completed closeout skipped. Phase 1b delivers domain streaming/cancellation/typed events, local scripted English/Gujarati MockProvider, Riverpod session chat with Stop/error/Retry, adaptive Chat destination, dark default/light/system themes, lightweight five-state orb, visual debug controls, reduced motion (app + OS), measured rolling-window static fallback, and phase-specific tests. This historical 1b state was session-only; Part 2 now persists chat/settings. Microphone and audio remain off. No Phase 1c CI work. Native Linux Gujarati dark/light captures visually checked using installed system font fallback; other-platform glyph checks remain manual.
 
 Performance: the 60fps goal remains OPEN. Native profile runs on i5-6300U/Ubuntu 26.04/i915 do not meet the 16.67 ms raster target. Automatic fallback works; do not advertise 60fps. See docs/PERFORMANCE.md for measurements and the repeatable profile harness. Low-memory target requires further benchmarking/tuning through Phase 12.
 
@@ -63,12 +63,12 @@ Planning sources reviewed 2026-10-10; installed SDK/package versions verified 20
 | Flutter 3.47.7 / Dart 3.13.5 | Required SDK/build tooling; W/L/A/iOS | Flutter BSD-3; retain notices; Dart and engine third-party notices reviewed at pin | $0; SDK download/disk size pending exact archive; target native tools separate | https://docs.flutter.dev/install/archive ; https://docs.flutter.dev/resources/faq |
 | flutter_riverpod 3.4.3 | Required installed state/composition; W/L/A/iOS | MIT; retain copyright/license | $0 personal use, no account/key or service quota; existing local package, no new download | https://pub.dev/packages/flutter_riverpod/versions/3.4.3 ; lockfile and installed LICENSE verified 2026-10-11 |
 | flutter_lints 6.0.0 | Required installed dev-only analysis; all Dart/Flutter targets | BSD-3-Clause; retain copyright/license/disclaimer, no endorsement | $0 personal use; existing local package; no runtime service or model asset; transitive lints 6.1.0 BSD-3-Clause | https://pub.dev/packages/flutter_lints/versions/6.0.0 ; lockfile and installed LICENSE verified 2026-10-11 |
-| drift 2.35.2 | Required proposed persistence; W/L/A/iOS | MIT; retain notices; SQLite native dependency review separate | $0; generators/native runtime unselected | https://pub.dev/packages/drift |
+| drift 2.35.2 | Required installed persistence; W/L/A/iOS | MIT; retain notices; SQLite native dependency review separate | $0; exact generators and native runtime audited below | https://pub.dev/packages/drift |
 | flutter_secure_storage 11.2.0 | Required proposed secure settings; W/L/A/iOS | BSD-3; retain notices; federated packages separate audit | $0; Android API 23+ per docs; Linux keyring/native prerequisites pending | https://pub.dev/packages/flutter_secure_storage |
 | Future generators/native packages: unselected; existing scaffold/test/lint packages locked | Required only when introduced | Every resolved artifact/license pending; standing permissive-package approval; exception gates apply | $0 baseline requirement; sizes pending lockfile; no downloads now | package manifests/lockfile audit required |
-| SQLite/native vector extension: unselected | Required SQLite; vector extension optional | Verify exact native source/license; exact-search Dart fallback avoids extension | $0 baseline requirement; bounded exact cosine search over SQLite vectors planned | https://drift.simonbinder.eu/ |
-| Ollama, version unselected | Required real desktop brain, mobile via LAN | MIT engine; models have independent terms; retain engine notice | $0 local; CPU RAM/disk/download needs; no account; cloud capabilities excluded | https://github.com/ollama/ollama/blob/main/LICENSE ; https://docs.ollama.com/faq |
-| llama3.2:1b / :3b, full digest pin pending | User-selected fast/quality CPU text defaults | Llama community terms, not MIT; exact model license/AUP/attribution and redistribution review required | $0 eligible local use subject to terms; Observed tags: 1b Q8_0, 1.3 GB, short digest baf6a787fdff; 3b Q4_K_M, 2.0 GB, short digest a80c4f17acd5; full manifests and peak RAM still need verification | https://ollama.com/library/llama3.2:1b ; https://ollama.com/library/llama3.2:3b |
+| SQLite 3.53.4 via sqlite3 3.7.0 / vector extension unselected | Required installed SQLite; vector extension future optional | Public domain explicitly approved; native artifacts below; vector review deferred | $0 baseline requirement; bounded exact cosine search over SQLite vectors planned | https://drift.simonbinder.eu/ |
+| Ollama 0.40.3 | Required real desktop brain, mobile via LAN | MIT engine; models have independent terms; retain engine notice | $0 local; CPU RAM/disk/download needs; no account; cloud capabilities excluded | https://github.com/ollama/ollama/blob/main/LICENSE ; https://docs.ollama.com/faq |
+| llama3.2:1b / :3b, observed full digests in performance/ollama-comparison.json | User-selected unchanged fast/quality CPU text defaults; installed desktop Ollama, not bundled | Llama 3.2 Community License + AUP (2024-09-25), explicitly pre-approved; redistribution requires agreement/notice and Built with Llama attribution, derivative model naming obligations; >700M-user commercial gate | $0 eligible local use subject to terms; 1b Q8_0 1,321,098,329 bytes; 3b Q4_K_M 2,019,393,189 bytes already installed, NEVER re-pulled. Peak process RSS measured in PERFORMANCE | https://ollama.com/library/llama3.2:1b ; https://ollama.com/library/llama3.2:3b ; installed /api/show license/details snapshot docs/dependencies/llama-models.json, verified 2026-10-11 |
 | Embedding and vision weights, unselected | Required phase 7 local AI; desktop/LAN | Model-specific terms required; no inference from engine license | $0 eligible baseline requirement; small hardware-compatible candidates only; sizes pending | https://ollama.com/library |
 | whisper.cpp + tiny/base weights, versions unselected | Proposed offline STT; native bindings tested per platform | MIT engine; upstream Whisper code/weights MIT; retain notices; pin converted weight provenance | $0; CPU-only; exact file sizes/performance pending | https://github.com/ggml-org/whisper.cpp ; https://github.com/openai/whisper |
 | Vosk engine/models, unselected | Alternative offline STT | Exact engine release and per-model license audit required | $0 eligible candidate; language/model size pending; Linux/Android pathways documented | https://alphacephei.com/vosk/ |
@@ -96,62 +96,161 @@ Explicit font approval received in this session. Font files and notices total 1,
 
 Gemini, OpenAI and Anthropic: no versions/SDKs selected, no approvals, disabled and excluded from release dependency graph. External variable charges, accounts/keys and retention terms require explicit request and fresh official verification. Never describe them as baseline free; secure UI entry only. No remote embeddings even with cloud chat.
 
-## Performance and release evidence
+### Part 2 approved native SQLite Costs — 2026-10-11
 
-Proposed acceptance budgets, to validate rather than claim: UI input/state feedback under 100 ms; measure p50/p95 time-to-first-token and tokens/sec for 1b/3b, peak RSS and host available RAM; no swap thrashing or OOM in one-model workload. Target 60fps on reference hardware, simplify orb after sustained frame budget misses, document measured fallback performance. Initial disk budget allocation requires checking free space before downloads. Performance gate remains open until benchmark evidence exists.
+User explicitly approved public-domain native SQLite and pinned/hash-verified sqlite3 3.7.0 prebuilt artifacts. Every artifact below costs $0, requires no account/key/sudo, and is public domain. The Dart wrapper is MIT. Linux x64 engine version **SQLite 3.53.4** was read from the downloaded library. Other platform versions and builds have not been executed. Source release: https://github.com/simolus3/sqlite3.dart/releases/tag/sqlite3-3.7.0 . Exact source URLs, bytes and hook hashes are also in [artifact metadata](dependencies/sqlite3-3.7.0-artifacts.json). Only Linux x64 has been downloaded here.
 
-Default CI synthetic tests only, no models or credentials. PR checks on Linux, explicit/manual Windows build and controlled release triggers; concurrency cancellation, one-day artifact retention, bounded cache, no paid runners or automatic macOS jobs. Every workflow has local command equivalents; Windows locally requires a Windows host. Halt hosted jobs when available free quota is insufficient.
+| Native artifact (platform/architecture) | Exact bytes | SHA-256 (pinned hook expectation) | Source release URL |
+|---|---:|---|---|
+| libsqlite3.arm.android.so | 1,872,620 | `a42fa9d0f5c006d30b000d4904bc497705191c5d7330b178618546004295bb49` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm.android.so |
+| libsqlite3.arm.linux.so | 1,171,128 | `f076c2399d68ac9eb849841088029397948ffc97c461040f2a3ca1d1491355fe` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm.linux.so |
+| libsqlite3.arm64.android.so | 1,831,784 | `0c2d3bfc8c87abceb21ed72a4bb49964121c5fe1a8ef3848d83ba907d01b6161` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.android.so |
+| libsqlite3.arm64.ios.dylib | 1,668,776 | `1cd28d9f4f2be1d855945d44b68229d2fc7a6a0db4a3fd8e88d7d7f719cd3de0` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.ios.dylib |
+| libsqlite3.arm64.ios_sim.dylib | 1,714,976 | `1218e774869d673134b8d901dc6654bb1879f4a3682e9bdd4899e20599d21a1b` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.ios_sim.dylib |
+| libsqlite3.arm64.linux.so | 1,802,328 | `037539c68603ce1dbff411c276945e092b808d48d515e5e15d5266a602d39711` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.linux.so |
+| libsqlite3.arm64.macos.dylib | 1,713,824 | `649fdf22050829816ebec7dbeab5e7b974bd72487f84cbcf3529f3bd7b756430` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.arm64.macos.dylib |
+| libsqlite3.ia32.android.so | 1,751,624 | `3888ba23a79904b968ad7f7cd3b3f59e856a25dcc90953b5a69ea6a4f9961f59` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.ia32.android.so |
+| libsqlite3.ia32.linux.so | 1,955,688 | `5df89bac8f446cebef1c0276f470d5c3ac553dba9c2b115d4b4df76a5d4d97b1` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.ia32.linux.so |
+| libsqlite3.riscv64.linux.so | 1,289,928 | `91b3a9e42b922424c770cf82b27f05772b85d056a4222aa527c5f9170f59d56b` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.riscv64.linux.so |
+| libsqlite3.x64.android.so | 1,808,568 | `949965f0eba976f707ae364cdcb42c342b5f0626081f8d7f0378fb7b52848772` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.android.so |
+| libsqlite3.x64.ios_sim.dylib | 1,719,720 | `c41f725b587170f6f899d97710e531af7ff2f49eb757d5246b5af0b8371ced9f` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.ios_sim.dylib |
+| libsqlite3.x64.linux.so | 1,788,664 | `0f947ebe629e8d9d02d7f408bef36e056bfc63ea47e02e0d45a7bae454f04ace` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.linux.so |
+| libsqlite3.x64.macos.dylib | 1,718,616 | `5b95619427b111ad23725ec42b48f84e707712d367cf35180e65ff486c4a8ba8` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/libsqlite3.x64.macos.dylib |
+| sqlite3.arm64.windows.dll | 1,601,024 | `8b672eefe9d595b3788548998558f87768ec7373b282bd8c822d2116c5a30c95` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.arm64.windows.dll |
+| sqlite3.debug.wasm | 3,405,586 | `ccc33e306e9ac69c94785e551e8e1c44e3addf6b930e2e463b262de3e304da3c` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.debug.wasm |
+| sqlite3.ia32.windows.dll | 1,327,104 | `6f708e62df110fc0a5fd81124be9e6c89e2c39b8364327e94f6ec3f3ea1cf457` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.ia32.windows.dll |
+| sqlite3.x64.windows.dll | 1,709,056 | `98b4be674137b85ec111a7a29223e87aa41c3e964d61f73602471ddd7b9c56ce` | https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-3.7.0/sqlite3.x64.windows.dll |
 
-### Phase 1a selected source dependencies
+Linux x64 downloaded bytes and SHA-256 match the table; tests execute that library. The default package hook downloads and caches the target library, verifies its pinned SHA-256, and bundles it. It does **not** compile SQLite or require a system SQLite package. The hook and release tag/hash map are inside exact sqlite3 **3.7.0**, with the package archive SHA-256 in pubspec.lock; no separate floating hook or latest-release lookup. Preserve pubspec.lock and use `flutter pub get --enforce-lockfile` (or `--offline --enforce-lockfile` after setup). No encrypted SQLCipher/sqlite3mc or vector extension selected.
 
-| Component/version | License/cost | Approval/status/obligations |
+First build per target requires internet for the native artifact, plus initial SDK/pub dependencies. Later Linux cached-build verification is recorded in HANDOFF; cleaning hook caches, changing targets/pins, or missing SDK artifacts can require internet again. App runtime does not download SQLite. Windows CI builds/tests the same dependency with the ordinary hosted Windows C++ toolchain; it is **UNVERIFIED until GitHub runs it**. Manual dispatch only, 25-minute timeout, cancellation, one-day artifact retention, no model downloads. Check remaining private-repository Actions quota before dispatch; no automatic paid overages authorized. Pinned SDK archive size/hash is checked before download; an archive over 1 GB requires the explicit workflow approval checkbox after reviewing the printed size. Catalog lookup failed from this environment; no Windows SDK archive or CI run was performed.
+
+Android arm/arm64/x86/x64 and iOS arm64 device/arm64+x64 simulator native artifacts are provided by sqlite3 3.7.0. Drift NativeDatabase uses these hook-bundled libraries on those targets; no sqflite or system-SQLite fallback is needed. Android/iOS runners remain unchanged and builds/device behavior are unverified.
+
+| Other native/build component | Pin/licence/obligations | Role, platform and cost |
 |---|---|---|
-| flutter_riverpod 3.4.3 | MIT; $0 | Standing pre-approval; official https://pub.dev/packages/flutter_riverpod reviewed 2026-10-10; retain notice; installed package and existing lockfile verified 2026-10-11; no lockfile changes in this follow-up. |
-| flutter/flutter_test SDK packages, Flutter 3.47.7 | BSD-3 plus bundled notices; $0 | Standing SDK approval; existing SDK version verified 2026-10-11; no download performed, download gate still applies to future installations. |
+| JNI native headers/wrappers from jni 1.1.0 | Android Open Source Project 2006; Apache-2.0 for jni.h/global_jni_env, BSD-3 for Dart API and JNI package. Preserve notices; bundled assets/licenses/JNI-NATIVE.txt plus Flutter generated licences | Android path_provider transitive; optional desktop JVM lookup explicitly disabled in Linux/Windows CMake. No Java installation or JVM bundling; $0 |
+| actions/checkout v4 | 11d5960a326750d5838078e36cf38b85af677262; MIT, preserve notices; https://github.com/actions/checkout | Manual Windows workflow tooling; $0 within user account quota |
+| actions/upload-artifact v4 | ea165f8d65b6e75b540449e92b4886f43607fa02; MIT, preserve notices; https://github.com/actions/upload-artifact | Optional unsigned Windows artifact, one-day retention; $0 within user account quota |
 
-Existing llama3.2 tags observed at 1.3/2.0 GB still require explicit download approval despite model pre-approval. Historical pre-Slice A font decision: no font asset had been selected; Slice A now bundles the explicitly approved OFL fonts below; Linux glyph QA completed via Phase 1b native captures; other-platform font/shaping verification remains pending. Separate OFL approval was granted for the three Slice A fonts; other future fonts still need approval.
+Direct generator versions: drift_dev **2.35.1** (there is no published 2.35.2 at verification), build_runner **2.16.2**. Both are pinned; approved under the user’s permissive dev-package approval. Native package/version/source/licence audit completed with installed source on 2026-10-11. No new native/system tool installed.
 
-### Phase 1b costs and approvals — 2026-10-11
+### Part 2 installed package Costs — 2026-10-11
 
-No direct/development dependency, native component, model, voice or external tool was added. pubspec.yaml and pubspec.lock are unchanged from the committed 1a baseline. Existing Flutter 3.47.7/Dart 3.13.5 and Riverpod 3.4.3 (MIT), flutter_lints 6.0.0/lints 6.1.0 (BSD-3-Clause) are reused at $0. MockProvider, orb painter and benchmark harness are original application code, with no runtime service or download requirement. Native Gujarati rendering uses an already-installed system font (fc-match :lang=gu reports Noto Sans Gujarati); no font asset is bundled or redistributed. Future bundled fonts remain subject to approval, including OFL outside the standing package-license list.
+User explicitly approves public-domain native SQLite, pinned sqlite3 3.7.0 prebuilt/hash-verified artifacts. Public domain is acceptable alongside MIT/BSD/Apache. Source and native artifact rows above are verified; Linux download bytes/hash match the pin. Direct dependencies pinned; complete resolved graph locked in pubspec.lock. All hosted packages below cost $0, no account/key or service quota. MIT/BSD require retained copyright/licence notices; Apache includes licence/NOTICE obligations. SDK package licences are listed separately (Flutter BSD, sky_engine Apache). Versions/licence texts audited from installed package LICENSE files; pub.dev version URL is the source for each hosted row. Native platform toolchain/transitive notices must also be preserved.
 
-The former 1b.2 next task was superseded by Slice A. After Slice A, await feedback; do not automatically begin 1b.3, 1c or Phase 2. Optional Ollama/model integration remains Phase 2; >1 GB downloads still require explicit approval.
+| Package | Locked version | Licence | Source |
+|---|---|---|---|
+| _fe_analyzer_shared | 109.0.0 | BSD-3-Clause | https://pub.dev/packages/_fe_analyzer_shared/versions/109.0.0 |
+| analyzer | 14.5.0 | BSD-3-Clause | https://pub.dev/packages/analyzer/versions/14.5.0 |
+| args | 2.7.0 | BSD-3-Clause | https://pub.dev/packages/args/versions/2.7.0 |
+| async | 2.13.1 | BSD-3-Clause | https://pub.dev/packages/async/versions/2.13.1 |
+| boolean_selector | 2.1.2 | BSD-3-Clause | https://pub.dev/packages/boolean_selector/versions/2.1.2 |
+| build | 4.0.11 | BSD-3-Clause | https://pub.dev/packages/build/versions/4.0.11 |
+| build_config | 1.3.3 | BSD-3-Clause | https://pub.dev/packages/build_config/versions/1.3.3 |
+| build_daemon | 4.1.6 | BSD-3-Clause | https://pub.dev/packages/build_daemon/versions/4.1.6 |
+| build_runner | 2.16.2 | BSD-3-Clause | https://pub.dev/packages/build_runner/versions/2.16.2 |
+| built_collection | 5.1.2 | BSD-3-Clause | https://pub.dev/packages/built_collection/versions/5.1.2 |
+| built_value | 8.13.0 | BSD-3-Clause | https://pub.dev/packages/built_value/versions/8.13.0 |
+| characters | 1.4.1 | BSD-3-Clause | https://pub.dev/packages/characters/versions/1.4.1 |
+| charcode | 1.4.0 | BSD-3-Clause | https://pub.dev/packages/charcode/versions/1.4.0 |
+| checked_yaml | 2.0.4 | BSD-3-Clause | https://pub.dev/packages/checked_yaml/versions/2.0.4 |
+| cli_util | 0.6.0 | BSD-3-Clause | https://pub.dev/packages/cli_util/versions/0.6.0 |
+| clock | 1.1.3 | Apache-2.0 | https://pub.dev/packages/clock/versions/1.1.3 |
+| code_assets | 2.1.0 | BSD-3-Clause | https://pub.dev/packages/code_assets/versions/2.1.0 |
+| collection | 1.19.1 | BSD-3-Clause | https://pub.dev/packages/collection/versions/1.19.1 |
+| convert | 3.1.2 | BSD-3-Clause | https://pub.dev/packages/convert/versions/3.1.2 |
+| crypto | 3.0.7 | BSD-3-Clause | https://pub.dev/packages/crypto/versions/3.0.7 |
+| dart_style | 3.1.13 | BSD-3-Clause | https://pub.dev/packages/dart_style/versions/3.1.13 |
+| drift | 2.35.2 | MIT | https://pub.dev/packages/drift/versions/2.35.2 |
+| drift_dev | 2.35.1 | MIT | https://pub.dev/packages/drift_dev/versions/2.35.1 |
+| fake_async | 1.3.3 | Apache-2.0 | https://pub.dev/packages/fake_async/versions/1.3.3 |
+| ffi | 2.2.0 | BSD-3-Clause | https://pub.dev/packages/ffi/versions/2.2.0 |
+| file | 7.0.1 | BSD-3-Clause | https://pub.dev/packages/file/versions/7.0.1 |
+| fixnum | 1.1.1 | BSD-3-Clause | https://pub.dev/packages/fixnum/versions/1.1.1 |
+| flutter | 0.0.0 | BSD-3-Clause (Flutter SDK 3.47.7) | Installed Flutter SDK LICENSE |
+| flutter_lints | 6.0.0 | BSD-3-Clause | https://pub.dev/packages/flutter_lints/versions/6.0.0 |
+| flutter_riverpod | 3.4.3 | MIT | https://pub.dev/packages/flutter_riverpod/versions/3.4.3 |
+| flutter_test | 0.0.0 | BSD-3-Clause (Flutter SDK 3.47.7) | Installed Flutter SDK LICENSE |
+| glob | 2.2.0 | BSD-3-Clause | https://pub.dev/packages/glob/versions/2.2.0 |
+| graphs | 2.3.2 | BSD-3-Clause | https://pub.dev/packages/graphs/versions/2.3.2 |
+| hooks | 2.2.0 | BSD-3-Clause | https://pub.dev/packages/hooks/versions/2.2.0 |
+| http_multi_server | 3.2.2 | BSD-3-Clause | https://pub.dev/packages/http_multi_server/versions/3.2.2 |
+| http_parser | 4.1.2 | BSD-3-Clause | https://pub.dev/packages/http_parser/versions/4.1.2 |
+| io | 1.1.0 | BSD-3-Clause | https://pub.dev/packages/io/versions/1.1.0 |
+| jni | 1.1.0 | BSD-3-Clause | https://pub.dev/packages/jni/versions/1.1.0 |
+| jni_flutter | 1.0.4+1 | BSD-3-Clause | https://pub.dev/packages/jni_flutter/versions/1.0.4+1 |
+| jni_util | 1.0.0 | BSD-3-Clause | https://pub.dev/packages/jni_util/versions/1.0.0 |
+| json_annotation | 4.12.0 | BSD-3-Clause | https://pub.dev/packages/json_annotation/versions/4.12.0 |
+| leak_tracker | 11.0.2 | BSD-3-Clause | https://pub.dev/packages/leak_tracker/versions/11.0.2 |
+| leak_tracker_flutter_testing | 3.0.10 | BSD-3-Clause | https://pub.dev/packages/leak_tracker_flutter_testing/versions/3.0.10 |
+| leak_tracker_testing | 3.0.2 | BSD-3-Clause | https://pub.dev/packages/leak_tracker_testing/versions/3.0.2 |
+| lints | 6.1.0 | BSD-3-Clause | https://pub.dev/packages/lints/versions/6.1.0 |
+| listen | 1.0.1 | BSD-3-Clause | https://pub.dev/packages/listen/versions/1.0.1 |
+| logging | 1.3.0 | BSD-3-Clause | https://pub.dev/packages/logging/versions/1.3.0 |
+| matcher | 0.12.20 | BSD-3-Clause | https://pub.dev/packages/matcher/versions/0.12.20 |
+| material_color_utilities | 0.13.0 | Apache-2.0 | https://pub.dev/packages/material_color_utilities/versions/0.13.0 |
+| meta | 1.19.0 | BSD-3-Clause | https://pub.dev/packages/meta/versions/1.19.0 |
+| mime | 2.1.0 | BSD-3-Clause | https://pub.dev/packages/mime/versions/2.1.0 |
+| native_toolchain_c | 0.19.5 | BSD-3-Clause | https://pub.dev/packages/native_toolchain_c/versions/0.19.5 |
+| objective_c | 9.6.2 | BSD-3-Clause | https://pub.dev/packages/objective_c/versions/9.6.2 |
+| package_config | 3.0.0 | BSD-3-Clause | https://pub.dev/packages/package_config/versions/3.0.0 |
+| path | 1.9.1 | BSD-3-Clause | https://pub.dev/packages/path/versions/1.9.1 |
+| path_provider | 2.1.6 | BSD-3-Clause | https://pub.dev/packages/path_provider/versions/2.1.6 |
+| path_provider_android | 2.3.1 | BSD-3-Clause | https://pub.dev/packages/path_provider_android/versions/2.3.1 |
+| path_provider_foundation | 2.6.0 | BSD-3-Clause | https://pub.dev/packages/path_provider_foundation/versions/2.6.0 |
+| path_provider_linux | 2.2.2 | BSD-3-Clause | https://pub.dev/packages/path_provider_linux/versions/2.2.2 |
+| path_provider_platform_interface | 2.1.3 | BSD-3-Clause | https://pub.dev/packages/path_provider_platform_interface/versions/2.1.3 |
+| path_provider_windows | 2.3.0 | BSD-3-Clause | https://pub.dev/packages/path_provider_windows/versions/2.3.0 |
+| platform | 3.2.0 | BSD-3-Clause | https://pub.dev/packages/platform/versions/3.2.0 |
+| plugin_platform_interface | 2.1.8 | BSD-3-Clause | https://pub.dev/packages/plugin_platform_interface/versions/2.1.8 |
+| pool | 1.5.3 | BSD-3-Clause | https://pub.dev/packages/pool/versions/1.5.3 |
+| process | 5.0.6 | BSD-3-Clause | https://pub.dev/packages/process/versions/5.0.6 |
+| pub_semver | 2.2.1 | BSD-3-Clause | https://pub.dev/packages/pub_semver/versions/2.2.1 |
+| pubspec_parse | 1.6.0 | BSD-3-Clause | https://pub.dev/packages/pubspec_parse/versions/1.6.0 |
+| recase | 4.1.0 | BSD-2-Clause | https://pub.dev/packages/recase/versions/4.1.0 |
+| record_use | 1.1.1 | BSD-3-Clause | https://pub.dev/packages/record_use/versions/1.1.1 |
+| riverpod | 3.4.3 | MIT | https://pub.dev/packages/riverpod/versions/3.4.3 |
+| shelf | 1.4.2 | BSD-3-Clause | https://pub.dev/packages/shelf/versions/1.4.2 |
+| shelf_web_socket | 3.0.0 | BSD-3-Clause | https://pub.dev/packages/shelf_web_socket/versions/3.0.0 |
+| sky_engine | 0.0.0 (Flutter SDK 3.47.7 engine) | Apache-2.0 | Installed Flutter engine sky_engine LICENSE |
+| source_gen | 4.3.0 | BSD-3-Clause | https://pub.dev/packages/source_gen/versions/4.3.0 |
+| source_span | 1.10.2 | BSD-3-Clause | https://pub.dev/packages/source_span/versions/1.10.2 |
+| sqlite3 | 3.7.0 | MIT | https://pub.dev/packages/sqlite3/versions/3.7.0 |
+| sqlparser | 0.45.0 | MIT | https://pub.dev/packages/sqlparser/versions/0.45.0 |
+| stack_trace | 1.12.2 | BSD-3-Clause | https://pub.dev/packages/stack_trace/versions/1.12.2 |
+| state_notifier | 1.0.0 | MIT | https://pub.dev/packages/state_notifier/versions/1.0.0 |
+| stream_channel | 2.1.4 | BSD-3-Clause | https://pub.dev/packages/stream_channel/versions/2.1.4 |
+| stream_transform | 2.1.2 | BSD-3-Clause | https://pub.dev/packages/stream_transform/versions/2.1.2 |
+| string_scanner | 1.4.1 | BSD-3-Clause | https://pub.dev/packages/string_scanner/versions/1.4.1 |
+| term_glyph | 1.2.2 | BSD-3-Clause | https://pub.dev/packages/term_glyph/versions/1.2.2 |
+| test_api | 0.7.12 | BSD-3-Clause | https://pub.dev/packages/test_api/versions/0.7.12 |
+| typed_data | 1.4.0 | BSD-3-Clause | https://pub.dev/packages/typed_data/versions/1.4.0 |
+| uuid | 4.6.0 | MIT | https://pub.dev/packages/uuid/versions/4.6.0 |
+| vector_math | 2.4.0 | BSD-3-Clause | https://pub.dev/packages/vector_math/versions/2.4.0 |
+| vm_service | 15.3.0 | BSD-3-Clause | https://pub.dev/packages/vm_service/versions/15.3.0 |
+| watcher | 1.2.1 | BSD-3-Clause | https://pub.dev/packages/watcher/versions/1.2.1 |
+| web | 1.1.1 | BSD-3-Clause | https://pub.dev/packages/web/versions/1.1.1 |
+| web_socket | 1.0.1 | BSD-3-Clause | https://pub.dev/packages/web_socket/versions/1.0.1 |
+| web_socket_channel | 3.0.3 | BSD-3-Clause | https://pub.dev/packages/web_socket_channel/versions/3.0.3 |
+| xdg_directories | 1.1.0 | BSD-3-Clause | https://pub.dev/packages/xdg_directories/versions/1.1.0 |
+| yaml | 3.1.4 | MIT | https://pub.dev/packages/yaml/versions/3.1.4 |
+| yaml_edit | 2.2.4 | BSD-3-Clause | https://pub.dev/packages/yaml_edit/versions/2.2.4 |
 
+## Part 2 status — 2026-10-11
 
-### Phase 1b.2 status and costs — 2026-10-11
+Implemented local-only Ollama adapter with streaming, aborting Stop, typed failures/deadlines, conservative UTF-8 byte bounds (system/output/framing reserves) and recoverable commands; explicit model discovery/check and fast/quality/demo selectors. CPU-only, context 2048 default, 256 generated-token cap, configurable idle unload (0/30/60 seconds), single active app generation, refusal to load alongside a different resident model, Linux low-memory warning. Model switch waits for cancellation and unloads the previously selected resident model before updating configuration. Other clients can race the localhost daemon; JARVIS cannot control external clients.
 
-Delivered: themed chat message surfaces and composer separation; technical timing numbers moved to Settings > Developer. Session-only showPerformanceOverlay toggle defaults off. Developer readouts separate animated/simple tiers, last 120 frames each, build/raster mean and p95 plus 16.7 ms budget misses, Refresh and Reset. Engine recording does not publish per-frame UI changes; static orb does not schedule monitoring frames. Tier attribution uses the mode at engine report time and timings cover the whole app while Chat is mounted; no isolated orb/FPS claims. No new downloads/dependencies/lockfile changes; existing Flutter 3.47.7 BSD-3 and Riverpod 3.4.3 MIT reused at $0. Flutter overlay reference: https://api.flutter.dev/flutter/material/MaterialApp/showPerformanceOverlay.html (reviewed 2026-10-11).
+Drift v2 persists chats/messages/model/language/context/idle/theme/palette/reduced-motion/manual-quality settings through a background SQLite isolate. Native CRUD, delete/reopen, v1→v2 migration and Riverpod controller restart/search tested. History has exact-chat confirmed deletion, rename and English/Gujarati title/message search. Scratchpad and Developer overlay remain temporary. Periodic streaming checkpoints are marked stopped until a completed reply is saved. Database is unencrypted; filesystem/account protection applies. No credentials are accepted or stored, so optional secure-credential storage is deferred until an optional provider is authorized.
 
-### Queued Phase 1b.3 (not started; explicit authorization required after Slice A feedback)
+Scope: export/complete deletion remain Phase 6 per PLAN (conflict reported before implementation); no dead placeholder controls. LAN/mobile connection configuration and richer onboarding remain open acceptance items rather than unsupported success claims. Approved Gujarati-only Qwen comparison completed (latest user instruction limits candidate testing to Gujarati, overriding the earlier English comparison gate); both script-correct but fail the tasks. Existing 1b fast/3b quality defaults unchanged, and any change requires asking the user. Candidate models are testing-only, not app picker additions. This Part 2 adds only the explicitly authorized Windows SQLite workflow; wider Phase 1c work, voice, Android/iOS runner changes and Part 3 README edits are not started. Agent never pushes; user pushes the reported local commit. Final verification/model evidence is in HANDOFF and PERFORMANCE.
 
-The user moved the initial voice foundation ahead of Phase 5. This changes the previous schedule, not dependency or privacy gates. Phase 5 retains broader platform qualification and Gujarati engine evaluation not completed in 1b.3. First research at least two STT and two TTS candidates, present a short license/model-size/RAM comparison and recommendation, obtain required engine/license approvals and explicit model download approval before downloading models. Real speed/RAM claims require execution on the reference machine; mark unavailable results honestly.
+### Approved Gujarati comparison assets — 2026-10-11
 
-Implement pure-domain SpeechToText, TextToSpeech, AudioInput, VoiceActivityDetector and VoiceSessionController (idle/listening/transcribing/thinking/speaking/error), Riverpod composition and deterministic fakes. Mic → VAD → STT → existing streamed LlmProvider → sentence-by-sentence TTS; varied English Mock greetings/small talk. Push-to-talk via held Space/mic, tap conversation with automatic relisten, silence timeout and stop/goodbye. Barge-in interrupts playback; ignore/mute mic during speech to prevent echo. Real mic-level/playback orb states, live transcript and response, visible active-mic indication, contextual permission explanation including Android RECORD_AUDIO, voice-disable switch, no audio saving by default. Pipeline remains usable by Ollama later.
+Comparison only; do not change app defaults without asking. Both licenses checked on the exact official model tags; no account/key/service charge, CPU offline use after setup, no usage quota beyond hardware. Weights are not bundled with the app. Largest files below 1 GB; exact manifests/layer hashes in docs/dependencies/model-candidates.json. Initial download needs internet; aggregate layer storage 1,508,714,682 bytes, plus manifests/cache overhead. Apache redistribution requires license/notice preservation and marking modifications where applicable.
 
-Native engine work off UI thread; lower orb tier during STT. Linux/Windows support and Android alternatives must be evidence-based. Gujarati voice experimental, off by default, labeled limited accuracy and tested with real samples before claims. No wake-word implementation; only capability interface and explicitly disabled entry per user request. No silent cloud. Developer metrics: STT real-time factor and latency, TTS time-to-first-audio, total round trip and per-stage RAM. Fake controller transition/barge-in/silence tests and widget voice tests; format, clean analyze, all tests and Linux release build; update HANDOFF/PLAN/Costs, commit/push, stop. Model audio samples or licenses unavailable are blockers to measurement, not permission to fabricate results.
-
-### UI redesign Slice A — authorization and decisions (2026-10-11)
-
-User request replaces earlier UI polish and pauses the previously next 1b.3. Authorized: five dark/light palettes, adaptive Chat/History/Settings with in-memory conversations, premium lightweight gradients/orb, Markdown subset, keyboard/actions, three quality tiers, Developer diagnostics, screenshots and measured reference-hardware profile timings. No voice, 1c or Phase 2 work. AGENTS conflict: disabled attach/mic buttons would be dead controls; ship informational coming-soon labels with explanations and usable paste/text alternatives. No microphone permission or audio capture.
-
-Fonts approved explicitly by user in this session: Space Grotesk, Noto Sans Gujarati and JetBrains Mono under SIL OFL 1.1. Bundle unmodified fonts and license notices; no runtime font downloads. Hashes, exact immutable source revision and asset bytes in assets/fonts/SOURCES.json. Original local Markdown renderer supports paragraphs/headings/lists, emphasis/inline code and fenced code with copy; HTML/remote images/remote URL fetch/execution are excluded, unsupported Markdown remains literal text. No new package dependency. This is a deliberate bounded subset, not CommonMark compliance.
-
-Font versions, licenses, sizes and approved sources appear in the Costs section above.
-
-Quality: automatic starts Lite after reference-machine measurements showed the higher tiers missed their budgets. Ultra uses static radial-gradient shaders (SDK gradient paints, not custom fragment programs), at most 24 particles and 45-second background drift. Balanced animates orb at at most ~29.4 Hz with static background. Lite uses static background and a 10 Hz gentle five-second breathing pulse. App/OS reduce motion stops all timers. Automatic policy samples max(build,raster) in non-overlapping 60-frame windows: two p95 misses downgrade one tier (>16.67 ms Ultra / >33.33 ms Balanced); three good windows upgrade (<18 ms Lite / <12 ms Balanced). No wall-clock FPS guarantee. Manual tier choice bypasses governor but never reduced motion. Readouts retain last 120 frames/tier without reactive frame publication; engine report-time attribution can cross transition boundaries. All measurements in Developer; only product quality indicator in top bar.
-
-All conversations/settings/scratchpad are session only. Switching/new chat cancels active streaming, retaining partial text. Rename is local; delete confirms exact chat and stops its active job. Message copy explicitly writes clipboard; regeneration replaces the latest assistant reply, edit replaces the last user/reply pair. No actual AI/tool execution, network, telemetry, persistence or audio.
-
-Slice A verification evidence: reference-machine profile and 24 native synthetic viewport screenshots are documented in PERFORMANCE and screenshots/README. Linux selects built-in Skia after observed Impeller stalls; no new native library/tool. Final forced-tier raster p95 Ultra 90.146 / Balanced 85.208 / Lite 84.876 ms, peak app RSS 223.6 MiB. 30/60fps NOT MET; Lite is the conservative start and reduced motion is fully static. These limits remain release/performance gates rather than marketing claims.
-
-### Accepted Slice A follow-up — Part 1 (2026-10-11)
-
-Phone hero is 120 px with headlineMedium typography; empty-state suggestions wrap within available width and remain in the scrollable content above the composer, with a visible scrollbar. At 390 px, all four suggestions fit above the composer at normal text and can be scrolled fully into view at 2× text; regression tests check bounds and hit testing; button layout grows with wrapped labels rather than clipping multi-line Gujarati inside a fixed chip. Desktop empty-state hero has 64 px top breathing room, independent of animation/state. Bundled variable fonts explicitly register weights 300–700 for consistent Flutter weight selection across scripts/themes; no font bytes, sources, licenses or dependency versions change. Space Grotesk fvar default is 300 (range 300–700), Noto Sans Gujarati default 400 (100–900), JetBrains Mono default 400 (100–800). Existing font approvals/Costs apply; $0, zero downloads. Text theme weights/fallbacks match dark/light in tests.
-
-Part 2 pending: package-specific approval required by latest user request before adding any package, even standing permissive approval. Proposed Drift 2.35.2 MIT, sqlite3 3.7.0 MIT / SQLite public domain, path_provider 2.1.6 BSD-3-Clause; official pub.dev pages verified 2026-10-11, not installed. Audit resolved transitive/native licenses, sizes and lockfile before adoption. Ollama HTTP can use dart:io without a package. Existing models must not be pulled again.
-
-Conflicts to preserve: PLAN places export/complete deletion in Phase 6, so those remain there pending schedule clarification; Phase 2 requires alternatives in the model comparison, while newest request makes testing alternatives contingent on measured poor Gujarati results and approval. Do not silently download alternatives or declare final defaults without satisfying that gate. Current 1b/3b selection remains the provisional hardware baseline. No voice or 1c work is authorized.
-
-Part 1 verification completed: format 24 files / 0 changes, analyze no issues, 35 tests passed, Linux profile capture/release builds passed, 26 final native screenshots (24 refreshed + two 2× phone captures), diff whitespace check clean. Part 1 is the context-limited stopping point; Part 2 awaits its package approval, Part 3 remains queued.
-
-Part 1 is completed and committed locally; GitHub push remains blocked by stalled upload/response (bounded retry exit 124). Remote main verified still at accepted Slice A a823276. Retry and verify the push before Part 2. No failed push is claimed successful.
+| Asset | License/cost/status | Source, download bytes, immutable manifest SHA-256 |
+|---|---|---|
+| qwen2.5:1.5b Q4_K_M | Apache-2.0; $0; explicitly approved download/test only | https://ollama.com/library/qwen2.5:1.5b ; all layers 986,061,405; largest 986,048,512; 65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b |
+| qwen3:0.6b Q4_K_M | Apache-2.0; $0; explicitly approved download/test only; thinking disabled | https://ollama.com/library/qwen3:0.6b ; all layers 522,653,277; largest 522,640,096; 7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435 |
+| Python 3.14.4 (existing) | PSF License; $0; existing developer-only benchmark interpreter, no download/adoption as app dependency | Host version verified; stdlib only benchmark tool; no pip packages or system installs |

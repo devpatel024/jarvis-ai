@@ -2,14 +2,22 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/mock_provider.dart';
 import '../domain/llm_provider.dart';
+import '../data/ollama_provider.dart';
+import 'provider_settings.dart';
+import '../../../core/storage/local_store.dart';
 
 enum ChatPhase { idle, thinking, streaming, error }
 
 class ChatEntry {
-  ChatEntry(this.role, this.text, {this.stopped = false, DateTime? timestamp})
-    : timestamp = timestamp ?? DateTime.now();
+  ChatEntry(
+    this.role,
+    this.text, {
+    this.stopped = false,
+    this.provider = 'Mock demo',
+    DateTime? timestamp,
+  }) : timestamp = timestamp ?? DateTime.now();
   final MessageRole role;
-  final String text;
+  final String text, provider;
   final bool stopped;
   final DateTime timestamp;
 }
@@ -35,24 +43,93 @@ class ChatState {
   bool get busy => phase == ChatPhase.thinking || phase == ChatPhase.streaming;
 }
 
-final llmProvider = Provider<LlmProvider>((ref) => const MockProvider());
+final llmProvider = Provider<LlmProvider>((ref) {
+  final settings = ref.watch(providerSettingsProvider);
+  return settings.demo
+      ? const MockProvider()
+      : OllamaProvider(ref.read(ollamaServiceProvider), settings);
+});
 final chatProvider = NotifierProvider<ChatController, ChatState>(
   ChatController.new,
 );
 
 class ChatController extends Notifier<ChatState> {
   CancellationToken? _token;
+  Timer? _saveTimer;
   int _generation = 0, _nextId = 1;
   String _id = '1';
   final _chats = <String, ChatState>{'1': const ChatState()};
   final _titles = <String, String>{'1': 'New conversation'};
   @override
   ChatState build() {
+    final snapshot = ref.read(initialSnapshotProvider);
+    if (snapshot.chats.isNotEmpty) {
+      _chats.clear();
+      _titles.clear();
+      for (final c in snapshot.chats) {
+        _titles[c.id] = c.title;
+        _nextId = (_nextId > (int.tryParse(c.id) ?? 0))
+            ? _nextId
+            : int.parse(c.id);
+        _chats[c.id] = ChatState(
+          entries: c.messages
+              .map(
+                (m) => ChatEntry(
+                  MessageRole.values.byName(m.role),
+                  m.text,
+                  timestamp: m.timestamp,
+                  stopped: m.stopped,
+                  provider: m.provider,
+                ),
+              )
+              .toList(),
+        );
+      }
+      final saved = snapshot.settings['activeChat'];
+      _id = _chats.containsKey(saved) ? saved! : _chats.keys.last;
+    }
     ref.onDispose(() {
+      _saveTimer?.cancel();
       _generation++;
       _token?.cancel();
     });
-    return const ChatState();
+    return ChatState(
+      entries: _chats[_id]!.entries,
+      activeId: _id,
+      sessions: _titles.entries
+          .map((e) => ChatSummary(e.key, e.value))
+          .toList(),
+    );
+  }
+
+  void _persist() {
+    _saveTimer?.cancel();
+    _saveTimer = null;
+    final store = ref.read(localStoreProvider);
+    if (store == null) return;
+    final rooms = _titles.entries
+        .map(
+          (t) => SavedChat(
+            t.key,
+            t.value,
+            _chats[t.key]!.entries
+                .map(
+                  (e) => SavedMessage(
+                    e.role.name,
+                    e.text,
+                    e.timestamp,
+                    e.stopped ||
+                        (_chats[t.key]!.busy &&
+                            identical(e, _chats[t.key]!.entries.last)),
+                    e.provider,
+                  ),
+                )
+                .toList(),
+          ),
+        )
+        .toList();
+    store.enqueue(() => store.saveChats(rooms));
+    persistSetting(ref, 'activeChat', _id);
   }
 
   void _emit(ChatState value) {
@@ -70,6 +147,27 @@ class ChatController extends Notifier<ChatState> {
               _titles.entries.map((e) => ChatSummary(e.key, e.value)),
             ),
     );
+    if (state.phase == ChatPhase.streaming) {
+      _saveTimer ??= Timer(const Duration(seconds: 1), () {
+        _saveTimer = null;
+        if (ref.mounted) _persist();
+      });
+    } else {
+      _persist();
+    }
+  }
+
+  List<ChatSummary> search(String query) {
+    final needle = query.trim().toLowerCase();
+    return [
+      for (final room in _titles.entries)
+        if (needle.isEmpty ||
+            room.value.toLowerCase().contains(needle) ||
+            _chats[room.key]!.entries.any(
+              (e) => e.text.toLowerCase().contains(needle),
+            ))
+          ChatSummary(room.key, room.value),
+    ];
   }
 
   void newChat() {
@@ -162,18 +260,24 @@ class ChatController extends Notifier<ChatState> {
       entries.add(ChatEntry(MessageRole.user, prompt));
     }
     final request = entries.map((e) => LlmMessage(e.role, e.text)).toList();
-    entries.add(ChatEntry(MessageRole.assistant, ''));
-    _emit(
-      ChatState(entries: List.unmodifiable(entries), phase: ChatPhase.thinking),
-    );
     final provider = simulateFailure
         ? const MockProvider(simulateFailure: true)
         : ref.read(llmProvider);
+    entries.add(
+      ChatEntry(
+        MessageRole.assistant,
+        '',
+        provider: provider.isDemo ? 'Mock demo' : provider.label,
+      ),
+    );
+    _emit(
+      ChatState(entries: List.unmodifiable(entries), phase: ChatPhase.thinking),
+    );
     try {
       await for (final event
           in provider
               .respond(request, cancellation: token)
-              .timeout(const Duration(seconds: 20))) {
+              .timeout(const Duration(seconds: 95))) {
         if (!ref.mounted || generation != _generation) return;
         switch (event) {
           case TextDelta(:final text):
@@ -183,6 +287,7 @@ class ChatController extends Notifier<ChatState> {
                 MessageRole.assistant,
                 previous.text + text,
                 timestamp: previous.timestamp,
+                provider: previous.provider,
               ),
             );
             _emit(
@@ -246,7 +351,13 @@ class ChatController extends Notifier<ChatState> {
     final entries = [...state.entries];
     final last = entries.removeLast();
     entries.add(
-      ChatEntry(last.role, last.text, stopped: true, timestamp: last.timestamp),
+      ChatEntry(
+        last.role,
+        last.text,
+        stopped: true,
+        timestamp: last.timestamp,
+        provider: last.provider,
+      ),
     );
     _emit(ChatState(entries: List.unmodifiable(entries)));
   }

@@ -1,0 +1,395 @@
+{
+  "utc": "2026-10-11T11:17:50Z",
+  "ollama": "0.40.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "cpu": "Intel(R) Core(TM) i5-6300U CPU @ 2.40GHz",
+  "memory_before": {
+    "MemTotal": 7645294592,
+    "MemAvailable": 3760349184,
+    "SwapTotal": 4294963200,
+    "SwapFree": 2959818752
+  },
+  "installed": [
+    {
+      "name": "llama3.2:3b",
+      "model": "llama3.2:3b",
+      "modified_at": "2026-10-11T13:33:27.754018453+05:30",
+      "size": 2019393189,
+      "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "3.2B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 3072,
+        "runner": "ggml"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ]
+    },
+    {
+      "name": "llama3.2:1b",
+      "model": "llama3.2:1b",
+      "modified_at": "2026-10-11T13:32:16.005186989+05:30",
+      "size": 1321098329,
+      "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "1.2B",
+        "quantization_level": "Q8_0",
+        "context_length": 131072,
+        "embedding_length": 2048,
+        "runner": "ggml"
+      },
+      "capabilities": [
+        "completion",
+        "tools"
+      ]
+    }
+  ],
+  "options": {
+    "num_ctx": 2048,
+    "num_predict": 256,
+    "num_gpu": 0,
+    "num_thread": 2,
+    "temperature": 0,
+    "seed": 42
+  },
+  "rss_method": "Peak sum of VmRSS for visible ollama and llama-server processes sampled every 100 ms; shared pages may be counted twice. Server + runner, not app RSS.",
+  "system_prompts": {
+    "English": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in English. Do not pretend to execute tools or access live information.",
+    "Gujarati": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in Gujarati using Gujarati script, never Hindi or Devanagari unless the user explicitly requests it. Do not pretend to execute tools or access live information."
+  },
+  "conditions": "First prompt/model cold; later prompts warm. No model pulls. Four fixed prompts, one run each; not statistically robust. English cases refreshed after simplifying English-only instructions; Gujarati cases retained from the prior identical Gujarati prompt/options run. Each model cold on its first English sample; Gujarati samples were warm in the prior full run.",
+  "results": [
+    {
+      "model": "llama3.2:1b",
+      "language": "Gujarati",
+      "prompt": "નમસ્તે! મારા દિવસ વિશે એક સરળ પ્રશ્ન પૂછો.",
+      "reply": "નમસ્તે! મારા દિવસ વિશે એક સરળ પ્રશ્ન એટલે કે, મારી સંપત્તિ કે સંપત્તિ કે તમામ સંસ્થાઓ માં કેવી ભૂમિકા ભજવે છે?",
+      "cold": false,
+      "ttft_seconds": 7.448675127000115,
+      "round_trip_seconds": 57.699733314000014,
+      "eval_count": 178,
+      "eval_duration_ns": 50322527000,
+      "tokens_per_second": 3.537183257907537,
+      "peak_ollama_rss_bytes": 1514881024,
+      "gujarati_characters": 87,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:1b",
+          "model": "llama3.2:1b",
+          "size": 1450086235,
+          "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "1.2B",
+            "quantization_level": "Q8_0"
+          },
+          "expires_at": "2026-10-11T16:41:04.91913586+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:1b",
+      "language": "Gujarati",
+      "prompt": "મારા દિવસનું આયોજન કરવા બે સરળ પગલાં જણાવો.",
+      "reply": "મારા દિવસનું આયોજન કરવા બાકી છે:\n\n1. મારી સાથે સમય સંપત્તિ સાથે સંપત્તિ સંબંધિત કાર્યક્રમો કરવાનો આયોજન કરો.\n2. મારી સાથે સમય સાથે સંપત્તિ સંબંધિત કાર્યક્રમો",
+      "cold": false,
+      "ttft_seconds": 6.481518728000083,
+      "round_trip_seconds": 88.0561474220001,
+      "eval_count": 256,
+      "eval_duration_ns": 81581054000,
+      "tokens_per_second": 3.137983483272967,
+      "peak_ollama_rss_bytes": 1525608448,
+      "gujarati_characters": 125,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:1b",
+          "model": "llama3.2:1b",
+          "size": 1450086235,
+          "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "1.2B",
+            "quantization_level": "Q8_0"
+          },
+          "expires_at": "2026-10-11T16:42:33.05525262+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:3b",
+      "language": "Gujarati",
+      "prompt": "નમસ્તે! મારા દિવસ વિશે એક સરળ પ્રશ્ન પૂછો.",
+      "reply": "નમસ્તે! તમારા દિવસની યોજના કેવી છે?",
+      "cold": false,
+      "ttft_seconds": 19.031290119999994,
+      "round_trip_seconds": 47.656217680000054,
+      "eval_count": 59,
+      "eval_duration_ns": 29018307000,
+      "tokens_per_second": 2.0331992490120117,
+      "peak_ollama_rss_bytes": 2402635776,
+      "gujarati_characters": 28,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:3b",
+          "model": "llama3.2:3b",
+          "size": 2324546189,
+          "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "3.2B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-10-11T16:44:31.325365025+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:3b",
+      "language": "Gujarati",
+      "prompt": "મારા દિવસનું આયોજન કરવા બે સરળ પગલાં જણાવો.",
+      "reply": "મારા દિવસનું આયોજન કરવા માટે નીચેના બે સરળ પગલાં મારે જણાવી શકું છું:\n\n૧. પ્રથમ, તમારા દિવસની મુખ્ય વિષયોને નોંધ કરો. તમારા દિવસની મુખ્ય વિષયોને નોંધ કરવા માટ",
+      "cold": false,
+      "ttft_seconds": 14.106130076999989,
+      "round_trip_seconds": 153.59302965000006,
+      "eval_count": 256,
+      "eval_duration_ns": 139928314000,
+      "tokens_per_second": 1.8295082151850983,
+      "peak_ollama_rss_bytes": 2425962496,
+      "gujarati_characters": 126,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:3b",
+          "model": "llama3.2:3b",
+          "size": 2324546189,
+          "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "3.2B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-10-11T16:47:05.005318449+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:1b",
+      "language": "English",
+      "prompt": "Say hello and ask how my day is going. Reply in one short sentence.",
+      "reply": "Hello, I'm JARVIS. How's your day going so far?",
+      "cold": true,
+      "measured_utc": "2026-10-11T11:18:08Z",
+      "system_prompt": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in English. Do not pretend to execute tools or access live information.",
+      "ttft_seconds": 12.752546307999637,
+      "round_trip_seconds": 18.02845834699974,
+      "eval_count": 17,
+      "eval_duration_ns": 5068207000,
+      "tokens_per_second": 3.354243423759132,
+      "peak_ollama_rss_bytes": 1501995008,
+      "gujarati_characters": 0,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:1b",
+          "model": "llama3.2:1b",
+          "size": 1450086235,
+          "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "1.2B",
+            "quantization_level": "Q8_0"
+          },
+          "expires_at": "2026-10-11T16:48:38.189493057+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:1b",
+      "language": "English",
+      "prompt": "List two steps to plan a day. Keep it brief.",
+      "reply": "To plan a day, consider the following two steps:\n\n1. Identify your top priorities and goals.\n2. Allocate time slots for each task, taking into account breaks and flexibility.",
+      "cold": false,
+      "measured_utc": "2026-10-11T11:18:20Z",
+      "system_prompt": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in English. Do not pretend to execute tools or access live information.",
+      "ttft_seconds": 1.3423936780000076,
+      "round_trip_seconds": 12.480594997000026,
+      "eval_count": 37,
+      "eval_duration_ns": 11072057000,
+      "tokens_per_second": 3.3417458020673125,
+      "peak_ollama_rss_bytes": 1501401088,
+      "gujarati_characters": 0,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:1b",
+          "model": "llama3.2:1b",
+          "size": 1450086235,
+          "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "1.2B",
+            "quantization_level": "Q8_0"
+          },
+          "expires_at": "2026-10-11T16:48:50.849250248+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:3b",
+      "language": "English",
+      "prompt": "Say hello and ask how my day is going. Reply in one short sentence.",
+      "reply": "Hello, I hope your day is going well so far.",
+      "cold": true,
+      "measured_utc": "2026-10-11T11:19:00Z",
+      "system_prompt": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in English. Do not pretend to execute tools or access live information.",
+      "ttft_seconds": 33.16841952899995,
+      "round_trip_seconds": 39.58382413800018,
+      "eval_count": 13,
+      "eval_duration_ns": 6256164000,
+      "tokens_per_second": 2.0779506419588745,
+      "peak_ollama_rss_bytes": 2380525568,
+      "gujarati_characters": 0,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:3b",
+          "model": "llama3.2:3b",
+          "size": 2324546189,
+          "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "3.2B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-10-11T16:49:30.423511802+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    },
+    {
+      "model": "llama3.2:3b",
+      "language": "English",
+      "prompt": "List two steps to plan a day. Keep it brief.",
+      "reply": "Here are two steps to plan a day:\n\n1. **Set goals and priorities**: Identify what needs to be accomplished and prioritize tasks based on importance and urgency.\n2. **Create a schedule**: Allocate specific time slots for each task, leaving some buffer time for unexpected events or breaks.",
+      "cold": false,
+      "measured_utc": "2026-10-11T11:19:35Z",
+      "system_prompt": "You are JARVIS, a helpful local assistant. Be concise and honest when unsure. Reply in English. Do not pretend to execute tools or access live information.",
+      "ttft_seconds": 4.016134598000008,
+      "round_trip_seconds": 35.101264852999975,
+      "eval_count": 58,
+      "eval_duration_ns": 30918290000,
+      "tokens_per_second": 1.87591228363535,
+      "peak_ollama_rss_bytes": 2377805824,
+      "gujarati_characters": 0,
+      "devanagari_characters": 0,
+      "resident": [
+        {
+          "name": "llama3.2:3b",
+          "model": "llama3.2:3b",
+          "size": 2324546189,
+          "digest": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+          "details": {
+            "parent_model": "",
+            "format": "gguf",
+            "family": "llama",
+            "families": [
+              "llama"
+            ],
+            "parameter_size": "3.2B",
+            "quantization_level": "Q4_K_M"
+          },
+          "expires_at": "2026-10-11T16:50:05.626113124+05:30",
+          "size_vram": 0,
+          "context_length": 2048,
+          "runner": "llamacpp"
+        }
+      ]
+    }
+  ],
+  "gujarati_source_run_utc": "2026-10-11T11:09:01Z",
+  "gujarati_source_memory_before": {
+    "MemTotal": 7645294592,
+    "MemAvailable": 3149373440,
+    "SwapTotal": 4294963200,
+    "SwapFree": 3983826944
+  },
+  "memory_after": {
+    "MemTotal": 7645294592,
+    "MemAvailable": 2271375360,
+    "SwapTotal": 4294963200,
+    "SwapFree": 2272804864
+  }
+}

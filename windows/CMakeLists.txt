@@ -55,6 +55,10 @@ add_subdirectory("runner")
 
 # Generated plugin build rules, which manage building the plugins and adding
 # them to the application.
+# JNI is an Android path_provider transitive; desktop does not use a JVM.
+# Skip optional JVM lookup even on builders with a JDK installed.
+set(CMAKE_DISABLE_FIND_PACKAGE_JNI TRUE)
+set(JNI_FOUND FALSE)
 include(flutter/generated_plugins.cmake)
 
 

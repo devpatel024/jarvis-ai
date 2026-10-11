@@ -9,6 +9,9 @@ import '../../orb/domain/orb_state.dart';
 import '../../orb/presentation/core_orb.dart';
 import '../domain/llm_provider.dart';
 import 'chat_controller.dart';
+import 'provider_settings.dart';
+import 'local_provider_controls.dart';
+import '../../../core/storage/local_store.dart';
 import 'widgets/local_markdown.dart';
 
 class DemoPreview extends Notifier<OrbState?> {
@@ -120,6 +123,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ChatPhase.error => OrbState.error,
         };
     ref.listen(chatProvider, (previous, next) {
+      if (previous?.busy != next.busy) ref.invalidate(localMemoryProvider);
       if (previous?.activeId != next.activeId) {
         _input.clear();
         _editing = false;
@@ -129,8 +133,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       }
     });
     final c = JarvisColors.of(context);
+    final memory = ref.watch(localMemoryProvider).value;
+    final storageIssue = ref.watch(storageIssueProvider).value;
     return Column(
       children: [
+        if (storageIssue != null)
+          Padding(
+            padding: const EdgeInsets.all(AppTheme.smallSpacing),
+            child: Text(
+              storageIssue,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        if (memory != null && memory < 1073741824)
+          const Padding(
+            padding: EdgeInsets.all(8),
+            child: Text(
+              'Low available RAM. Use fast mode or close other apps before generating.',
+            ),
+          ),
         if (chat.entries.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing),
@@ -157,8 +178,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       ),
                       Text(
                         chat.busy
-                            ? 'Scripted reply ${chat.phase == ChatPhase.thinking ? 'on its way' : 'streaming'}'
-                            : 'MockProvider · microphone off',
+                            ? '${ref.watch(llmProvider).isDemo ? 'Scripted' : 'Local'} reply ${chat.phase == ChatPhase.thinking ? 'on its way' : 'streaming'}'
+                            : '${ref.watch(llmProvider).label} · microphone off',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -430,7 +451,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
             const SizedBox(height: AppTheme.smallSpacing),
             Text(
-              'A local, scripted demo. No AI provider connected.\nNothing is saved. No requests leave your device.',
+              ref.watch(providerSettingsProvider).demo
+                  ? (ref.watch(localStoreProvider) == null
+                        ? 'A local, scripted demo. No AI provider connected.\nNothing is saved. No requests leave your device.'
+                        : 'Scripted demo mode. Chats are saved locally.\nNo AI request leaves your device.')
+                  : 'Local Ollama · ${ref.watch(providerSettingsProvider).model}.\nReplies run on this computer. Chats are saved locally.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
@@ -684,7 +709,12 @@ class _MessageBubbleState extends State<MessageBubble> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        user ? 'You' : 'Jarvis · scripted demo',
+                                        user
+                                            ? 'You'
+                                            : widget.entry.provider ==
+                                                  'Mock demo'
+                                            ? 'Jarvis · scripted demo'
+                                            : 'Jarvis · ${widget.entry.provider}',
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelLarge!
@@ -717,9 +747,14 @@ class _MessageBubbleState extends State<MessageBubble> {
                                 if (widget.thinking)
                                   Semantics(
                                     liveRegion: true,
-                                    label:
-                                        'Thinking: preparing a scripted reply',
-                                    child: Text('Preparing a demo reply…'),
+                                    label: widget.entry.provider == 'Mock demo'
+                                        ? 'Thinking: preparing a scripted reply'
+                                        : 'Thinking: waiting for local Ollama',
+                                    child: Text(
+                                      widget.entry.provider == 'Mock demo'
+                                          ? 'Preparing a demo reply…'
+                                          : 'Waiting for local Ollama…',
+                                    ),
                                   )
                                 else
                                   LocalMarkdown(

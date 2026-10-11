@@ -1,0 +1,51 @@
+name: Windows build with pinned SQLite
+on:
+  workflow_dispatch:
+    inputs:
+      approve_large_sdk_download:
+        description: 'Approve the pinned Flutter Windows SDK archive if its HEAD size exceeds 1 GB (see failed-run size first)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: windows-build-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install exact Flutter SDK (no model downloads)
+        shell: pwsh
+        env:
+          APPROVE_LARGE_SDK: ${{ inputs.approve_large_sdk_download }}
+        run: |
+          $base = 'https://storage.googleapis.com/flutter_infra_release/flutter'
+          $catalog = Invoke-RestMethod "$base/releases/releases_windows.json"
+          $release = $catalog.releases | Where-Object { $_.version -eq '3.47.7' -and $_.channel -eq 'stable' } | Select-Object -First 1
+          if (!$release) { throw 'Pinned Flutter 3.47.7 Windows archive is unavailable; do not substitute a floating SDK.' }
+          $url = "$base/$($release.archive)"
+          $head = Invoke-WebRequest -Method Head -Uri $url
+          $size = [long]($head.Headers['Content-Length'] | Select-Object -First 1)
+          Write-Host "Pinned SDK: $url ($size bytes)"
+          if ($size -le 0) { throw 'Cannot verify SDK download size; approval required.' }
+          if ($size -gt 1000000000 -and $env:APPROVE_LARGE_SDK -ne 'true') { throw 'SDK exceeds 1 GB. Review this size and rerun only with explicit approval.' }
+          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP/flutter.zip"
+          $actual = (Get-FileHash "$env:RUNNER_TEMP/flutter.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actual -ne $release.sha256) { throw 'Flutter archive hash mismatch' }
+          Expand-Archive "$env:RUNNER_TEMP/flutter.zip" -DestinationPath $env:RUNNER_TEMP
+          "$env:RUNNER_TEMP/flutter/bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+      - name: Resolve committed package lockfile
+        run: flutter pub get --enforce-lockfile
+      - name: Test SQLite CRUD, reopen and v1 to v2 migration
+        run: flutter test --no-pub test/core/storage/local_store_test.dart
+      - name: Build Windows with sqlite3 3.7.0 native asset hook
+        run: flutter build windows --release --no-pub
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: jarvis-windows-unsigned
+          path: build/windows/x64/runner/Release/
+          retention-days: 1
+          if-no-files-found: error

@@ -1,3 +1,6 @@
+import 'dart:io';
+import '../../../core/storage/local_store.dart';
+import '../../chat/presentation/local_provider_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +30,7 @@ class AssistantShell extends ConsumerStatefulWidget {
 
 class _AssistantShellState extends ConsumerState<AssistantShell> {
   final _scratch = TextEditingController();
+  final _search = TextEditingController();
   bool _sidebar = true, _reduced = false;
   OrbTier _tier = OrbTier.balanced;
   @override
@@ -53,6 +57,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
   void dispose() {
     SchedulerBinding.instance.removeTimingsCallback(_timings);
     _scratch.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -102,7 +107,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       builder: (context) => AlertDialog(
         title: const Text('Delete conversation?'),
         content: Text(
-          'Delete “${chat.title}” from this session? This cannot be undone. Any active reply in this conversation will stop.',
+          'Delete “${chat.title}” from local chat history? This cannot be undone. Any active reply in this conversation will stop.',
         ),
         actions: [
           TextButton(
@@ -192,10 +197,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
                             AppTheme.pillRadius,
                           ),
                         ),
-                        child: Text(
-                          'Offline demo',
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
+                        child: const ModelPicker(compact: true),
                       ),
                     if (rail) const SizedBox(width: AppTheme.smallSpacing),
                     if (rail)
@@ -243,12 +245,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
                                           AppTheme.pillRadius,
                                         ),
                                       ),
-                                      child: Text(
-                                        'Offline demo',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.labelMedium,
-                                      ),
+                                      child: const ModelPicker(compact: true),
                                     ),
                                   ),
                                 ),
@@ -333,9 +330,15 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
                                 padding: EdgeInsets.all(AppTheme.smallSpacing),
                                 child: Text('YOUR CONVERSATIONS'),
                               ),
-                              const Padding(
-                                padding: EdgeInsets.all(AppTheme.smallSpacing),
-                                child: Text('Session only · not saved'),
+                              Padding(
+                                padding: const EdgeInsets.all(
+                                  AppTheme.smallSpacing,
+                                ),
+                                child: Text(
+                                  ref.watch(localStoreProvider) == null
+                                      ? 'Session only · not saved'
+                                      : 'Saved on this device',
+                                ),
                               ),
                               Expanded(
                                 child: ListView.builder(
@@ -454,11 +457,28 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       style: Theme.of(context).textTheme.headlineMedium,
     ),
     const SizedBox(height: AppTheme.smallSpacing),
-    const Text(
-      'Only in this session. Closing Jarvis clears every conversation.',
+    Text(
+      ref.watch(localStoreProvider) == null
+          ? 'Demo session: conversations are not saved.'
+          : 'Saved locally on this device. Search matches titles and message text.',
     ),
     const SizedBox(height: AppTheme.messagePadding),
-    for (final chat in sessions) _session(chat, active),
+    ExpansionTile(
+      title: const Text('Search chats'),
+      children: [
+        TextField(
+          controller: _search,
+          decoration: const InputDecoration(
+            labelText: 'Search title or message',
+          ),
+          onChanged: (_) => setState(() {}),
+        ),
+      ],
+    ),
+    for (final chat in ref.read(chatProvider.notifier).search(_search.text))
+      _session(chat, active),
+    if (ref.read(chatProvider.notifier).search(_search.text).isEmpty)
+      const Text('No matching conversations.'),
     const SizedBox(height: AppTheme.spacing),
     ExpansionTile(
       title: const Text('Unicode scratchpad'),
@@ -489,7 +509,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       Text('Make it yours.', style: Theme.of(context).textTheme.headlineMedium),
       const SizedBox(height: AppTheme.smallSpacing),
       const Text(
-        'Appearance changes instantly. Settings stay in this session.',
+        'Appearance changes instantly. Production settings are saved locally.',
       ),
       const SizedBox(height: AppTheme.spacing),
       Text('Appearance', style: Theme.of(context).textTheme.titleLarge),
@@ -608,10 +628,12 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
         'Ultra: slow aurora and particles. Balanced: static backdrop with an animated orb. Lite: static backdrop and gentle pulse. Reduced motion pauses all animation, including manual quality choices.',
       ),
       const SizedBox(height: AppTheme.spacing),
+      const LocalProviderSettings(),
+      const SizedBox(height: AppTheme.spacing),
       Text('Private by design', style: Theme.of(context).textTheme.titleLarge),
       const SizedBox(height: AppTheme.smallSpacing),
       const Text(
-        'MockProvider uses scripted replies. No real AI provider is connected. No network, microphone capture, audio, telemetry or saved history. English and Gujarati text are supported; Gujarati voice is unverified. Interface language is English.',
+        'Real chat uses only local Ollama. Mock demo is scripted. No cloud, microphone capture, audio or telemetry. English and Gujarati text are supported; Gujarati voice is unverified. Interface language is English.',
       ),
       const SizedBox(height: AppTheme.spacing),
       ExpansionTile(
@@ -667,8 +689,21 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
             value: ref.watch(demoFailureProvider),
             onChanged: ref.read(demoFailureProvider.notifier).select,
           ),
-          const Text(
-            'Host CPU/RAM metrics unavailable in this slice. No estimated values shown.',
+          Text(
+            'App RSS: ${(ProcessInfo.currentRss / 1048576).toStringAsFixed(1)} MiB',
+          ),
+          Text(
+            ref.watch(localMemoryProvider).value == null
+                ? 'Host RAM unavailable on this platform.'
+                : 'Available host RAM: ${(ref.watch(localMemoryProvider).value! / 1073741824).toStringAsFixed(2)} GiB',
+          ),
+          const Text('Host CPU utilization is not measured yet.'),
+          TextButton(
+            onPressed: () {
+              ref.invalidate(localMemoryProvider);
+              setState(() {});
+            },
+            child: const Text('Refresh RAM'),
           ),
         ],
       ),
