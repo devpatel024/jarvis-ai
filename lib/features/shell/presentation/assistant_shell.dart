@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/jarvis_app.dart';
 import '../../../core/design/app_theme.dart';
+import '../../../core/developer/performance_settings.dart';
 import '../../../core/design/motion_settings.dart';
 import '../../chat/presentation/chat_screen.dart';
 
@@ -140,14 +141,41 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
     ),
   ];
 
+  Widget _tierReadout(OrbTier tier) {
+    final samples = ref.read(frameDiagnosticsProvider).tiers[tier]!;
+    String metric(bool raster) =>
+        '${samples.mean(raster: raster)?.toStringAsFixed(1)} ms mean / '
+        '${samples.p95(raster: raster)?.toStringAsFixed(1)} ms p95';
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Text(
+        '${tier == OrbTier.animated ? 'Animated' : 'Simple'} orb tier',
+      ),
+      subtitle: Text(
+        samples.count == 0
+            ? 'No measured frames yet. Open Chat, then return here and refresh.'
+            : 'Build: ${metric(false)}\nRaster: ${metric(true)}\n'
+                  '${samples.count} frames • ${samples.budgetMisses} over budget',
+      ),
+    );
+  }
+
   List<Widget> _settings(BuildContext context) => [
     Text('Appearance', style: Theme.of(context).textTheme.headlineMedium),
     const SizedBox(height: 16),
     DropdownButtonFormField<ThemeMode>(
+      isExpanded: true,
       initialValue: ref.watch(themeProvider),
       decoration: const InputDecoration(labelText: 'Theme'),
       items: const [
-        DropdownMenuItem(value: ThemeMode.system, child: Text('Follow system')),
+        DropdownMenuItem(
+          value: ThemeMode.system,
+          child: Text(
+            'Follow system',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         DropdownMenuItem(value: ThemeMode.light, child: Text('Light')),
         DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
       ],
@@ -169,11 +197,41 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
     ),
     const SizedBox(height: 16),
     const Text(
-      'Voice is unavailable in this phase. English voice is planned for Phase 5. Gujarati voice requires measured evaluation before it can be offered.',
+      'Voice is unavailable in this phase. English voice evaluation is planned for Phase 1b.3. Gujarati voice requires measured evaluation before it can be offered.',
     ),
     const SizedBox(height: 16),
     const Text(
       'Interface language: English. Gujarati interface localization is planned for a later phase.',
+    ),
+    const SizedBox(height: AppTheme.spacing),
+    Text('Developer', style: Theme.of(context).textTheme.titleLarge),
+    SwitchListTile(
+      title: const Text('Flutter performance overlay'),
+      subtitle: const Text(
+        'Session only. Use a profile build for representative timings.',
+      ),
+      value: ref.watch(performanceOverlayProvider),
+      onChanged: ref.read(performanceOverlayProvider.notifier).setEnabled,
+    ),
+    const Text(
+      'Whole-app build/raster times while Chat is open, grouped by orb tier when the engine reports them. Last 120 frames per tier; 16.7 ms budget. Overlay adds overhead. Static tiers only produce frames when content changes.',
+    ),
+    for (final tier in OrbTier.values) _tierReadout(tier),
+    Wrap(
+      spacing: AppTheme.smallSpacing,
+      children: [
+        TextButton(
+          onPressed: () => setState(() {}),
+          child: const Text('Refresh frame times'),
+        ),
+        TextButton(
+          onPressed: () {
+            ref.read(frameDiagnosticsProvider).reset();
+            setState(() {});
+          },
+          child: const Text('Reset frame times'),
+        ),
+      ],
     ),
   ];
 }

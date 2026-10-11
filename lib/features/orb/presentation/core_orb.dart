@@ -2,10 +2,17 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import '../../../core/design/app_theme.dart';
+import '../../../core/developer/performance_settings.dart';
 import '../domain/orb_state.dart';
 
 class CoreOrb extends StatefulWidget {
-  const CoreOrb({super.key, required this.state, required this.reduceMotion});
+  const CoreOrb({
+    super.key,
+    required this.state,
+    required this.reduceMotion,
+    this.onFrame,
+  });
+  final void Function(OrbTier tier, int buildMicros, int rasterMicros)? onFrame;
   final OrbState state;
   final bool reduceMotion;
   @override
@@ -27,15 +34,25 @@ class _CoreOrbState extends State<CoreOrb> with SingleTickerProviderStateMixin {
   void _onTimings(List<FrameTiming> timings) {
     // Do not let timing labels themselves schedule a perpetual render loop
     // after falling back to a static orb or enabling reduced motion.
-    if (!mounted || timings.isEmpty || _disabled) return;
+    if (!mounted || timings.isEmpty) return;
+    for (final timing in timings) {
+      widget.onFrame?.call(
+        _disabled ? OrbTier.simple : OrbTier.animated,
+        timing.buildDuration.inMicroseconds,
+        timing.rasterDuration.inMicroseconds,
+      );
+    }
+    if (_disabled) return;
     for (final timing in timings) {
       _health.add(
         buildMicros: timing.buildDuration.inMicroseconds,
         rasterMicros: timing.rasterDuration.inMicroseconds,
       );
     }
-    setState(() {});
-    _syncAnimation();
+    if (_health.simplified) {
+      setState(() {});
+      _syncAnimation();
+    }
   }
 
   @override
@@ -105,16 +122,6 @@ class _CoreOrbState extends State<CoreOrb> with SingleTickerProviderStateMixin {
           ),
         ),
         Text('Orb: ${widget.state.name}', key: const ValueKey('orb-state')),
-        Text(
-          _health.count == 0
-              ? (_disabled
-                    ? 'Frame monitoring paused: motion disabled'
-                    : 'Frame timing: waiting for engine samples')
-              : 'Build/raster max: mean ${_health.meanMs!.toStringAsFixed(1)} ms • '
-                    'p95 ${_health.p95Ms!.toStringAsFixed(1)} ms (${_health.count} frames)',
-          style: Theme.of(context).textTheme.bodySmall,
-          textAlign: TextAlign.center,
-        ),
         Text(
           _health.simplified
               ? 'Simple orb: frame budget exceeded'

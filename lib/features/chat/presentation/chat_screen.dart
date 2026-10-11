@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/design/app_theme.dart';
+import '../../../core/developer/performance_settings.dart';
 import '../../../core/design/motion_settings.dart';
 import '../../orb/domain/orb_state.dart';
 import '../../orb/presentation/core_orb.dart';
@@ -82,6 +83,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               CoreOrb(
                 state: _debugState ?? autoState,
                 reduceMotion: ref.watch(reduceMotionProvider),
+                onFrame: ref.read(frameDiagnosticsProvider).record,
               ),
               ExpansionTile(
                 title: const Text('Demo controls'),
@@ -119,6 +121,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               for (var i = 0; i < chat.entries.length; i++)
                 Card(
+                  color: chat.entries[i].role == MessageRole.user
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Theme.of(context).colorScheme.surfaceContainer,
+                  margin: const EdgeInsets.only(bottom: AppTheme.smallSpacing),
                   child: Padding(
                     padding: const EdgeInsets.all(AppTheme.messagePadding),
                     child: Column(
@@ -168,35 +174,45 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(AppTheme.messagePadding),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _input,
-                  minLines: 1,
-                  maxLines: 4,
-                  maxLength: 4000,
-                  enabled: !chat.busy,
-                  decoration: const InputDecoration(
-                    labelText: 'Message the demo',
-                    hintText: 'Hello / નમસ્તે',
-                  ),
-                  onSubmitted: (_) => _send(),
-                ),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            border: Border(
+              top: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
               ),
-              const SizedBox(width: AppTheme.smallSpacing),
-              if (chat.busy)
-                FilledButton.icon(
-                  onPressed: ref.read(chatProvider.notifier).stop,
-                  icon: const Icon(Icons.stop),
-                  label: const Text('Stop'),
-                )
-              else
-                FilledButton(onPressed: _send, child: const Text('Send')),
-            ],
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.messagePadding),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _input,
+                    minLines: 1,
+                    maxLines: 4,
+                    maxLength: 4000,
+                    enabled: !chat.busy,
+                    decoration: const InputDecoration(
+                      labelText: 'Message the demo',
+                      hintText: 'Hello / નમસ્તે',
+                    ),
+                    onSubmitted: (_) => _send(),
+                  ),
+                ),
+                const SizedBox(width: AppTheme.smallSpacing),
+                if (chat.busy)
+                  FilledButton.icon(
+                    onPressed: ref.read(chatProvider.notifier).stop,
+                    icon: const Icon(Icons.stop),
+                    label: const Text('Stop'),
+                  )
+                else
+                  FilledButton(onPressed: _send, child: const Text('Send')),
+              ],
+            ),
           ),
         ),
       ],

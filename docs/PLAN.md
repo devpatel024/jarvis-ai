@@ -1,6 +1,6 @@
 # JARVIS plan
 
-Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). This authorized session implements Phase 1b only; Step B has no conflict with the Phase 1b definition below. Phase 1c has not started.
+Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. The current authorization is Phase 1b.2 UI polish and Developer frame diagnostics only. Stop after 1b.2; the next user next authorizes 1b.3 below, not 1c or Phase 2.
 
 ## Structure and decisions
 
@@ -25,6 +25,8 @@ Execute one authorized phase per next. If a phase is too large, propose bounded 
 | 0 | Supplied AGENTS, plan, costs, capabilities, risks, handoff; focused planning commit if Git available; stop. |
 | 1a | Scaffold and adaptive accessible shell, dark/light tokens, English baseline and Gujarati Unicode input/rendering; stop. Native runners and executable verification require available approved SDK/toolchain. |
 | 1b | Lightweight five-state orb and explicitly labeled Mock streaming chat with cancellation/error/retry; stop. |
+| 1b.2 | UI polish; Settings > Developer performance overlay (off by default), bounded per-tier build/raster frame times; stop. |
+| 1b.3 | User-requested offline voice conversation foundation described below, engine comparison and approval gates first; stop. |
 | 1c | Expanded meaningful domain/widget/integration tests, local check scripts and quota-conscious Linux checks plus Windows build workflow; stop. |
 | 2 | Tested SQLite migrations, persistent chat, secure settings, onboarding, Ollama discovery/connection/streaming/cancellation; unreachable host and context-limit recovery; explicit model download consent. |
 | 3 | Persistent tasks/notes/calendar/focus/habits; CRUD/search/domain rules work without AI or internet. |
@@ -101,4 +103,17 @@ Existing llama3.2 tags observed at 1.3/2.0 GB still require explicit download ap
 
 No direct/development dependency, native component, model, voice or external tool was added. pubspec.yaml and pubspec.lock are unchanged from the committed 1a baseline. Existing Flutter 3.47.7/Dart 3.13.5 and Riverpod 3.4.3 (MIT), flutter_lints 6.0.0/lints 6.1.0 (BSD-3-Clause) are reused at $0. MockProvider, orb painter and benchmark harness are original application code, with no runtime service or download requirement. Native Gujarati rendering uses an already-installed system font (fc-match :lang=gu reports Noto Sans Gujarati); no font asset is bundled or redistributed. Future bundled fonts remain subject to approval, including OFL outside the standing package-license list.
 
-Next authorized phase requires user next: 1c expanded tests/local scripts and quota-conscious Windows CI. Do not begin 1c in this session. Optional Ollama/model integration remains Phase 2; >1 GB downloads still require explicit approval.
+Next phase requires user next: 1b.3 voice engine comparison and recommendation first. Do not begin 1b.3, 1c or Phase 2 in the 1b.2 session. Optional Ollama/model integration remains Phase 2; >1 GB downloads still require explicit approval.
+
+
+### Phase 1b.2 status and costs — 2026-10-11
+
+Delivered: themed chat message surfaces and composer separation; technical timing numbers moved to Settings > Developer. Session-only showPerformanceOverlay toggle defaults off. Developer readouts separate animated/simple tiers, last 120 frames each, build/raster mean and p95 plus 16.7 ms budget misses, Refresh and Reset. Engine recording does not publish per-frame UI changes; static orb does not schedule monitoring frames. Tier attribution uses the mode at engine report time and timings cover the whole app while Chat is mounted; no isolated orb/FPS claims. No new downloads/dependencies/lockfile changes; existing Flutter 3.47.7 BSD-3 and Riverpod 3.4.3 MIT reused at $0. Flutter overlay reference: https://api.flutter.dev/flutter/material/MaterialApp/showPerformanceOverlay.html (reviewed 2026-10-11).
+
+### Next: Phase 1b.3 (not started; explicit user schedule change)
+
+The user moved the initial voice foundation ahead of Phase 5. This changes the previous schedule, not dependency or privacy gates. Phase 5 retains broader platform qualification and Gujarati engine evaluation not completed in 1b.3. First research at least two STT and two TTS candidates, present a short license/model-size/RAM comparison and recommendation, obtain required engine/license approvals and explicit model download approval before downloading models. Real speed/RAM claims require execution on the reference machine; mark unavailable results honestly.
+
+Implement pure-domain SpeechToText, TextToSpeech, AudioInput, VoiceActivityDetector and VoiceSessionController (idle/listening/transcribing/thinking/speaking/error), Riverpod composition and deterministic fakes. Mic → VAD → STT → existing streamed LlmProvider → sentence-by-sentence TTS; varied English Mock greetings/small talk. Push-to-talk via held Space/mic, tap conversation with automatic relisten, silence timeout and stop/goodbye. Barge-in interrupts playback; ignore/mute mic during speech to prevent echo. Real mic-level/playback orb states, live transcript and response, visible active-mic indication, contextual permission explanation including Android RECORD_AUDIO, voice-disable switch, no audio saving by default. Pipeline remains usable by Ollama later.
+
+Native engine work off UI thread; lower orb tier during STT. Linux/Windows support and Android alternatives must be evidence-based. Gujarati voice experimental, off by default, labeled limited accuracy and tested with real samples before claims. No wake-word implementation; only capability interface and explicitly disabled entry per user request. No silent cloud. Developer metrics: STT real-time factor and latency, TTS time-to-first-audio, total round trip and per-stage RAM. Fake controller transition/barge-in/silence tests and widget voice tests; format, clean analyze, all tests and Linux release build; update HANDOFF/PLAN/Costs, commit/push, stop. Model audio samples or licenses unavailable are blockers to measurement, not permission to fabricate results.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/design/app_theme.dart';
+import '../core/developer/performance_settings.dart';
 import '../features/shell/presentation/assistant_shell.dart';
 
 class ThemeController extends Notifier<ThemeMode> {
@@ -19,6 +20,7 @@ class JarvisApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => MaterialApp(
     title: 'JARVIS',
     debugShowCheckedModeBanner: false,
+    showPerformanceOverlay: ref.watch(performanceOverlayProvider),
     theme: AppTheme.build(Brightness.light),
     darkTheme: AppTheme.build(Brightness.dark),
     themeMode: ref.watch(themeProvider),

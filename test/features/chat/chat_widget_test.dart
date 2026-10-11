@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jarvis/app/jarvis_app.dart';
+import 'package:jarvis/core/developer/performance_settings.dart';
 import 'package:jarvis/features/chat/data/mock_provider.dart';
 import 'package:jarvis/features/chat/presentation/chat_controller.dart';
 import 'package:jarvis/features/orb/presentation/core_orb.dart';
@@ -170,12 +171,18 @@ void main() {
         rasterFinishWallTime: i * 40000 + 25000,
       ),
     );
+    final diagnostics = ProviderScope.containerOf(
+      tester.element(find.byType(CoreOrb)),
+    ).read(frameDiagnosticsProvider);
     tester.binding.platformDispatcher.onReportTimings!(slow);
+    expect(diagnostics.tiers[OrbTier.animated]!.count, 60);
     await tester.pump();
     expect(find.text('Simple orb: frame budget exceeded'), findsOneWidget);
     await tester.pumpAndSettle();
     expect(tester.binding.hasScheduledFrame, isFalse);
     tester.binding.platformDispatcher.onReportTimings!(slow);
+    expect(diagnostics.tiers[OrbTier.simple]!.count, 60);
+    expect(diagnostics.tiers[OrbTier.simple]!.p95(raster: true), 24);
     expect(tester.binding.hasScheduledFrame, isFalse);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
