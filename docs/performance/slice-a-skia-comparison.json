@@ -1,0 +1,76 @@
+{
+  "mode": "profile",
+  "duration_s": 48.316,
+  "per_tier_window_s": 12,
+  "warmup_per_tier_s": 4,
+  "overlay": false,
+  "peak_app_rss_bytes": 236093440,
+  "physical_viewport": "Instance of 'Size'",
+  "device_pixel_ratio": 2.0,
+  "viewport": "native runner default",
+  "tiers": {
+    "Ultra": {
+      "build": {
+        "count": 127,
+        "mean_ms": 12.957433070866141,
+        "p95_ms": 45.947,
+        "max_ms": 69.54
+      },
+      "raster": {
+        "count": 127,
+        "mean_ms": 62.73124409448819,
+        "p95_ms": 116.142,
+        "max_ms": 189.315
+      },
+      "total_span": {
+        "count": 127,
+        "mean_ms": 124.18845669291339,
+        "p95_ms": 213.429,
+        "max_ms": 315.199
+      }
+    },
+    "Balanced": {
+      "build": {
+        "count": 137,
+        "mean_ms": 10.380233576642336,
+        "p95_ms": 29.797,
+        "max_ms": 40.17
+      },
+      "raster": {
+        "count": 137,
+        "mean_ms": 51.739328467153285,
+        "p95_ms": 91.432,
+        "max_ms": 113.994
+      },
+      "total_span": {
+        "count": 137,
+        "mean_ms": 100.89328467153285,
+        "p95_ms": 164.054,
+        "max_ms": 209.488
+      }
+    },
+    "Lite": {
+      "build": {
+        "count": 124,
+        "mean_ms": 10.575016129032258,
+        "p95_ms": 26.959,
+        "max_ms": 38.018
+      },
+      "raster": {
+        "count": 124,
+        "mean_ms": 38.90429838709677,
+        "p95_ms": 81.614,
+        "max_ms": 90.685
+      },
+      "total_span": {
+        "count": 124,
+        "mean_ms": 75.61779032258065,
+        "p95_ms": 149.291,
+        "max_ms": 177.675
+      }
+    }
+  },
+  "note": "Whole app, forced tiers, live scripted streams; desktop load uncontrolled. Timer animation caps are not FPS certification.",
+  "renderer": "Skia OpenGL via --no-enable-impeller",
+  "hardware": "i5-6300U, Intel HD 520, 8GB nominal RAM, Ubuntu 26.04.1, Flutter 3.47.7"
+}

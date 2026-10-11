@@ -1,29 +1,40 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:jarvis/features/orb/domain/orb_state.dart';
+import 'package:jarvis/core/developer/performance_settings.dart';
 
 void main() {
-  test('Isolated slow startup frames do not trigger fallback', () {
-    final health = FrameHealth();
-    health.add(buildMicros: 40000, rasterMicros: 1000);
-    for (var i = 0; i < 59; i++) {
-      health.add(buildMicros: 1000, rasterMicros: 2000);
+  test(
+    'Hysteresis downgrades only after two bad windows and recovers after three',
+    () {
+      final governor = QualityGovernor(tier: OrbTier.balanced);
+      for (var i = 0; i < 60; i++) {
+        governor.add(1000, 40000);
+      }
+      expect(governor.tier, OrbTier.balanced);
+      for (var i = 0; i < 60; i++) {
+        governor.add(1000, 40000);
+      }
+      expect(governor.tier, OrbTier.lite);
+      for (var i = 0; i < 120; i++) {
+        governor.add(1000, 10000);
+      }
+      expect(governor.tier, OrbTier.lite);
+      for (var i = 0; i < 60; i++) {
+        governor.add(1000, 10000);
+      }
+      expect(governor.tier, OrbTier.balanced);
+      for (var i = 0; i < 180; i++) {
+        governor.add(1000, 10000);
+      }
+      expect(governor.tier, OrbTier.ultra);
+    },
+  );
+  test('Mixed threshold windows do not oscillate quality', () {
+    final governor = QualityGovernor(tier: OrbTier.balanced);
+    for (var window = 0; window < 10; window++) {
+      for (var i = 0; i < 60; i++) {
+        governor.add(1000, window.isEven ? 40000 : 24000);
+      }
     }
-    expect(health.simplified, isFalse);
-    expect(health.count, 60);
-    expect(health.p95Ms, 2);
-  });
-  test('Sustained build or raster budget misses latch a bounded fallback', () {
-    final health = FrameHealth();
-    for (var i = 0; i < 60; i++) {
-      health.add(buildMicros: 1000, rasterMicros: i < 12 ? 20000 : 2000);
-    }
-    expect(health.simplified, isTrue);
-    for (var i = 0; i < 120; i++) {
-      health.add(buildMicros: 1000, rasterMicros: 2000);
-    }
-    expect(health.count, 60);
-    expect(health.simplified, isTrue);
-    expect(health.meanMs, 2);
-    expect(health.p95Ms, 2);
+    expect(governor.tier, OrbTier.balanced);
   });
 }

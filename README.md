@@ -1,17 +1,11 @@
-# jarvis
+# JARVIS
 
-A new Flutter project.
+Local-first Flutter assistant source for Linux, Windows, Android and compatible iOS source. Slice A currently provides a polished **offline scripted demo**, not real AI or voice. English/Gujarati text, five dark/light palettes, adaptive navigation, in-memory chats, cancellable streaming, keyboard commands and Developer performance controls. No accounts, keys, runtime downloads, network requests, telemetry or saved history.
 
-## Getting Started
+Run on Linux with the installed SDK:
 
-This project is a starting point for a Flutter application.
+```sh
+/home/dev/development/flutter/bin/flutter run -d linux --profile --no-pub
+```
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Read [Setup](docs/SETUP.md), [Plan and Costs](docs/PLAN.md), [Handoff](docs/HANDOFF.md), [Performance evidence](docs/PERFORMANCE.md) and [screenshots](docs/screenshots/README.md). Reduce motion follows both app and OS settings. Ctrl+K commands, Ctrl+N new chat, Enter send, Shift+Enter newline and Esc stop. Voice, Windows CI and Ollama are future phases requiring separate authorization and applicable approval gates.

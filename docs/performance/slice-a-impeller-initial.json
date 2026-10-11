@@ -1,0 +1,74 @@
+{
+  "mode": "profile",
+  "duration_s": 42.614,
+  "per_tier_window_s": 12,
+  "warmup_per_tier_s": 2,
+  "overlay": false,
+  "viewport": "native runner default",
+  "tiers": {
+    "Ultra": {
+      "build": {
+        "count": 10,
+        "mean_ms": 73.6659,
+        "p95_ms": 346.513,
+        "max_ms": 346.513
+      },
+      "raster": {
+        "count": 10,
+        "mean_ms": 1159.2567,
+        "p95_ms": 2982.404,
+        "max_ms": 2982.404
+      },
+      "total_span": {
+        "count": 10,
+        "mean_ms": 2247.6349,
+        "p95_ms": 4412.679,
+        "max_ms": 4412.679
+      }
+    },
+    "Balanced": {
+      "build": {
+        "count": 42,
+        "mean_ms": 39.493928571428576,
+        "p95_ms": 152.958,
+        "max_ms": 271.826
+      },
+      "raster": {
+        "count": 42,
+        "mean_ms": 313.7153333333333,
+        "p95_ms": 684.764,
+        "max_ms": 1710.747
+      },
+      "total_span": {
+        "count": 42,
+        "mean_ms": 632.67,
+        "p95_ms": 1935.614,
+        "max_ms": 3095.294
+      }
+    },
+    "Lite": {
+      "build": {
+        "count": 57,
+        "mean_ms": 30.821,
+        "p95_ms": 86.268,
+        "max_ms": 111.432
+      },
+      "raster": {
+        "count": 57,
+        "mean_ms": 206.01917543859648,
+        "p95_ms": 314.415,
+        "max_ms": 355.325
+      },
+      "total_span": {
+        "count": 57,
+        "mean_ms": 360.5893333333333,
+        "p95_ms": 594.229,
+        "max_ms": 700.119
+      }
+    }
+  },
+  "note": "Whole app, forced tiers, live scripted streams; desktop load uncontrolled. Timer animation caps are not FPS certification.",
+  "renderer": "Impeller OpenGLESSDF",
+  "startup_warnings": "GTK OpenGL resize/frame wait timeouts; inherited GDK_BACKEND=x11 on Wayland session",
+  "hardware": "i5-6300U, Intel HD 520, 8GB nominal RAM, Ubuntu 26.04.1, Flutter 3.47.7"
+}

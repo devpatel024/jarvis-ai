@@ -1,6 +1,6 @@
 # JARVIS plan
 
-Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. The current authorization is Phase 1b.2 UI polish and Developer frame diagnostics only. Stop after 1b.2; the next user next authorizes 1b.3 below, not 1c or Phase 2.
+Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: UI redesign Slice A only, replacing earlier polish. Stop for user feedback after Slice A. Voice 1b.3, 1c and Phase 2 are not authorized in this session.
 
 ## Structure and decisions
 
@@ -26,6 +26,7 @@ Execute one authorized phase per next. If a phase is too large, propose bounded 
 | 1a | Scaffold and adaptive accessible shell, dark/light tokens, English baseline and Gujarati Unicode input/rendering; stop. Native runners and executable verification require available approved SDK/toolchain. |
 | 1b | Lightweight five-state orb and explicitly labeled Mock streaming chat with cancellation/error/retry; stop. |
 | 1b.2 | UI polish; Settings > Developer performance overlay (off by default), bounded per-tier build/raster frame times; stop. |
+| Slice A | Five dark/light palettes, lightweight premium UI, in-memory chats/actions/shortcuts, three measured quality tiers, approved fonts, screenshots; stop for feedback. |
 | 1b.3 | User-requested offline voice conversation foundation described below, engine comparison and approval gates first; stop. |
 | 1c | Expanded meaningful domain/widget/integration tests, local check scripts and quota-conscious Linux checks plus Windows build workflow; stop. |
 | 2 | Tested SQLite migrations, persistent chat, secure settings, onboarding, Ollama discovery/connection/streaming/cancellation; unreachable host and context-limit recovery; explicit model download consent. |
@@ -80,6 +81,17 @@ Planning sources reviewed 2026-10-10; installed SDK/package versions verified 20
 | Native SDKs/toolchains, versions unselected | Linux, Windows, Android, Xcode build requirements | Verify exact SDK licenses; Android SDK terms; Xcode host required | Baseline local tools must be $0 eligible; downloads several GB possible, exact sizes pending; no emulator | https://docs.flutter.dev/platform-integration |
 | Signing/store publication, unselected | Optional distribution, outside baseline | Store/platform enrollment and signing terms pending | Do not assume $0; Linux bundle, unsigned Windows bundle and local Android APK installation are planned alternatives; iOS signing/local-install limits require separate verification | https://docs.flutter.dev/deployment |
 
+### Slice A approved bundled assets — 2026-10-11
+
+Explicit font approval received in this session. Font files and notices total 1,010,066 bytes (about 0.96 MiB), plus source metadata. No runtime download, new account, native tool or package dependency. Immutable source URLs/hashes in assets/fonts/SOURCES.json.
+
+| Slice A asset/version | License / distribution obligations | Required/platform/cost/download | Verified source/date |
+|---|---|---|---|
+| Space Grotesk 2.000 | SIL OFL 1.1, preserve copyright/license; font cannot be sold alone; derivative naming requirements apply | Bundled UI font W/L/A/iOS, $0; 136,676 bytes + 4,495-byte notice | Google fonts commit bd8f81ddb5c74d5c8897b36ad88b440266245103; embedded name version and OFL reviewed 2026-10-11 |
+| Noto Sans Gujarati 2.106 | SIL OFL 1.1, same notice/standalone sale/derivative obligations | Bundled Gujarati fallback W/L/A/iOS, $0; 672,904 bytes + 4,384-byte notice | Same pinned repository; embedded version and OFL reviewed 2026-10-11 |
+| JetBrains Mono 2.211 | SIL OFL 1.1, same notice/standalone sale/derivative obligations | Bundled code font W/L/A/iOS, $0; 187,208 bytes + 4,399-byte notice | Same pinned repository; embedded version and OFL reviewed 2026-10-11 |
+| Palettes, gradient glass, orb, Markdown renderer, captures/bench harness | Original app code/assets; no additional library/service | Required Slice A W/L/A/iOS source; $0; no network/native runtime dependency | Repository source; uses existing Flutter 3.47.7/Dart 3.13.5 and Riverpod 3.4.3 |
+
 ### Disabled optional paid integrations
 
 Gemini, OpenAI and Anthropic: no versions/SDKs selected, no approvals, disabled and excluded from release dependency graph. External variable charges, accounts/keys and retention terms require explicit request and fresh official verification. Never describe them as baseline free; secure UI entry only. No remote embeddings even with cloud chat.
@@ -97,23 +109,37 @@ Default CI synthetic tests only, no models or credentials. PR checks on Linux, e
 | flutter_riverpod 3.4.3 | MIT; $0 | Standing pre-approval; official https://pub.dev/packages/flutter_riverpod reviewed 2026-10-10; retain notice; installed package and existing lockfile verified 2026-10-11; no lockfile changes in this follow-up. |
 | flutter/flutter_test SDK packages, Flutter 3.47.7 | BSD-3 plus bundled notices; $0 | Standing SDK approval; existing SDK version verified 2026-10-11; no download performed, download gate still applies to future installations. |
 
-Existing llama3.2 tags observed at 1.3/2.0 GB still require explicit download approval despite model pre-approval. Gujarati font asset not selected: no assumption of bundled font coverage, no unapproved font download; Linux glyph QA completed via Phase 1b native captures; other-platform font/shaping verification remains pending. OFL fonts would need separate approval under the current policy.
+Existing llama3.2 tags observed at 1.3/2.0 GB still require explicit download approval despite model pre-approval. Historical pre-Slice A font decision: no font asset had been selected; Slice A now bundles the explicitly approved OFL fonts below; Linux glyph QA completed via Phase 1b native captures; other-platform font/shaping verification remains pending. Separate OFL approval was granted for the three Slice A fonts; other future fonts still need approval.
 
 ### Phase 1b costs and approvals — 2026-10-11
 
 No direct/development dependency, native component, model, voice or external tool was added. pubspec.yaml and pubspec.lock are unchanged from the committed 1a baseline. Existing Flutter 3.47.7/Dart 3.13.5 and Riverpod 3.4.3 (MIT), flutter_lints 6.0.0/lints 6.1.0 (BSD-3-Clause) are reused at $0. MockProvider, orb painter and benchmark harness are original application code, with no runtime service or download requirement. Native Gujarati rendering uses an already-installed system font (fc-match :lang=gu reports Noto Sans Gujarati); no font asset is bundled or redistributed. Future bundled fonts remain subject to approval, including OFL outside the standing package-license list.
 
-Next phase requires user next: 1b.3 voice engine comparison and recommendation first. Do not begin 1b.3, 1c or Phase 2 in the 1b.2 session. Optional Ollama/model integration remains Phase 2; >1 GB downloads still require explicit approval.
+The former 1b.2 next task was superseded by Slice A. After Slice A, await feedback; do not automatically begin 1b.3, 1c or Phase 2. Optional Ollama/model integration remains Phase 2; >1 GB downloads still require explicit approval.
 
 
 ### Phase 1b.2 status and costs — 2026-10-11
 
 Delivered: themed chat message surfaces and composer separation; technical timing numbers moved to Settings > Developer. Session-only showPerformanceOverlay toggle defaults off. Developer readouts separate animated/simple tiers, last 120 frames each, build/raster mean and p95 plus 16.7 ms budget misses, Refresh and Reset. Engine recording does not publish per-frame UI changes; static orb does not schedule monitoring frames. Tier attribution uses the mode at engine report time and timings cover the whole app while Chat is mounted; no isolated orb/FPS claims. No new downloads/dependencies/lockfile changes; existing Flutter 3.47.7 BSD-3 and Riverpod 3.4.3 MIT reused at $0. Flutter overlay reference: https://api.flutter.dev/flutter/material/MaterialApp/showPerformanceOverlay.html (reviewed 2026-10-11).
 
-### Next: Phase 1b.3 (not started; explicit user schedule change)
+### Queued Phase 1b.3 (not started; explicit authorization required after Slice A feedback)
 
 The user moved the initial voice foundation ahead of Phase 5. This changes the previous schedule, not dependency or privacy gates. Phase 5 retains broader platform qualification and Gujarati engine evaluation not completed in 1b.3. First research at least two STT and two TTS candidates, present a short license/model-size/RAM comparison and recommendation, obtain required engine/license approvals and explicit model download approval before downloading models. Real speed/RAM claims require execution on the reference machine; mark unavailable results honestly.
 
 Implement pure-domain SpeechToText, TextToSpeech, AudioInput, VoiceActivityDetector and VoiceSessionController (idle/listening/transcribing/thinking/speaking/error), Riverpod composition and deterministic fakes. Mic → VAD → STT → existing streamed LlmProvider → sentence-by-sentence TTS; varied English Mock greetings/small talk. Push-to-talk via held Space/mic, tap conversation with automatic relisten, silence timeout and stop/goodbye. Barge-in interrupts playback; ignore/mute mic during speech to prevent echo. Real mic-level/playback orb states, live transcript and response, visible active-mic indication, contextual permission explanation including Android RECORD_AUDIO, voice-disable switch, no audio saving by default. Pipeline remains usable by Ollama later.
 
 Native engine work off UI thread; lower orb tier during STT. Linux/Windows support and Android alternatives must be evidence-based. Gujarati voice experimental, off by default, labeled limited accuracy and tested with real samples before claims. No wake-word implementation; only capability interface and explicitly disabled entry per user request. No silent cloud. Developer metrics: STT real-time factor and latency, TTS time-to-first-audio, total round trip and per-stage RAM. Fake controller transition/barge-in/silence tests and widget voice tests; format, clean analyze, all tests and Linux release build; update HANDOFF/PLAN/Costs, commit/push, stop. Model audio samples or licenses unavailable are blockers to measurement, not permission to fabricate results.
+
+### UI redesign Slice A — authorization and decisions (2026-10-11)
+
+User request replaces earlier UI polish and pauses the previously next 1b.3. Authorized: five dark/light palettes, adaptive Chat/History/Settings with in-memory conversations, premium lightweight gradients/orb, Markdown subset, keyboard/actions, three quality tiers, Developer diagnostics, screenshots and measured reference-hardware profile timings. No voice, 1c or Phase 2 work. AGENTS conflict: disabled attach/mic buttons would be dead controls; ship informational coming-soon labels with explanations and usable paste/text alternatives. No microphone permission or audio capture.
+
+Fonts approved explicitly by user in this session: Space Grotesk, Noto Sans Gujarati and JetBrains Mono under SIL OFL 1.1. Bundle unmodified fonts and license notices; no runtime font downloads. Hashes, exact immutable source revision and asset bytes in assets/fonts/SOURCES.json. Original local Markdown renderer supports paragraphs/headings/lists, emphasis/inline code and fenced code with copy; HTML/remote images/remote URL fetch/execution are excluded, unsupported Markdown remains literal text. No new package dependency. This is a deliberate bounded subset, not CommonMark compliance.
+
+Font versions, licenses, sizes and approved sources appear in the Costs section above.
+
+Quality: automatic starts Lite after reference-machine measurements showed the higher tiers missed their budgets. Ultra uses static radial-gradient shaders (SDK gradient paints, not custom fragment programs), at most 24 particles and 45-second background drift. Balanced animates orb at at most ~29.4 Hz with static background. Lite uses static background and a 10 Hz gentle five-second breathing pulse. App/OS reduce motion stops all timers. Automatic policy samples max(build,raster) in non-overlapping 60-frame windows: two p95 misses downgrade one tier (>16.67 ms Ultra / >33.33 ms Balanced); three good windows upgrade (<18 ms Lite / <12 ms Balanced). No wall-clock FPS guarantee. Manual tier choice bypasses governor but never reduced motion. Readouts retain last 120 frames/tier without reactive frame publication; engine report-time attribution can cross transition boundaries. All measurements in Developer; only product quality indicator in top bar.
+
+All conversations/settings/scratchpad are session only. Switching/new chat cancels active streaming, retaining partial text. Rename is local; delete confirms exact chat and stops its active job. Message copy explicitly writes clipboard; regeneration replaces the latest assistant reply, edit replaces the last user/reply pair. No actual AI/tool execution, network, telemetry, persistence or audio.
+
+Slice A verification evidence: reference-machine profile and 24 native synthetic viewport screenshots are documented in PERFORMANCE and screenshots/README. Linux selects built-in Skia after observed Impeller stalls; no new native library/tool. Final forced-tier raster p95 Ultra 90.146 / Balanced 85.208 / Lite 84.876 ms, peak app RSS 223.6 MiB. 30/60fps NOT MET; Lite is the conservative start and reduced motion is fully static. These limits remain release/performance gates rather than marketing claims.

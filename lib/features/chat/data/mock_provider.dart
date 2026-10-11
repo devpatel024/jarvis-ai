@@ -17,6 +17,9 @@ class MockProvider implements LlmProvider {
       'નમસ્તે! આ માત્ર નમૂનાનો જવાબ છે, સાચી AI નથી. '
       'તમારો સંદેશ આ સત્રમાં જ રહે છે. હું ગુજરાતી લખાણ બતાવી શકું છું.';
 
+  static const codeReply =
+      '# A small spark\nThis is a **scripted** code sample, not AI.\n```dart\nvoid main() {\n  print("Hello / નમસ્તે");\n}\n```\n- Local and offline\n- No tools executed';
+
   @override
   String get label => 'MockProvider • scripted demo';
   @override
@@ -55,9 +58,13 @@ class MockProvider implements LlmProvider {
     }
     final gujarati = RegExp(r'[\u0A80-\u0AFF]').hasMatch(messages.last.text);
     // Whitespace tokens preserve combining marks and the complete sample text.
-    final tokens = RegExp(
-      r'\S+\s*',
-    ).allMatches(gujarati ? gujaratiReply : englishReply);
+    final tokens = RegExp(r'\S+\s*').allMatches(
+      gujarati
+          ? gujaratiReply
+          : messages.last.text.toLowerCase().contains('code')
+          ? codeReply
+          : englishReply,
+    );
     for (final token in tokens) {
       if (!await cancellation.wait(tokenDelay)) {
         yield const LlmFailed(

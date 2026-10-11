@@ -1,107 +1,235 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jarvis/app/jarvis_app.dart';
+import 'package:jarvis/core/design/app_theme.dart';
+import 'package:jarvis/core/design/motion_settings.dart';
+import 'package:jarvis/core/developer/performance_settings.dart';
+import 'package:jarvis/features/chat/presentation/chat_controller.dart';
+import 'package:jarvis/features/chat/presentation/chat_screen.dart';
+import 'package:jarvis/features/orb/domain/orb_state.dart';
+import 'package:jarvis/features/orb/presentation/core_orb.dart';
 
-Future<void> mountShell(WidgetTester tester, Size size) async {
-  tester.view.devicePixelRatio = 1;
+Future<ProviderContainer> launch(
+  WidgetTester tester, {
+  Size size = const Size(1200, 1000),
+  bool reduced = true,
+}) async {
   tester.view.physicalSize = size;
-  addTearDown(tester.view.resetDevicePixelRatio);
+  tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
-  await tester.pumpWidget(const ProviderScope(child: JarvisApp()));
+  addTearDown(tester.view.resetDevicePixelRatio);
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+  container.read(reduceMotionProvider.notifier).setReduced(reduced);
+  await tester.pumpWidget(
+    UncontrolledProviderScope(container: container, child: const JarvisApp()),
+  );
+  await tester.pumpAndSettle();
+  return container;
+}
+
+Future<void> destination(WidgetTester tester, String text) async {
+  await tester.tap(find.text(text).first);
   await tester.pumpAndSettle();
 }
 
+Future<void> reveal(WidgetTester tester, Finder finder) async {
+  await tester.scrollUntilVisible(
+    finder,
+    250,
+    scrollable: find.byType(Scrollable).last,
+  );
+  await tester.pumpAndSettle();
+}
+
+Future<void> completeReply(WidgetTester tester) async {
+  for (var i = 0; i < 70; i++) {
+    await tester.pump(const Duration(milliseconds: 100));
+  }
+}
+
 void main() {
-  for (final size in [const Size(390, 900), const Size(1100, 900)]) {
-    testWidgets('Home and Settings navigation at ${size.width}px', (
-      tester,
-    ) async {
-      await mountShell(tester, size);
-      expect(find.text('No AI provider connected'), findsOneWidget);
-      expect(
-        find.byType(NavigationRail),
-        size.width >= 760 ? findsOneWidget : findsNothing,
-      );
-      expect(
-        find.byType(NavigationBar),
-        size.width < 760 ? findsOneWidget : findsNothing,
-      );
-      await tester.tap(find.text('Settings'));
-      await tester.pumpAndSettle();
+  for (final width in [390.0, 850.0, 1200.0]) {
+    testWidgets('Chat History Settings navigation at $width', (tester) async {
+      await launch(tester, size: Size(width, 1000));
+      expect(find.text('Hello / નમસ્તે'), findsOneWidget);
+      await destination(tester, 'History');
+      expect(find.text('Your conversations'), findsOneWidget);
+      await destination(tester, 'Settings');
       expect(find.text('Appearance'), findsOneWidget);
-      expect(find.byType(TextField), findsNothing);
-      await tester.tap(find.text('Home'));
-      await tester.pumpAndSettle();
-      expect(find.byType(TextField), findsOneWidget);
-      expect(find.text('Appearance'), findsNothing);
+      await destination(tester, 'Chat');
+      expect(find.byKey(const ValueKey('composer')), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }
-
-  testWidgets('Theme menu applies dark, light and system modes', (
+  testWidgets('All palettes instantly apply dark and light variants', (
     tester,
   ) async {
-    await mountShell(tester, const Size(1100, 900));
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.light;
-    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
-    await tester.tap(find.text('Settings'));
-    await tester.pumpAndSettle();
-    for (final entry in [
-      ('Dark', ThemeMode.dark, Brightness.dark),
-      ('Light', ThemeMode.light, Brightness.light),
-      ('Follow system', ThemeMode.system, Brightness.light),
-    ]) {
-      await tester.tap(find.byType(DropdownButtonFormField<ThemeMode>));
+    final container = await launch(tester);
+    await destination(tester, 'Settings');
+    for (final p in AppPalette.values) {
+      await tester.tap(find.byTooltip(p.label));
       await tester.pumpAndSettle();
-      await tester.tap(find.text(entry.$1).last);
+      expect(container.read(paletteProvider), p);
+      final dropdown = find.byType(DropdownButtonFormField<ThemeMode>);
+      await tester.tap(dropdown);
       await tester.pumpAndSettle();
-      expect(
-        tester.widget<MaterialApp>(find.byType(MaterialApp)).themeMode,
-        entry.$2,
-      );
+      await tester.tap(find.text('Light').last);
+      await tester.pumpAndSettle();
       expect(
         Theme.of(tester.element(find.text('Appearance'))).brightness,
-        entry.$3,
+        Brightness.light,
+      );
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Dark').last);
+      await tester.pumpAndSettle();
+      expect(
+        Theme.of(tester.element(find.text('Appearance'))).brightness,
+        Brightness.dark,
       );
     }
-    tester.platformDispatcher.platformBrightnessTestValue = Brightness.dark;
-    await tester.pumpAndSettle();
-    expect(
-      Theme.of(tester.element(find.text('Appearance'))).brightness,
-      Brightness.dark,
-    );
     expect(tester.takeException(), isNull);
   });
-
-  testWidgets('Unicode scratchpad survives navigation and clears', (
+  testWidgets('Gujarati scratchpad survives navigation and clears', (
     tester,
   ) async {
-    await mountShell(tester, const Size(1100, 900));
-    const text = 'Hello JARVIS! નમસ્તે, આજે મારું કાર્ય પૂર્ણ કરવું છે. 📝';
-    await tester.enterText(find.byType(TextField), text);
-    await tester.pump();
-    expect(
-      tester.widget<TextField>(find.byType(TextField)).controller!.text,
-      text,
-    );
-    expect(find.text(text), findsOneWidget);
-    await tester.tap(find.text('Settings'));
+    await launch(tester);
+    await destination(tester, 'History');
+    await tester.tap(find.text('Unicode scratchpad'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Home'));
+    await tester.enterText(find.byType(TextField), 'નમસ્તે! ગુજરાતી 🪷');
+    await destination(tester, 'Settings');
+    await destination(tester, 'History');
+    await tester.tap(find.text('Unicode scratchpad'));
     await tester.pumpAndSettle();
     expect(
       tester.widget<TextField>(find.byType(TextField)).controller!.text,
-      text,
+      'નમસ્તે! ગુજરાતી 🪷',
     );
-    await tester.ensureVisible(find.text('Clear scratchpad'));
     await tester.tap(find.text('Clear scratchpad'));
-    await tester.pumpAndSettle();
+    await tester.pump();
     expect(
       tester.widget<TextField>(find.byType(TextField)).controller!.text,
       isEmpty,
     );
-    expect(find.text(text), findsNothing);
+  });
+  testWidgets(
+    'Keyboard commands new chat, command palette and send/newline/stop',
+    (tester) async {
+      final container = await launch(tester);
+      await tester.tap(find.byKey(const ValueKey('composer')));
+      await tester.enterText(find.byKey(const ValueKey('composer')), 'Hello');
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.shiftLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.shiftLeft);
+      expect(container.read(chatProvider).entries, isEmpty);
+      await tester.enterText(find.byKey(const ValueKey('composer')), 'Hello');
+      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.pump();
+      expect(container.read(chatProvider).busy, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+      await tester.pump();
+      expect(container.read(chatProvider).busy, isFalse);
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyN);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+      await tester.pumpAndSettle();
+      expect(container.read(chatProvider).sessions, hasLength(2));
+      await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+      await tester.sendKeyEvent(LogicalKeyboardKey.keyK);
+      await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+      await tester.pumpAndSettle();
+      expect(find.text('Commands'), findsOneWidget);
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Find a command'),
+        'History',
+      );
+      await tester.pump();
+      await tester.tap(find.text('Open History'));
+      await tester.pumpAndSettle();
+      expect(find.text('Your conversations'), findsOneWidget);
+    },
+  );
+  testWidgets('History rename and confirmed deletion', (tester) async {
+    final container = await launch(tester, size: const Size(390, 1000));
+    await destination(tester, 'History');
+    await tester.tap(find.byTooltip('Conversation actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Rename'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'ગુજરાતી chat');
+    await tester.tap(find.text('Rename').last);
+    await tester.pumpAndSettle();
+    expect(container.read(chatProvider).sessions.single.title, 'ગુજરાતી chat');
+    await tester.tap(find.byTooltip('Conversation actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(container.read(chatProvider).sessions.single.title, 'ગુજરાતી chat');
+    await tester.tap(find.byTooltip('Conversation actions'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete').last);
+    await tester.pumpAndSettle();
+    expect(
+      container.read(chatProvider).sessions.single.title,
+      'New conversation',
+    );
+  });
+  testWidgets('Phone large text settings and developer panel remain usable', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await launch(tester, size: const Size(390, 1000));
+    await destination(tester, 'Settings');
+    await reveal(tester, find.text('Developer'));
+    await tester.tap(find.text('Developer'));
+    await tester.pumpAndSettle();
+    await reveal(tester, find.text('Lite tier'));
     expect(tester.takeException(), isNull);
+  });
+  testWidgets('App and OS reduced motion override manual Ultra', (
+    tester,
+  ) async {
+    final container = await launch(tester);
+    container.read(qualityProvider.notifier).select(OrbTier.ultra);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<ChatScreen>(find.byType(ChatScreen)).tier,
+      OrbTier.lite,
+    );
+    container.read(reduceMotionProvider.notifier).setReduced(false);
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+    await tester.pumpAndSettle();
+    expect(
+      tester.widget<CoreOrb>(find.byType(CoreOrb).first).reduceMotion,
+      isTrue,
+    );
+  });
+  testWidgets('Five visual orb previews remain in Developer settings', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final container = await launch(tester);
+    for (final state in OrbState.values) {
+      container.read(orbPreviewProvider.notifier).select(state);
+      await tester.pumpAndSettle();
+      expect(tester.widget<CoreOrb>(find.byType(CoreOrb).first).state, state);
+      expect(
+        tester.getSemantics(find.byType(CoreOrb).first).label,
+        'Core orb: ${state.name}',
+      );
+    }
+    semantics.dispose();
+    expect(find.text('Demo controls'), findsNothing);
   });
 }

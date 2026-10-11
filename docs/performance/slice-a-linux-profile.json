@@ -1,0 +1,87 @@
+{
+  "mode": "profile",
+  "duration_s": 48.284,
+  "per_tier_window_s": 12,
+  "warmup_per_tier_s": 4,
+  "overlay": false,
+  "peak_app_rss_bytes": 234487808,
+  "physical_viewport": {
+    "width": 3072.0,
+    "height": 1436.0
+  },
+  "device_pixel_ratio": 2.0,
+  "viewport": "native runner default",
+  "tiers": {
+    "Ultra": {
+      "build": {
+        "count": 121,
+        "mean_ms": 13.016,
+        "p95_ms": 33.307,
+        "max_ms": 49.341
+      },
+      "raster": {
+        "count": 121,
+        "mean_ms": 57.6863305785124,
+        "p95_ms": 90.146,
+        "max_ms": 141.126
+      },
+      "total_span": {
+        "count": 121,
+        "mean_ms": 110.51880165289256,
+        "p95_ms": 168.656,
+        "max_ms": 214.869
+      }
+    },
+    "Balanced": {
+      "build": {
+        "count": 127,
+        "mean_ms": 11.425551181102362,
+        "p95_ms": 32.484,
+        "max_ms": 45.02
+      },
+      "raster": {
+        "count": 127,
+        "mean_ms": 54.36163779527559,
+        "p95_ms": 85.208,
+        "max_ms": 123.046
+      },
+      "total_span": {
+        "count": 127,
+        "mean_ms": 103.31070078740157,
+        "p95_ms": 166.569,
+        "max_ms": 206.546
+      }
+    },
+    "Lite": {
+      "build": {
+        "count": 121,
+        "mean_ms": 12.855768595041322,
+        "p95_ms": 33.016,
+        "max_ms": 50.355
+      },
+      "raster": {
+        "count": 121,
+        "mean_ms": 43.72433884297521,
+        "p95_ms": 84.876,
+        "max_ms": 160.645
+      },
+      "total_span": {
+        "count": 121,
+        "mean_ms": 83.55663636363637,
+        "p95_ms": 145.325,
+        "max_ms": 175.532
+      }
+    }
+  },
+  "note": "Whole app, forced tiers, live scripted streams; desktop load uncontrolled. Timer animation caps are not FPS certification.",
+  "renderer": "Skia OpenGL, Linux native runner default (no CLI override)",
+  "hardware": {
+    "os": "Ubuntu 26.04.1 LTS",
+    "kernel": "7.0.0-38-generic",
+    "cpu": "Intel i5-6300U, 2 cores/4 threads",
+    "gpu": "Intel HD 520 i915",
+    "ram": "8GB nominal, 7.1GiB OS-visible",
+    "sdk": "Flutter 3.47.7 / Dart 3.13.5"
+  },
+  "conditions": "Existing desktop load uncontrolled; inherited GDK_BACKEND=x11 on Wayland session. One startup GTK OpenGL resize timeout. Tests/captures were not running during timed workload. Default-size window was resized by desktop to 3072x1436 physical at 2.0 DPR; timings are whole app."
+}

@@ -14,6 +14,16 @@ final themeProvider = NotifierProvider<ThemeController, ThemeMode>(
   ThemeController.new,
 );
 
+class PaletteController extends Notifier<AppPalette> {
+  @override
+  AppPalette build() => AppPalette.aurora;
+  void select(AppPalette palette) => state = palette;
+}
+
+final paletteProvider = NotifierProvider<PaletteController, AppPalette>(
+  PaletteController.new,
+);
+
 class JarvisApp extends ConsumerWidget {
   const JarvisApp({super.key});
   @override
@@ -21,8 +31,8 @@ class JarvisApp extends ConsumerWidget {
     title: 'JARVIS',
     debugShowCheckedModeBanner: false,
     showPerformanceOverlay: ref.watch(performanceOverlayProvider),
-    theme: AppTheme.build(Brightness.light),
-    darkTheme: AppTheme.build(Brightness.dark),
+    theme: AppTheme.build(Brightness.light, ref.watch(paletteProvider)),
+    darkTheme: AppTheme.build(Brightness.dark, ref.watch(paletteProvider)),
     themeMode: ref.watch(themeProvider),
     home: const AssistantShell(),
   );

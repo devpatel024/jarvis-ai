@@ -6,10 +6,17 @@ import '../domain/llm_provider.dart';
 enum ChatPhase { idle, thinking, streaming, error }
 
 class ChatEntry {
-  const ChatEntry(this.role, this.text, {this.stopped = false});
+  ChatEntry(this.role, this.text, {this.stopped = false, DateTime? timestamp})
+    : timestamp = timestamp ?? DateTime.now();
   final MessageRole role;
   final String text;
   final bool stopped;
+  final DateTime timestamp;
+}
+
+class ChatSummary {
+  const ChatSummary(this.id, this.title);
+  final String id, title;
 }
 
 class ChatState {
@@ -17,10 +24,14 @@ class ChatState {
     this.entries = const [],
     this.phase = ChatPhase.idle,
     this.failure,
+    this.activeId = '1',
+    this.sessions = const [ChatSummary('1', 'New conversation')],
   });
   final List<ChatEntry> entries;
   final ChatPhase phase;
   final LlmFailure? failure;
+  final String activeId;
+  final List<ChatSummary> sessions;
   bool get busy => phase == ChatPhase.thinking || phase == ChatPhase.streaming;
 }
 
@@ -31,9 +42,10 @@ final chatProvider = NotifierProvider<ChatController, ChatState>(
 
 class ChatController extends Notifier<ChatState> {
   CancellationToken? _token;
-  int _generation = 0;
-  String? _lastPrompt;
-
+  int _generation = 0, _nextId = 1;
+  String _id = '1';
+  final _chats = <String, ChatState>{'1': const ChatState()};
+  final _titles = <String, String>{'1': 'New conversation'};
   @override
   ChatState build() {
     ref.onDispose(() {
@@ -43,15 +55,94 @@ class ChatController extends Notifier<ChatState> {
     return const ChatState();
   }
 
+  void _emit(ChatState value) {
+    _chats[_id] = value;
+    state = ChatState(
+      entries: value.entries,
+      phase: value.phase,
+      failure: value.failure,
+      activeId: _id,
+      sessions:
+          state.sessions.length == _titles.length &&
+              state.sessions.every((s) => _titles[s.id] == s.title)
+          ? state.sessions
+          : List.unmodifiable(
+              _titles.entries.map((e) => ChatSummary(e.key, e.value)),
+            ),
+    );
+  }
+
+  void newChat() {
+    stop();
+    _id = '${++_nextId}';
+    _titles[_id] = 'New conversation';
+    _emit(const ChatState());
+  }
+
+  void selectChat(String id) {
+    if (id == _id || !_chats.containsKey(id)) return;
+    stop();
+    _id = id;
+    _emit(_chats[id]!);
+  }
+
+  void renameChat(String id, String title) {
+    if (!_titles.containsKey(id) || title.trim().isEmpty) return;
+    // UI bounds graphemes; retain complete Gujarati clusters without rune slicing.
+    _titles[id] = title.trim();
+    _emit(state);
+  }
+
+  /// Caller confirms the exact chat before deletion; active streaming is stopped.
+  void deleteChat(String id) {
+    if (!_titles.containsKey(id)) return;
+    if (id == _id) stop();
+    _titles.remove(id);
+    _chats.remove(id);
+    if (_titles.isEmpty) {
+      _id = '${++_nextId}';
+      _titles[_id] = 'New conversation';
+      _emit(const ChatState());
+    } else {
+      if (id == _id) _id = _titles.keys.last;
+      _emit(_chats[_id]!);
+    }
+  }
+
   Future<void> send(String prompt, {bool simulateFailure = false}) async {
     if (state.busy || prompt.trim().isEmpty) return;
-    _lastPrompt = prompt.trim();
-    await _run(_lastPrompt!, retry: false, simulateFailure: simulateFailure);
+    if (state.entries.isEmpty && _titles[_id] == 'New conversation') {
+      final text = prompt.trim();
+      _titles[_id] = text.length > 36
+          ? '${String.fromCharCodes(text.runes.take(36))}…'
+          : text;
+    }
+    await _run(prompt.trim(), retry: false, simulateFailure: simulateFailure);
   }
 
   Future<void> retry() async {
-    if (state.busy || _lastPrompt == null || state.failure == null) return;
-    await _run(_lastPrompt!, retry: true);
+    if (state.failure != null) await regenerate();
+  }
+
+  Future<void> regenerate() async {
+    if (state.busy ||
+        state.entries.isEmpty ||
+        state.entries.last.role != MessageRole.assistant) {
+      return;
+    }
+    final users = state.entries.where((e) => e.role == MessageRole.user);
+    if (users.isEmpty) return;
+    await _run(users.last.text, retry: true);
+  }
+
+  Future<void> editLast(String prompt) async {
+    if (state.busy || prompt.trim().isEmpty) return;
+    final index = state.entries.lastIndexWhere(
+      (e) => e.role == MessageRole.user,
+    );
+    if (index < 0) return;
+    _emit(ChatState(entries: List.unmodifiable(state.entries.take(index))));
+    await send(prompt);
   }
 
   Future<void> _run(
@@ -71,10 +162,9 @@ class ChatController extends Notifier<ChatState> {
       entries.add(ChatEntry(MessageRole.user, prompt));
     }
     final request = entries.map((e) => LlmMessage(e.role, e.text)).toList();
-    entries.add(const ChatEntry(MessageRole.assistant, ''));
-    state = ChatState(
-      entries: List.unmodifiable(entries),
-      phase: ChatPhase.thinking,
+    entries.add(ChatEntry(MessageRole.assistant, ''));
+    _emit(
+      ChatState(entries: List.unmodifiable(entries), phase: ChatPhase.thinking),
     );
     final provider = simulateFailure
         ? const MockProvider(simulateFailure: true)
@@ -88,19 +178,29 @@ class ChatController extends Notifier<ChatState> {
         switch (event) {
           case TextDelta(:final text):
             final previous = entries.removeLast();
-            entries.add(ChatEntry(MessageRole.assistant, previous.text + text));
-            state = ChatState(
-              entries: List.unmodifiable(entries),
-              phase: ChatPhase.streaming,
+            entries.add(
+              ChatEntry(
+                MessageRole.assistant,
+                previous.text + text,
+                timestamp: previous.timestamp,
+              ),
+            );
+            _emit(
+              ChatState(
+                entries: List.unmodifiable(entries),
+                phase: ChatPhase.streaming,
+              ),
             );
           case LlmCompleted():
-            state = ChatState(entries: List.unmodifiable(entries));
+            _emit(ChatState(entries: List.unmodifiable(entries)));
             return;
           case LlmFailed(:final failure):
-            state = ChatState(
-              entries: List.unmodifiable(entries),
-              phase: ChatPhase.error,
-              failure: failure,
+            _emit(
+              ChatState(
+                entries: List.unmodifiable(entries),
+                phase: ChatPhase.error,
+                failure: failure,
+              ),
             );
             return;
         }
@@ -136,19 +236,18 @@ class ChatController extends Notifier<ChatState> {
     }
   }
 
-  void _fail(LlmFailure failure) => state = ChatState(
-    entries: state.entries,
-    phase: ChatPhase.error,
-    failure: failure,
+  void _fail(LlmFailure failure) => _emit(
+    ChatState(entries: state.entries, phase: ChatPhase.error, failure: failure),
   );
-
   void stop() {
     if (!state.busy) return;
     _generation++;
     _token?.cancel();
     final entries = [...state.entries];
     final last = entries.removeLast();
-    entries.add(ChatEntry(last.role, last.text, stopped: true));
-    state = ChatState(entries: List.unmodifiable(entries));
+    entries.add(
+      ChatEntry(last.role, last.text, stopped: true, timestamp: last.timestamp),
+    );
+    _emit(ChatState(entries: List.unmodifiable(entries)));
   }
 }

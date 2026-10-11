@@ -1,0 +1,3 @@
+# Preserve upstream OFL notices and their recorded hashes across platforms.
+# These vendored files contain upstream CRLF/trailing spaces; app code does not.
+assets/fonts/*-OFL.txt -text whitespace=-trailing-space
