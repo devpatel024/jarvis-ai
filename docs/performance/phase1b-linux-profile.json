@@ -1,0 +1,27 @@
+{
+  "mode": "profile",
+  "duration_s": 20,
+  "warmup_s": 2,
+  "build": {
+    "count": 93,
+    "mean_ms": 6.265720430107527,
+    "p95_ms": 20.303,
+    "max_ms": 25.379,
+    "over_16_67_ms": 8
+  },
+  "raster": {
+    "count": 93,
+    "mean_ms": 29.054903225806452,
+    "p95_ms": 68.411,
+    "max_ms": 124.128,
+    "over_16_67_ms": 68
+  },
+  "total_span": {
+    "count": 93,
+    "mean_ms": 56.33948387096774,
+    "p95_ms": 112.545,
+    "max_ms": 166.786,
+    "over_16_67_ms": 93
+  },
+  "note": "Actual demo chat; system/compositor load affects results. No 60fps guarantee."
+}

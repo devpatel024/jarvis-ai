@@ -5,7 +5,7 @@ import '../features/shell/presentation/assistant_shell.dart';
 
 class ThemeController extends Notifier<ThemeMode> {
   @override
-  ThemeMode build() => ThemeMode.system;
+  ThemeMode build() => ThemeMode.dark;
   void select(ThemeMode mode) => state = mode;
 }
 

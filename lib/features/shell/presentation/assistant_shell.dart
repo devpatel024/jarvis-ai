@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../app/jarvis_app.dart';
 import '../../../core/design/app_theme.dart';
+import '../../../core/design/motion_settings.dart';
+import '../../chat/presentation/chat_screen.dart';
 
 class AssistantShell extends ConsumerStatefulWidget {
   const AssistantShell({super.key});
@@ -43,16 +45,22 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
                       icon: Icon(Icons.settings_outlined),
                       label: Text('Settings'),
                     ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.chat_bubble_outline),
+                      label: Text('Chat'),
+                    ),
                   ],
                 ),
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 960),
-                    child: ListView(
-                      padding: const EdgeInsets.all(AppTheme.spacing),
-                      children: content,
-                    ),
+                    child: _page == 2
+                        ? const ChatScreen()
+                        : ListView(
+                            padding: const EdgeInsets.all(AppTheme.spacing),
+                            children: content,
+                          ),
                   ),
                 ),
               ),
@@ -72,6 +80,10 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
                   NavigationDestination(
                     icon: Icon(Icons.settings_outlined),
                     label: 'Settings',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.chat_bubble_outline),
+                    label: 'Chat',
                   ),
                 ],
               ),
@@ -94,7 +106,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
             Text('No AI provider connected'),
             SizedBox(height: 8),
             Text(
-              'This shell runs locally. Chat arrives in Phase 1b; Ollama setup arrives in Phase 2.',
+              'This shell runs locally. Open Chat for the labeled demo. Ollama setup arrives in Phase 2.',
             ),
             SizedBox(height: 8),
             Text('Microphone off • No requests sent'),
@@ -144,8 +156,16 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       },
     ),
     const SizedBox(height: 24),
+    SwitchListTile(
+      title: const Text('Reduce motion'),
+      subtitle: const Text(
+        'Also respects the OS animation accessibility setting.',
+      ),
+      value: ref.watch(reduceMotionProvider),
+      onChanged: ref.read(reduceMotionProvider.notifier).setReduced,
+    ),
     const Text(
-      'Privacy: this shell stores no data and makes no network requests. Theme and scratchpad reset when the app closes.',
+      'Privacy: this shell stores no data and makes no network requests. Appearance settings and scratchpad reset when the app closes.',
     ),
     const SizedBox(height: 16),
     const Text(
