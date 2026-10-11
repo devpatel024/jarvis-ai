@@ -1,6 +1,6 @@
 # JARVIS plan
 
-Phase 0 planning record — 2026-10-10. No implementation or dependency installation authorized in this phase. Planning documents complete; required planning commit blocked by an unusable read-only .git directory and absent Git identity. No dependencies approved.
+Phase 0 planning record — 2026-10-10. No implementation or dependency installation authorized in this phase. Planning documents complete; required planning commit blocked by an unusable read-only .git directory and absent Git identity. Superseded by standing pre-approvals below. User reports Phase 0 committed; Git metadata is still unavailable in this execution workspace.
 
 ## Structure and decisions
 
@@ -23,7 +23,9 @@ Execute one authorized phase per next. If a phase is too large, propose bounded 
 | Phase | Deliverable and acceptance gate |
 |---|---|
 | 0 | Supplied AGENTS, plan, costs, capabilities, risks, handoff; focused planning commit if Git available; stop. |
-| 1 | Approved scaffold, adaptive accessible shell, tokens, lightweight five-state orb, explicitly labeled Mock streaming chat with cancel/error/retry; meaningful domain/widget tests; local checks and quota-conscious Linux checks plus Windows build workflow. |
+| 1a | Scaffold and adaptive accessible shell, dark/light tokens, English baseline and Gujarati Unicode input/rendering; stop. Native runners and executable verification require available approved SDK/toolchain. |
+| 1b | Lightweight five-state orb and explicitly labeled Mock streaming chat with cancellation/error/retry; stop. |
+| 1c | Expanded meaningful domain/widget/integration tests, local check scripts and quota-conscious Linux checks plus Windows build workflow; stop. |
 | 2 | Tested SQLite migrations, persistent chat, secure settings, onboarding, Ollama discovery/connection/streaming/cancellation; unreachable host and context-limit recovery; explicit model download consent. |
 | 3 | Persistent tasks/notes/calendar/focus/habits; CRUD/search/domain rules work without AI or internet. |
 | 4 | Local reminders, recurrence, quiet hours and briefings; restart/timezone/DST reconciliation and denied-permission fallback tested. |
@@ -41,7 +43,11 @@ All implementation gates: format, flutter analyze, flutter test, relevant integr
 
 ## Dependency approvals
 
-Approved: none. Installed by this phase: none. Before phase 1, prepare one exact-version batch covering Flutter/Dart SDK, flutter/flutter_test/integration_test SDK packages, flutter_riverpod, chosen lint package if any, scaffold/build tools and native prerequisites. Avoid automatic flutter create/pub get until approvals. Later batches include Drift/native SQLite/generation tools, secure storage, speech/voices, embeddings/vision, plugins and CI action revisions. Verify archives, compatibility, exact licenses, download sizes and transitive graph before requesting approval. Unknown fields block approval, not just integration. Record approval text/date/version and lockfile diff in LICENSES.md. Do not ask for unchanged approvals again.
+Standing approval from user (2026-10-10): Flutter/Dart SDK, pub.dev packages verified MIT/BSD/Apache-2.0, Ollama and llama3.2:1b/3b. Always ask before GPL/LGPL/AGPL/noncommercial, unknown/paid terms, account/API key, single download >1 GB, or new sudo-requiring native/system tool. Exceptions override standing approval. No splitting downloads to evade limit. Record exact versions/licenses/source/date and review transitives/lockfiles before addition. No unchanged approval re-requests.
+
+English is the baseline including voice. Gujarati text is required from Phase 1: font coverage, Unicode input/rendering and lossless note/task storage when Phase 3 ships; UI localization later. No Gujarati voice claim before real reference-hardware audio tests. Phase 5 compares licensed Whisper sizes, Vosk Gujarati if available, Piper/espeak-ng/OS voices, reports accuracy/latency and labels unsatisfactory voice experimental. Phase 2 compares 1b/3b with one or two small local alternatives on matched English/Gujarati prompts before final defaults. No silent cloud fallback; any optional cloud setting off by default with explicit consent.
+
+Current 1a status: source scaffold/shell prepared, execution unverified. SDK absent; official release metadata request failed. No SDK/native/model download or system installation performed. Native runners cannot yet be generated. Do not mark 1a complete or advance to 1b until runners/checks are resolved.
 
 ## Costs
 
@@ -53,7 +59,7 @@ Official sources reviewed 2026-10-10. Candidate versions are discovery snapshots
 | flutter_riverpod 3.4.3 | Required proposed state/composition; W/L/A/iOS | MIT; retain copyright/license | $0; package and transitives sizes pending | https://pub.dev/packages/flutter_riverpod |
 | drift 2.35.2 | Required proposed persistence; W/L/A/iOS | MIT; retain notices; SQLite native dependency review separate | $0; generators/native runtime unselected | https://pub.dev/packages/drift |
 | flutter_secure_storage 11.2.0 | Required proposed secure settings; W/L/A/iOS | BSD-3; retain notices; federated packages separate audit | $0; Android API 23+ per docs; Linux keyring/native prerequisites pending | https://pub.dev/packages/flutter_secure_storage |
-| SDK scaffold/test/lint, generators and transitive packages: unselected | Required only when introduced | Every resolved artifact/license pending; no blanket approval | $0 baseline requirement; sizes pending lockfile; no downloads now | package manifests/lockfile audit required |
+| SDK scaffold/test/lint, generators and transitive packages: unselected | Required only when introduced | Every resolved artifact/license pending; standing permissive-package approval; exception gates apply | $0 baseline requirement; sizes pending lockfile; no downloads now | package manifests/lockfile audit required |
 | SQLite/native vector extension: unselected | Required SQLite; vector extension optional | Verify exact native source/license; exact-search Dart fallback avoids extension | $0 baseline requirement; bounded exact cosine search over SQLite vectors planned | https://drift.simonbinder.eu/ |
 | Ollama, version unselected | Required real desktop brain, mobile via LAN | MIT engine; models have independent terms; retain engine notice | $0 local; CPU RAM/disk/download needs; no account; cloud capabilities excluded | https://github.com/ollama/ollama/blob/main/LICENSE ; https://docs.ollama.com/faq |
 | llama3.2:1b / :3b, full digest pin pending | User-selected fast/quality CPU text defaults | Llama community terms, not MIT; exact model license/AUP/attribution and redistribution review required | $0 eligible local use subject to terms; Observed tags: 1b Q8_0, 1.3 GB, short digest baf6a787fdff; 3b Q4_K_M, 2.0 GB, short digest a80c4f17acd5; full manifests and peak RAM still need verification | https://ollama.com/library/llama3.2:1b ; https://ollama.com/library/llama3.2:3b |
@@ -78,3 +84,12 @@ Gemini, OpenAI and Anthropic: no versions/SDKs selected, no approvals, disabled 
 Proposed acceptance budgets, to validate rather than claim: UI input/state feedback under 100 ms; measure p50/p95 time-to-first-token and tokens/sec for 1b/3b, peak RSS and host available RAM; no swap thrashing or OOM in one-model workload. Target 60fps on reference hardware, simplify orb after sustained frame budget misses, document measured fallback performance. Initial disk budget allocation requires checking free space before downloads. Performance gate remains open until benchmark evidence exists.
 
 Default CI synthetic tests only, no models or credentials. PR checks on Linux, explicit/manual Windows build and controlled release triggers; concurrency cancellation, one-day artifact retention, bounded cache, no paid runners or automatic macOS jobs. Every workflow has local command equivalents; Windows locally requires a Windows host. Halt hosted jobs when available free quota is insufficient.
+
+### Phase 1a selected source dependencies
+
+| Component/version | License/cost | Approval/status/obligations |
+|---|---|---|
+| flutter_riverpod 3.4.3 | MIT; $0 | Standing pre-approval; official https://pub.dev/packages/flutter_riverpod reviewed 2026-10-10; retain notice; manifest pin only, no download/lockfile yet; transitives unresolved. |
+| flutter/flutter_test SDK packages, version pending SDK | BSD-3 plus bundled notices; $0 | Standing SDK approval; exact SDK archive/version/size unresolved, download gate applies; not installed. |
+
+Existing llama3.2 tags observed at 1.3/2.0 GB still require explicit download approval despite model pre-approval. Gujarati font asset not selected: no assumption of bundled font coverage, no unapproved font download; actual shaping/glyph QA is a 1a completion gate. OFL fonts would need separate approval under the current policy.

@@ -26,12 +26,9 @@ Build JARVIS: a useful, voice-first, local-first Flutter assistant for Windows, 
 - Unsupported capabilities require clear explanations and usable alternatives.
 
 ## Dependency approval and Costs
-Before adding a direct package, development dependency, native library, model, voice, or build tool:
-1. Check current official documentation and platform support.
-2. State version, purpose, license, personal-use eligibility, cost, redistribution obligations, and alternatives.
-3. Request approval, preferably as a batch.
-4. Record approval; do not re-request unchanged approvals.
-5. Review transitive dependency licenses and lockfile changes.
+Pre-approved without asking: Flutter/Dart SDK; pub.dev packages verified MIT, BSD or Apache-2.0 licensed; Ollama and llama3.2:1b/3b. Record exact versions, licenses and costs; review transitive/native licenses and lockfile changes.
+
+Always ask first for GPL/LGPL/AGPL or noncommercial components, unknown or paid terms, any account/API key, any single download over 1 GB, and new native/system tools needing sudo. These exceptions override pre-approval, including SDK/model downloads. Never split a download to evade the limit. Check current official documentation, platform support, download size, eligibility, redistribution obligations and alternatives before addition. Record approvals; do not re-request unchanged approvals.
 
 Maintain a `Costs` section in `docs/PLAN.md` covering all dependencies, assets, services, and tooling:
 - Version and verified source/date.
@@ -125,3 +122,10 @@ Preserve unrelated user changes. Never invent git identity, push, or publish aut
 ## Continuity
 HANDOFF records phase status, decisions, approved dependencies, checks/results, blockers, manual actions, and the exact next task.
 Make routine decisions independently. Ask only for required approvals or consequential missing information.
+
+## Subphases and languages
+- Phase 1a: scaffold and adaptive shell only; 1b: orb and labeled Mock chat; 1c: tests and Windows CI. Stop after each authorized subphase. Required verification still applies to 1a/1b; broader test coverage is 1c.
+- English is the baseline for all features including voice. Gujarati text input, Unicode rendering and lossless storage must be supported from Phase 1; note/task persistence arrives with those features in Phase 3. Gujarati UI language option comes later.
+- Phase 2 compares llama3.2:1b/3b and one or two small Ollama alternatives with short English/Gujarati prompts before selecting final defaults; all download/license gates apply.
+- Phase 5 evaluates Gujarati STT/TTS candidates (Whisper sizes, Vosk Gujarati if available, Piper/espeak-ng/OS voices) using real sample audio on reference hardware. Check engine/model/voice licenses first; report accuracy and latency. Gujarati voice is unverified until measured, and remains explicitly experimental if quality/speed is unacceptable.
+- No silent Gujarati cloud routing. Optional fallback is off by default and requires explicit consent.

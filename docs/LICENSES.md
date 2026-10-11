@@ -1,7 +1,5 @@
 # Dependency and license approvals
 
-No dependencies/assets/tools approved or added. PLAN Costs is the candidate inventory, not a redistribution clearance.
+2026-10-10 standing user approval: Flutter/Dart SDK; pub.dev packages verified MIT/BSD/Apache-2.0; Ollama with llama3.2:1b/3b. Always ask for GPL/LGPL/AGPL/noncommercial, unknown/paid terms, account/key, single download over 1 GB or new sudo-requiring native/system tool. These gates override pre-approval.
 
-Each approval record must include exact version/digest, role, upstream URL and verification date, license text, personal-use eligibility/cost, distribution obligations, platform support, download size, runtime needs, alternatives and user approval evidence. Before adding, resolve and audit transitive/native artifacts, SDK bundled notices and lockfile delta. Unknown licensing or costs block addition. Preserve notices in eventual packages and include corresponding source where required.
-
-Phase 1 candidate batch is not yet ready: Flutter/Dart archive, native Linux/Android/Windows tooling, SDK test packages and CI action revisions still need exact pins and sizes. Riverpod 3.4.3 discovered MIT; Drift 2.35.2 MIT and secure storage 11.2.0 BSD-3 are later candidates. Piper GPL engine and independently licensed voices require explicit distribution decision; openWakeWord bundled noncommercial share-alike models cannot be treated like its Apache code.
+Manifest selected: flutter_riverpod 3.4.3 MIT, verified https://pub.dev/packages/flutter_riverpod ; Flutter/flutter_test SDK packages exact SDK version pending. No package downloaded; no lockfile/transitive graph resolved. Retain notices and review resolved package/native licenses before claiming clearance. Font assets unselected; system Gujarati font coverage must be tested, not assumed. OFL assets are not within current standing package-license approval.
