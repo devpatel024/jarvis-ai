@@ -40,3 +40,26 @@ Listening orb follows measured mic level; STT/LLM thinking, actual playback spea
 Measurements after approval: real English samples with varied accent/noise, manual transcript/WER, duration, STT RTF (compute seconds / audio seconds), STT end-of-utterance latency, TTS request-to-first-played-audio, utterance-end to first Jarvis audio and full turn, stage RSS peaks (app/helper/Ollama reported separately), model load state and CPU thread count. No raw audio saved by default; test fixture recording/storage requires explicit consent. Compare tiny/base/Vosk one at a time; do not assume RTF <1 on the i5. Verify sentence queuing, cancellation, buffer bounds, microphone permissions, speakers/headphones and echo suppression.
 
 Required tests after implementation: fakes for all transitions/error cleanup/barge-in/silence timeout/late events, widget voice states/accessibility and privacy switch, format/analyze/tests/Linux release build, offline operation, actual mic/speaker/headphone manual checks. **Voice latencies, RAM per voice stage, microphone and playback tests: NOT RUN**, because Step 1 intentionally stops before downloads/integration. Current sandbox also denies native display/test sockets and cannot update the original checkout directly. Broader 1c remains excluded.
+
+
+## Approved evaluation preflight — 2026-10-11
+
+User approved Whisper tiny.en versus Vosk small English and eSpeak NG, including GPL-3.0 personal, non-distributed use. User authorized a writable working clone and bundle delivery; no push or sudo. Clone is `/home/dev/Documents/Codex/jarvis-voice-work`, based on the original repository's main at 1f1b4c5 (Part 3 and research are already present). Existing original repository Git identity preserved unchanged.
+
+Metadata-only preflight, no engine/model artifact downloads:
+
+| Artifact | Exact bytes | Published SHA-256 | Evidence |
+|---|---:|---|---|
+| Whisper ggml-tiny.en.bin | 77,704,715 | 921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f | Hugging Face ggerganov/whisper.cpp API LFS metadata, file commit 80da2d8bfee42b0e836fc3a9890373e5defc00a6; MIT weights |
+| Vosk 0.3.45 Linux x64 wheel | 7,173,758 | 25e025093c4399d7278f543568ed8cc5460ac3a4bf48c23673ace1e25d26619f | PyPI JSON, manylinux_2_12_x86_64.manylinux2010_x86_64; Apache-2.0 engine |
+| Vosk 0.3.45 Windows x64 wheel | 13,997,596 | 6994ddc68556c7e5730c3b6f6bad13320e3519b13ce3ed2aa25a86724e7c10ac | PyPI JSON; native dependencies still require audit |
+| Vosk small-en-us-0.15 ZIP | 41,205,931 | NOT VERIFIED | Official alphacephei.com HEAD Content-Length; ETag is not SHA-256; Apache-2.0 model in official model table |
+| whisper.cpp v1.9.5 source archive | NOT VERIFIED | NOT VERIFIED | Official GitHub HEAD omitted Content-Length; ETag is not treated as SHA-256 |
+| eSpeak NG 1.52.0 source archive | NOT VERIFIED | NOT VERIFIED | Official GitHub HEAD omitted Content-Length; ETag is not treated as SHA-256; GPL-3.0-or-later |
+| eSpeak NG Windows MSI | 12,765,862 | 7f673c709ea5dd579d3b5ebb98688cc575328a6ab7438d2bc405b88cedaeafb9 | Official release API size; Microsoft winget pin; no download/install |
+
+Sources: https://huggingface.co/api/models/ggerganov/whisper.cpp/tree/main?recursive=false&expand=true ; https://pypi.org/pypi/vosk/0.3.45/json ; https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip ; https://api.github.com/repos/espeak-ng/espeak-ng/releases/tags/1.52.0 ; https://github.com/microsoft/winget-pkgs/blob/master/manifests/e/eSpeak-NG/eSpeak-NG/1.52.0/eSpeak-NG.eSpeak-NG.installer.yaml .
+
+Native review: Vosk pinned src/Makefile identifies Kaldi/OpenFST/OpenBLAS/CLAPACK dependencies; bundled native versions/notices not yet verified. eSpeak pinned cmake/deps.cmake automatically fetches Sonic commit fbf75c3d6d846bad3bb3d456cbc5d07d9fd8c104 if system Sonic is absent; sonic.c at this exact commit explicitly says Apache-2.0. This extra source must also be pinned, sized, hashed and audited before building; no automatic CMake fetch has been run. Do not infer current Sonic licensing from older versions. eSpeak is absent; cmake/arecord/aplay/Ollama already exist. No sudo command is needed or proposed yet; user-prefix source-build feasibility remains untested.
+
+STOP: exact pre-download size/hash gate cannot yet be satisfied for all artifacts. Ask user whether official pinned downloads may be streamed with a hard size cap and SHA-256 computed/recorded immediately, explicitly distinguishing computed hashes from publisher-authenticated checksums. Continue native notice audit before installation or execution; ask for any newly discovered licence exception. No measured voice speed, accuracy, RAM or chosen default; no voice implementation.

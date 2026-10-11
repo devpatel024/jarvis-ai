@@ -289,3 +289,8 @@ Authorized immediately after Part 3, research only. [Comparison](VOICE_ENGINE_CO
 | speech-dispatcher / OS voices, unselected | GPLv2 server/LGPL-2.1-or-later C client and independent voices/backend terms, NOT approved; OS voice redistribution/offline unknown | $0 only eligible installed offline voices; Linux dispatch, separate WindowsSAPI/AndroidOS paths; exact package/voice/binary sizes unselected and unverified. https://github.com/brailcom/speechd/blob/master/README.md |
 
 Published rounded sizes are not verified archive bytes or deployed footprint. No account/key, sudo, new tool or >1 GB download is approved by this table. Source archives/bindings/native assets and hashes must pass preflight after explicit candidate approval, and new exceptions must be asked separately. Actual local STT/TTS speed, accuracy and RAM remain NOT MEASURED.
+
+
+### Voice evaluation approval and preflight Costs update — 2026-10-11
+
+Whisper tiny.en, Vosk small English, and eSpeak NG are explicitly approved for evaluation/integration; eSpeak GPL-3.0-or-later approval is personal, non-distributed only. All software charges $0, no account/key. GPL distribution obligations must be resolved before distributing builds; a separate process does not waive them. Exact available artifact sizes/hashes, unresolved source/model checksums and native dependencies are recorded in docs/VOICE_ENGINE_COMPARISON.md. No artifact downloaded or engine installed yet. Evaluation/build remains paused at the user's exact pre-download size/hash gate, pending an exception for missing official checksums/byte counts or a verifiable source. Unselected Piper/base.en remain unapproved. No 1c.

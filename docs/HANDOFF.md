@@ -1,3 +1,13 @@
+# Latest handoff — approved voice evaluation, preflight gap
+
+2026-10-11. User authorized working clone `/home/dev/Documents/Codex/jarvis-voice-work`, local commits and bundle delivery, no pushes or sudo. Clone contains Part 3/research already; original repository untouched. Explicit scope: Whisper tiny.en vs Vosk small English, eSpeak NG GPL-3.0-or-later personal non-distributed use, then English Phase 1b.3.
+
+Metadata-only preflight recorded in VOICE_ENGINE_COMPARISON and PLAN Costs. Verified exact metadata for tiny.en and Vosk wheels; official Vosk model HEAD gives bytes but no authenticated SHA-256, pinned Whisper/eSpeak source archive HEAD provides neither verified exact bytes nor published checksum. Automatic Sonic fetch identified in eSpeak CMake; exact pinned sonic.c says Apache-2.0, further artifact preflight required. No engine/model artifacts downloaded, no installs/mic access/benchmarks/build implementation.
+
+STOP at user's pre-download gate. Ask whether capped official pinned downloads with locally computed hashes are acceptable for artifacts lacking publisher checksums/exact byte counts. Do not claim locally computed hashes authenticate provenance. Continue native licence audit before using binaries. No default selected, no voice metrics available, no new Flutter code/checks applicable to this documentation-only step. Git diff check and bundle verification required. Next task after resolving gate: approved downloads/native audit, benchmark three English clips with llama3.2:1b resident (idle, no simultaneous neural inference), choose from real results, implement/tests/build/docs/commit/bundle; no 1c.
+
+---
+
 # Latest handoff — Phase 1b.3 Step 1 approval gate
 
 2026-10-11. Part 3 committed in writable clone at b94a498 (full hash reported in chat/bundle); original checkout read-only and untouched, no push. Step 1 research completed in docs/VOICE_ENGINE_COMPARISON.md, Costs/README/PLAN updated; separate documentation commit to follow. No speech downloads, installations, Step 2 code or mic activation. Engine research includes exact candidate versions, published model/wheel/installer sizes, unknown compiled Linux/helper footprints, licences, cross-platform adapters and explicit unmeasured local speed/RAM. Tiny/base upstream memory and existing measured Ollama RSS inform additive planning estimates only.
