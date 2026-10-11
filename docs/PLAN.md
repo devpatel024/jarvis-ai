@@ -272,3 +272,20 @@ Native runner exception explicitly authorized by user: about 1280×800 client re
 | Static shields.io badge URLs | Optional README rendering only, no runtime app request or service dependency; $0, hosted availability not guaranteed | Explicit static labels; native GitHub display remains manual |
 
 Verification: Dart formatting unchanged, analyzer clean, Linux release build passed using copies of existing SDK/pub/native caches. Flutter tests attempted but all harnesses blocked before execution by EPERM binding 127.0.0.1; not a passing test run. Prior Part 2 61-test result remains historical. README paths/anchors/image metadata/SVG XML reviewed, raster assets inspected locally. Windows build/runtime, actual native window fit and live Ollama capture NOT RUN under current platform/access limits. GitHub banner/badges/Mermaid/theme switching/manual TOC checks pending after user push.
+
+
+## Phase 1b.3 Step 1 — engine research / approval pending
+
+Authorized immediately after Part 3, research only. [Comparison](VOICE_ENGINE_COMPARISON.md) covers whisper.cpp tiny.en/base.en, Vosk small English, eSpeak NG, Piper and OS-dispatch alternatives, published sizes/terms, expected hardware constraints and platform adapter paths. No engine/model/package downloads or installs; no voice code or mic access. Recommend evaluating tiny.en versus Vosk, with formant eSpeak NG TTS only after explicit GPL approval. Piper neural TTS during streamed LLM conflicts with no concurrent neural-engine policy; requires explicit exception or serial scheduling. English-only; Gujarati stays disabled/experimental until Phase 5 real samples. Step 2 remains approval-gated.
+
+### Voice candidate Costs — proposed, not installed (2026-10-11)
+
+| Candidate pin / status | Licence / distribution obligations | Software cost, size/platform/limits and source |
+|---|---|---|
+| whisper.cpp 1.9.5 + tiny.en / optional base.en | MIT engine and Whisper weights; notices; native/compiler/transitives preflight pending | $0/no key; CPU W/L/Android pathways; model ~75/142 MiB; source-only release, compiled helper size unknown until build. https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.5 |
+| Vosk 0.3.45 + small-en-us-0.15 | Apache-2.0 engine/model; notices; bundled native terms preflight pending | $0/no key; W/L/Android paths; model ~40 MB, x64 native-containing wheels Linux7.2/Windows14.0 MB. https://pypi.org/project/vosk/0.3.45/ ; https://alphacephei.com/vosk/models |
+| eSpeak NG 1.52.0 | GPL-3.0-or-later, NOT approved; preserve licence/copyright and applicable source obligations; no assumption about whole-app licence | $0/no key; W/L/Android; formant voices, Windows MSI12.2 MB / AndroidAPK9.96 MB; Linux compiled size unknown, no sudo authorized. https://github.com/espeak-ng/espeak-ng/releases/tag/1.52.0 |
+| Piper 1.8.0 / en_US-ljspeech-medium candidate | GPL-3.0-or-later engine/phonemizer, NOT approved; repository MIT voice, public-domain dataset in exact card; pin/review voice and transitive notices before adoption | $0/no key; Linux/Windows wheels34.1 MB excluding Python/ONNX/runtime/transitives; voice63.5 MB +4.97 kB config; Android integration unverified. https://pypi.org/project/piper-tts/1.8.0/ ; https://huggingface.co/rhasspy/piper-voices/blob/main/en/en_US/ljspeech/medium/MODEL_CARD |
+| speech-dispatcher / OS voices, unselected | GPLv2 server/LGPL-2.1-or-later C client and independent voices/backend terms, NOT approved; OS voice redistribution/offline unknown | $0 only eligible installed offline voices; Linux dispatch, separate WindowsSAPI/AndroidOS paths; exact package/voice/binary sizes unselected and unverified. https://github.com/brailcom/speechd/blob/master/README.md |
+
+Published rounded sizes are not verified archive bytes or deployed footprint. No account/key, sudo, new tool or >1 GB download is approved by this table. Source archives/bindings/native assets and hashes must pass preflight after explicit candidate approval, and new exceptions must be asked separately. Actual local STT/TTS speed, accuracy and RAM remain NOT MEASURED.

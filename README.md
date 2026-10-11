@@ -173,7 +173,7 @@ $0 refers to baseline software/service charges. Hardware, electricity, storage a
 | 0 / 1a / 1b / 1b.2 / Slice A | ✅ Delivered | Planning, shell, orb/Mock chat, developer controls and visual polish |
 | Part 2 / Phase 2 | 🚧 Desktop core built | Local Ollama and persistence; mobile LAN/richer onboarding still open |
 | Part 3 | ✅ README delivered | Honest project page, previews and runner size bounds; Windows sizing unverified |
-| 1b.3 | 🗺️ Approval gate | English offline speech engines compared before voice integration |
+| 1b.3 | 🚧 Approval gate | [Engine comparison documented](docs/VOICE_ENGINE_COMPARISON.md); English voice integration not started |
 | 1c | 🗺️ Not started | Broader tests and CI; narrow SQLite Windows workflow exists separately |
 | 3–4 | 🗺️ Planned | Notes/tasks/calendar/habits and reminders, lossless Gujarati text |
 | 5 | 🗺️ Planned | Broader speech evaluation; Gujarati experimental only after real samples |

@@ -1,3 +1,13 @@
+# Latest handoff — Phase 1b.3 Step 1 approval gate
+
+2026-10-11. Part 3 committed in writable clone at b94a498 (full hash reported in chat/bundle); original checkout read-only and untouched, no push. Step 1 research completed in docs/VOICE_ENGINE_COMPARISON.md, Costs/README/PLAN updated; separate documentation commit to follow. No speech downloads, installations, Step 2 code or mic activation. Engine research includes exact candidate versions, published model/wheel/installer sizes, unknown compiled Linux/helper footprints, licences, cross-platform adapters and explicit unmeasured local speed/RAM. Tiny/base upstream memory and existing measured Ollama RSS inform additive planning estimates only.
+
+Recommendation pending approval: compare whisper.cpp 1.9.5 tiny.en vs Vosk0.3.45 small-en-us-0.15; eSpeak NG1.52.0 formant TTS if GPL approved. Optional base.en/Piper are separate evaluation choices. Piper engine/phonemizer GPL, LJ Speech candidate model repository MIT/public-domain dataset; no blanket assumption about all voices. PLAN prohibits concurrent neural text/speech inference, so streaming Piper requires exception or serial scheduling; eSpeak formants avoid this. STEP 2 NOT AUTHORIZED until user approval. Gujarati voice disabled/experimental/unverified, English only; no 1c. Wake word not implemented. Project licence undecided; question sent, never assume consent.
+
+STOP: exact next task is receive explicit engine/model/GPL scope approval, preflight immutable source/assets/hashes/exact bytes/native/transitive terms (ask again only for new exception), then implement Step 2 in an authorized writable checkout with real devices/testing. Do not download from this research gate alone. Mic/speaker/headphone measurements NOT RUN; no installed speech engines. User must apply bundle to original main (fast-forward from Part2 base, no force/reset) and run Flutter tests outside restricted sandbox; current harness blocked by loopback socket EPERM. Linux release build/analyzer from Part3 passed. GitHub rendering/manual window/DPI checks pending. Existing SDK/package copies are developer verification artifacts outside Git, not added dependencies.
+
+---
+
 # Handoff — Part 3 README and bounded runner sizing
 
 2026-10-11. Latest Part 3 authorized including runner changes. Original checkout is read-only under current session permissions; no additional access was granted. Work is in a local writable clone with existing history and identity, to be delivered as a commit bundle for user application. No push. Part 2 base is 3473589aa4057ad6fa42eded7304005d4db27f90. No package/model download or voice installation.
