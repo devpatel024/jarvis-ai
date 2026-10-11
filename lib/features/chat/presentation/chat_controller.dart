@@ -1,7 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../data/mock_provider.dart';
 import '../domain/llm_provider.dart';
+import '../domain/llm_settings.dart';
 import '../data/ollama_provider.dart';
 import 'provider_settings.dart';
 import '../../../core/storage/local_store.dart';
@@ -243,13 +246,58 @@ class ChatController extends Notifier<ChatState> {
     await send(prompt);
   }
 
+  Stream<LlmEvent> respondForVoice(
+    String prompt,
+    CancellationToken cancellation,
+  ) {
+    final events = StreamController<LlmEvent>();
+    if (state.busy) {
+      events.add(
+        const LlmFailed(
+          LlmFailure(
+            LlmErrorCode.busy,
+            'Stop the current text reply before using voice.',
+          ),
+        ),
+      );
+      unawaited(events.close());
+      return events.stream;
+    }
+    final settings = ref.read(providerSettingsProvider);
+    final provider = settings.demo
+        ? const MockProvider(voiceStyle: true)
+        : OllamaProvider(
+            ref.read(ollamaServiceProvider),
+            LlmSettings(
+              model: settings.model,
+              contextLength: settings.contextLength,
+              keepAliveSeconds: settings.keepAliveSeconds,
+              language: ReplyLanguage.english,
+              spoken: true,
+            ),
+          );
+    unawaited(
+      _run(
+        prompt,
+        retry: false,
+        providerOverride: provider,
+        voiceCancellation: cancellation,
+        onEvent: events.add,
+      ).whenComplete(events.close),
+    );
+    return events.stream;
+  }
+
   Future<void> _run(
     String prompt, {
     required bool retry,
     bool simulateFailure = false,
+    LlmProvider? providerOverride,
+    CancellationToken? voiceCancellation,
+    void Function(LlmEvent)? onEvent,
   }) async {
     final generation = ++_generation;
-    final token = CancellationToken();
+    final token = voiceCancellation ?? CancellationToken();
     _token = token;
     final entries = [...state.entries];
     if (retry) {
@@ -260,9 +308,12 @@ class ChatController extends Notifier<ChatState> {
       entries.add(ChatEntry(MessageRole.user, prompt));
     }
     final request = entries.map((e) => LlmMessage(e.role, e.text)).toList();
-    final provider = simulateFailure
-        ? const MockProvider(simulateFailure: true)
-        : ref.read(llmProvider);
+    final configuredProvider = ref.read(llmProvider);
+    final LlmProvider provider =
+        providerOverride ??
+        (simulateFailure
+            ? const MockProvider(simulateFailure: true)
+            : configuredProvider);
     entries.add(
       ChatEntry(
         MessageRole.assistant,
@@ -279,6 +330,7 @@ class ChatController extends Notifier<ChatState> {
               .respond(request, cancellation: token)
               .timeout(const Duration(seconds: 95))) {
         if (!ref.mounted || generation != _generation) return;
+        onEvent?.call(event);
         switch (event) {
           case TextDelta(:final text):
             final previous = entries.removeLast();
@@ -337,7 +389,13 @@ class ChatController extends Notifier<ChatState> {
         );
       }
     } finally {
-      token.cancel();
+      if (voiceCancellation?.isCancelled == true &&
+          ref.mounted &&
+          generation == _generation &&
+          state.busy) {
+        stop();
+      }
+      if (voiceCancellation == null) token.cancel();
     }
   }
 

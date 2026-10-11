@@ -1,0 +1,37 @@
+[
+  {
+    "package": "alsa-utils",
+    "version": "1.2.15.2-1ubuntu1",
+    "installed_size_kib": 2752,
+    "licence_notice": "/usr/share/doc/alsa-utils/copyright",
+    "installed_by_agent": false
+  },
+  {
+    "package": "libespeak-ng1",
+    "version": "1.52.0+dfsg-5build1",
+    "installed_size_kib": 518,
+    "licence_notice": "/usr/share/doc/libespeak-ng1/copyright",
+    "installed_by_agent": false
+  },
+  {
+    "package": "libpcaudio0",
+    "version": "1.3-1build1",
+    "installed_size_kib": 38,
+    "licence_notice": "/usr/share/doc/libpcaudio0/copyright",
+    "installed_by_agent": false
+  },
+  {
+    "package": "libsonic0",
+    "version": "0.2.0-13build2",
+    "installed_size_kib": 37,
+    "licence_notice": "/usr/share/doc/libsonic0/copyright",
+    "installed_by_agent": false
+  },
+  {
+    "package": "espeak-ng",
+    "version": "1.52.0+dfsg-5build1",
+    "installed_size_kib": 3819,
+    "licence_notice": "/usr/share/doc/espeak-ng/copyright",
+    "installed_by_agent": false
+  }
+]

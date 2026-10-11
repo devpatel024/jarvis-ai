@@ -1,5 +1,7 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+
 import '../../../core/design/app_theme.dart';
 import '../../../core/design/aurora_background.dart';
 import '../../../core/developer/performance_settings.dart';
@@ -12,11 +14,12 @@ class CoreOrb extends StatefulWidget {
     required this.reduceMotion,
     this.tier = OrbTier.balanced,
     this.size = AppTheme.orbSize,
+    this.microphoneLevel = 0,
   });
   final OrbState state;
   final bool reduceMotion;
   final OrbTier tier;
-  final double size;
+  final double size, microphoneLevel;
   @override
   State<CoreOrb> createState() => _CoreOrbState();
 }
@@ -74,20 +77,25 @@ class _CoreOrbState extends State<CoreOrb> {
       container: true,
       label: 'Core orb: ${widget.state.name}',
       image: true,
-      child: RepaintBoundary(
-        child: SizedBox(
-          width: widget.size,
-          height: widget.size,
-          child: widget.tier == OrbTier.lite && !reduced
-              ? AnimatedBuilder(
-                  animation: _clock,
-                  child: RepaintBoundary(child: painting),
-                  builder: (context, child) => Transform.scale(
-                    scale: 1 + math.sin(_clock.value * math.pi * 2) * .015,
-                    child: child,
-                  ),
-                )
-              : painting,
+      child: Transform.scale(
+        scale: widget.state == OrbState.listening && !reduced
+            ? 1 + widget.microphoneLevel * .15
+            : 1,
+        child: RepaintBoundary(
+          child: SizedBox(
+            width: widget.size,
+            height: widget.size,
+            child: widget.tier == OrbTier.lite && !reduced
+                ? AnimatedBuilder(
+                    animation: _clock,
+                    child: RepaintBoundary(child: painting),
+                    builder: (context, child) => Transform.scale(
+                      scale: 1 + math.sin(_clock.value * math.pi * 2) * .015,
+                      child: child,
+                    ),
+                  )
+                : painting,
+          ),
         ),
       ),
     );

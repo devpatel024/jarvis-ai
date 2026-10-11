@@ -1,3 +1,6 @@
+import '../../voice/presentation/voice_providers.dart';
+import '../../voice/presentation/voice_controls.dart';
+import '../../voice/domain/voice_contracts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -110,11 +113,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final chat = ref.watch(chatProvider);
+    final voice = ref.watch(voiceSessionProvider);
+    final actualTier = voice.phase == VoicePhase.transcribing
+        ? OrbTier.lite
+        : widget.tier;
     final reduced =
         widget.reduced ||
         ref.watch(reduceMotionProvider) ||
         MediaQuery.disableAnimationsOf(context);
     final state =
+        (voice.active || voice.phase == VoicePhase.error
+            ? switch (voice.phase) {
+                VoicePhase.listening => OrbState.listening,
+                VoicePhase.transcribing ||
+                VoicePhase.thinking => OrbState.thinking,
+                VoicePhase.speaking => OrbState.speaking,
+                VoicePhase.error => OrbState.error,
+                VoicePhase.idle => OrbState.idle,
+              }
+            : null) ??
         ref.watch(orbPreviewProvider) ??
         switch (chat.phase) {
           ChatPhase.idle => OrbState.idle,
@@ -135,273 +152,272 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     final c = JarvisColors.of(context);
     final memory = ref.watch(localMemoryProvider).value;
     final storageIssue = ref.watch(storageIssueProvider).value;
-    return Column(
-      children: [
-        if (storageIssue != null)
-          Padding(
-            padding: const EdgeInsets.all(AppTheme.smallSpacing),
-            child: Text(
-              storageIssue,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+    return VoiceKeyboard(
+      isEditing: () => _focus.hasFocus,
+      child: Column(
+        children: [
+          if (storageIssue != null)
+            Padding(
+              padding: const EdgeInsets.all(AppTheme.smallSpacing),
+              child: Text(
+                storageIssue,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
             ),
-          ),
-        if (memory != null && memory < 1073741824)
-          const Padding(
-            padding: EdgeInsets.all(8),
-            child: Text(
-              'Low available RAM. Use fast mode or close other apps before generating.',
+          if (memory != null && memory < 1073741824)
+            const Padding(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                'Low available RAM. Use fast mode or close other apps before generating.',
+              ),
             ),
-          ),
-        if (chat.entries.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing),
-            child: Row(
-              children: [
-                CoreOrb(
-                  state: state,
-                  reduceMotion: reduced,
-                  tier: widget.tier,
-                  size: AppTheme.compactOrbSize,
-                ),
-                const SizedBox(width: AppTheme.smallSpacing),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        chat.sessions
-                            .firstWhere((s) => s.id == chat.activeId)
-                            .title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      Text(
-                        chat.busy
-                            ? '${ref.watch(llmProvider).isDemo ? 'Scripted' : 'Local'} reply ${chat.phase == ChatPhase.thinking ? 'on its way' : 'streaming'}'
-                            : '${ref.watch(llmProvider).label} · microphone off',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
+          if (chat.entries.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing),
+              child: Row(
+                children: [
+                  CoreOrb(
+                    state: state,
+                    reduceMotion: reduced,
+                    tier: actualTier,
+                    microphoneLevel: voice.level,
+                    size: AppTheme.compactOrbSize,
                   ),
-                ),
-              ],
+                  const SizedBox(width: AppTheme.smallSpacing),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          chat.sessions
+                              .firstWhere((s) => s.id == chat.activeId)
+                              .title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        Text(
+                          chat.busy
+                              ? '${ref.watch(llmProvider).isDemo ? 'Scripted' : 'Local'} reply ${chat.phase == ChatPhase.thinking ? 'on its way' : 'streaming'}'
+                              : '${ref.watch(llmProvider).label} · ${voice.phase == VoicePhase.listening ? 'microphone active' : 'microphone off'}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        Expanded(
-          child: Stack(
-            children: [
-              Scrollbar(
-                controller: _scroll,
-                thumbVisibility: chat.entries.isEmpty,
-                child: ListView.builder(
+          Expanded(
+            child: Stack(
+              children: [
+                Scrollbar(
                   controller: _scroll,
-                  padding: const EdgeInsets.all(AppTheme.spacing),
-                  itemCount: chat.entries.isEmpty
-                      ? 1
-                      : chat.entries.length + (chat.failure != null ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (chat.entries.isEmpty) {
-                      return _empty(context, state, reduced);
-                    }
-                    if (index == chat.entries.length) {
+                  thumbVisibility: chat.entries.isEmpty,
+                  child: ListView.builder(
+                    controller: _scroll,
+                    padding: const EdgeInsets.all(AppTheme.spacing),
+                    itemCount: chat.entries.isEmpty
+                        ? 1
+                        : chat.entries.length + (chat.failure != null ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (chat.entries.isEmpty) {
+                        return _empty(context, state, reduced);
+                      }
+                      if (index == chat.entries.length) {
+                        return Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(
+                              maxWidth: AppTheme.readingWidth,
+                            ),
+                            child: GlassPanel(
+                              child: Padding(
+                                padding: const EdgeInsets.all(
+                                  AppTheme.messagePadding,
+                                ),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.error_outline),
+                                    Text(chat.failure!.message),
+                                    TextButton(
+                                      onPressed: ref
+                                          .read(chatProvider.notifier)
+                                          .retry,
+                                      child: const Text('Retry reply'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      final entry = chat.entries[index];
+                      final lastUser =
+                          index ==
+                          chat.entries.lastIndexWhere(
+                            (e) => e.role == MessageRole.user,
+                          );
+                      final lastAssistant =
+                          index == chat.entries.length - 1 &&
+                          entry.role == MessageRole.assistant;
                       return Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(
                             maxWidth: AppTheme.readingWidth,
                           ),
-                          child: GlassPanel(
-                            child: Padding(
-                              padding: const EdgeInsets.all(
-                                AppTheme.messagePadding,
-                              ),
-                              child: Column(
-                                children: [
-                                  const Icon(Icons.error_outline),
-                                  Text(chat.failure!.message),
-                                  TextButton(
-                                    onPressed: ref
-                                        .read(chatProvider.notifier)
-                                        .retry,
-                                    child: const Text('Retry reply'),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          child: MessageBubble(
+                            key: ValueKey('${chat.activeId}-$index'),
+                            entry: entry,
+                            index: index,
+                            streaming:
+                                lastAssistant &&
+                                chat.phase == ChatPhase.streaming,
+                            thinking:
+                                lastAssistant &&
+                                chat.phase == ChatPhase.thinking,
+                            reduced: reduced || widget.tier == OrbTier.lite,
+                            tier: widget.tier,
+                            onEdit: lastUser && !chat.busy
+                                ? () => _edit(entry.text)
+                                : null,
+                            onRegenerate: lastAssistant && !chat.busy
+                                ? ref.read(chatProvider.notifier).regenerate
+                                : null,
                           ),
                         ),
                       );
-                    }
-                    final entry = chat.entries[index];
-                    final lastUser =
-                        index ==
-                        chat.entries.lastIndexWhere(
-                          (e) => e.role == MessageRole.user,
-                        );
-                    final lastAssistant =
-                        index == chat.entries.length - 1 &&
-                        entry.role == MessageRole.assistant;
-                    return Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxWidth: AppTheme.readingWidth,
-                        ),
-                        child: MessageBubble(
-                          key: ValueKey('${chat.activeId}-$index'),
-                          entry: entry,
-                          index: index,
-                          streaming:
-                              lastAssistant &&
-                              chat.phase == ChatPhase.streaming,
-                          thinking:
-                              lastAssistant && chat.phase == ChatPhase.thinking,
-                          reduced: reduced || widget.tier == OrbTier.lite,
-                          tier: widget.tier,
-                          onEdit: lastUser && !chat.busy
-                              ? () => _edit(entry.text)
-                              : null,
-                          onRegenerate: lastAssistant && !chat.busy
-                              ? ref.read(chatProvider.notifier).regenerate
-                              : null,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              if (!_atBottom && chat.entries.isNotEmpty)
-                Positioned(
-                  right: AppTheme.messagePadding,
-                  bottom: AppTheme.messagePadding,
-                  child: FloatingActionButton.small(
-                    tooltip: 'Scroll to bottom',
-                    onPressed: _bottom,
-                    child: const Icon(Icons.arrow_downward),
+                    },
                   ),
                 ),
-            ],
-          ),
-        ),
-        Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: AppTheme.readingWidth),
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.messagePadding),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_editing)
-                    Row(
-                      children: [
-                        const Expanded(
-                          child: Text('Editing your last message'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() => _editing = false);
-                            _input.clear();
-                          },
-                          child: const Text('Cancel edit'),
-                        ),
-                      ],
+                if (!_atBottom && chat.entries.isNotEmpty)
+                  Positioned(
+                    right: AppTheme.messagePadding,
+                    bottom: AppTheme.messagePadding,
+                    child: FloatingActionButton.small(
+                      tooltip: 'Scroll to bottom',
+                      onPressed: _bottom,
+                      child: const Icon(Icons.arrow_downward),
                     ),
-                  _ComposerRing(
-                    focused: _focused,
-                    reduced: reduced || widget.tier == OrbTier.lite,
-                    tier: widget.tier,
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppTheme.smallSpacing),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                  ),
+              ],
+            ),
+          ),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: AppTheme.readingWidth,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.messagePadding),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_editing)
+                      Row(
                         children: [
-                          Expanded(
-                            child: Focus(
-                              onKeyEvent: (node, event) {
-                                if (event is KeyDownEvent &&
-                                    event.logicalKey ==
-                                        LogicalKeyboardKey.enter &&
-                                    !HardwareKeyboard.instance.isShiftPressed) {
-                                  if (_input.value.composing.isValid &&
-                                      !_input.value.composing.isCollapsed) {
-                                    return KeyEventResult.ignored;
-                                  }
-                                  _send();
-                                  return KeyEventResult.handled;
-                                }
-                                return KeyEventResult.ignored;
-                              },
-                              child: TextField(
-                                key: const ValueKey('composer'),
-                                controller: _input,
-                                focusNode: _focus,
-                                minLines: 1,
-                                maxLines: 5,
-                                maxLength: 4000,
-                                enabled: !chat.busy,
-                                keyboardType: TextInputType.multiline,
-                                decoration: const InputDecoration(
-                                  labelText: 'Message Jarvis',
-                                  hintText: 'Ask something / કંઈક પૂછો',
-                                  border: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  filled: false,
-                                  counterText: '',
-                                ),
-                              ),
-                            ),
+                          const Expanded(
+                            child: Text('Editing your last message'),
                           ),
-                          const SizedBox(width: AppTheme.smallSpacing),
-                          IconButton.filled(
-                            tooltip: chat.busy ? 'Stop' : 'Send',
-                            onPressed: chat.busy
-                                ? ref.read(chatProvider.notifier).stop
-                                : _send,
-                            icon: Icon(
-                              chat.busy
-                                  ? Icons.stop_rounded
-                                  : Icons.arrow_upward_rounded,
-                            ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() => _editing = false);
+                              _input.clear();
+                            },
+                            child: const Text('Cancel edit'),
                           ),
                         ],
                       ),
+                    _ComposerRing(
+                      focused: _focused,
+                      reduced: reduced || widget.tier == OrbTier.lite,
+                      tier: widget.tier,
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppTheme.smallSpacing),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Expanded(
+                              child: Focus(
+                                onKeyEvent: (node, event) {
+                                  if (event is KeyDownEvent &&
+                                      event.logicalKey ==
+                                          LogicalKeyboardKey.enter &&
+                                      !HardwareKeyboard
+                                          .instance
+                                          .isShiftPressed) {
+                                    if (_input.value.composing.isValid &&
+                                        !_input.value.composing.isCollapsed) {
+                                      return KeyEventResult.ignored;
+                                    }
+                                    _send();
+                                    return KeyEventResult.handled;
+                                  }
+                                  return KeyEventResult.ignored;
+                                },
+                                child: TextField(
+                                  key: const ValueKey('composer'),
+                                  controller: _input,
+                                  focusNode: _focus,
+                                  minLines: 1,
+                                  maxLines: 5,
+                                  maxLength: 4000,
+                                  enabled: !chat.busy && !voice.active,
+                                  keyboardType: TextInputType.multiline,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Message Jarvis',
+                                    hintText: 'Ask something / કંઈક પૂછો',
+                                    border: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    filled: false,
+                                    counterText: '',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: AppTheme.smallSpacing),
+                            IconButton.filled(
+                              tooltip: chat.busy ? 'Stop' : 'Send',
+                              onPressed: chat.busy
+                                  ? ref.read(chatProvider.notifier).stop
+                                  : _send,
+                              icon: Icon(
+                                chat.busy
+                                    ? Icons.stop_rounded
+                                    : Icons.arrow_upward_rounded,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppTheme.smallSpacing),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: AppTheme.messagePadding,
-                    children: [
-                      Tooltip(
-                        message:
-                            'Attachments are not available in this slice. Paste text into the composer.',
-                        child: Text(
-                          'Attachments · coming soon',
-                          style: TextStyle(
-                            color: c.muted,
-                            fontSize: AppTheme.helperSize,
+                    const VoiceControls(),
+                    const SizedBox(height: AppTheme.smallSpacing),
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: AppTheme.messagePadding,
+                      children: [
+                        Tooltip(
+                          message:
+                              'Attachments are not available in this slice. Paste text into the composer.',
+                          child: Text(
+                            'Attachments · coming soon',
+                            style: TextStyle(
+                              color: c.muted,
+                              fontSize: AppTheme.helperSize,
+                            ),
                           ),
                         ),
-                      ),
-                      Tooltip(
-                        message:
-                            'Voice is not enabled. Use English or Gujarati text.',
-                        child: Text(
-                          'Microphone off · coming soon',
-                          style: TextStyle(
-                            color: c.muted,
-                            fontSize: AppTheme.helperSize,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -420,7 +436,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             CoreOrb(
               state: state,
               reduceMotion: reduced,
-              tier: widget.tier,
+              tier:
+                  ref.watch(voiceSessionProvider).phase ==
+                      VoicePhase.transcribing
+                  ? OrbTier.lite
+                  : widget.tier,
+              microphoneLevel: ref.watch(voiceSessionProvider).level,
               size: MediaQuery.sizeOf(context).width < AppTheme.railBreakpoint
                   ? AppTheme.phoneOrbSize
                   : AppTheme.heroOrbSize,

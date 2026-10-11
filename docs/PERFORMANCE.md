@@ -119,3 +119,21 @@ Neither candidate is clearly worse than Llama1b on both speed and Gujarati: both
 ### Part 2 build/cache verification
 
 Dart format, clean analyzer, 61 passing tests, real-file database CRUD/reopen/migration/controller restart tests and Linux release build. Native release startup with a temporary application-support directory created schema v2; bundled libsqlite3.so is 1,788,664 bytes and SHA-256 0f947ebe629e8d9d02d7f408bef36e056bfc63ea47e02e0d45a7bae454f04ace. A subsequent release rebuild succeeded with IP socket creation denied (EPERM probe) by the existing execution sandbox, using --no-pub and the cached native artifact. Offline locked pub resolution also succeeded. First uncached package/native setup needs internet; this does not imply all future SDK/toolchain changes are cached. Windows CI remains unexecuted; Android/iOS native support is documented, not runtime verified. No new orb/frame-time claim: previous measured 30/60fps target remains unmet.
+
+
+## English voice — 2026-10-11
+
+Measured on the reference i5-6300U laptop, not an estimate. Whisper tiny.en and Vosk small-en-us-0.15 tested one process at a time with llama3.2:1b resident but idle, two native threads. Synthetic eSpeak greeting/question/numbers clips; no human mic accuracy claim. Full exact prompts/transcripts, word errors, latencies, RTF and RAM in [voice-comparison.json](performance/voice-comparison.json); interpretation and number-format caveat in [comparison](VOICE_ENGINE_COMPARISON.md#reference-hardware-measurements-and-choice). Single run, uncontrolled desktop/browser load, sampling overhead.
+
+| Engine | Greeting / question / numbers latency | RTF range | Word accuracy (literal) | STT peak RSS |
+|---|---|---|---|---|
+| Whisper tiny.en | 6.280 / 6.246 / 7.545 s | 1.61–2.63 | 100 / 100 / 69.2% | 175.0–175.2 MiB |
+| Vosk small English | 9.326 / 8.407 / 12.513 s | 2.68–3.54 | 66.7 / 100 / 46.2% | 180.8–192.6 MiB |
+
+Whisper numbers are correct values formatted as digits: this time prompt maps 25→twenty five and 9.30→nine thirty, yielding100% word match after those formatting substitutions. Keep raw WER to avoid hiding normalization policy. Provisional Linux default Whisper: all three cases faster, lower sampled RAM and better greeting/numbers. Vosk selectable; Windows source adapter uses Vosk due a pinned Whisper CLI CON/stdout limitation. LLM default unchanged.
+
+Actual process pipeline on a prerecorded synthetic greeting, starting with no Ollama runner: STT2.060 s (RTF0.737), eSpeak/aplay first audio queued243 ms, end capture→first queued audio15.157 s, end capture→playback finish21.225 s. STT174.9 MiB, TTS/player8.5 MiB, Ollama snapshot1.399 GiB. [Raw pipeline report](performance/voice-pipeline.json). Different resident/cache/load conditions mean these values are not a controlled comparison with the STT table. Audio was played by real external processes; acoustic onset and human microphone round trip unmeasured. Developer readout labels queued timing precisely.
+
+Whisper CPU -j2 build took11:51.07, maximum individual process RSS492.8 MiB; combined-worker peak not sampled. No model/generation during compilation. UI drops to Lite while transcribing, respects reduce motion; frame-time regressions after voice changes not yet measured on a live mic. Existing Developer per-tier/overlay diagnostics retained. No new60fps claim.
+
+Final process-pipeline recheck after cancellation changes (2026-10-11, `docs/performance/voice-pipeline-recheck.json`): same synthetic greeting and reply, no failure. STT 1,714 ms / RTF 0.613; first TTS PCM queued 57 ms after synthesis start; end-capture to first queued audio 9,510 ms; playback finished at 15,437 ms. STT peak RSS 174.8 MiB, TTS/player peak RSS 15.5 MiB, Ollama snapshot 1.399 GiB. The earlier successful run remains recorded; timing variation reflects cache and uncontrolled desktop load. Neither run measures acoustic onset or live microphone accuracy.

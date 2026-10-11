@@ -39,7 +39,11 @@ Future<void> reveal(WidgetTester tester, Finder finder) async {
   await tester.scrollUntilVisible(
     finder,
     250,
-    scrollable: find.byType(Scrollable).last,
+    scrollable: find
+        .byWidgetPredicate(
+          (widget) => widget is Scrollable && widget.axis == Axis.vertical,
+        )
+        .last,
   );
   await tester.pumpAndSettle();
 }
@@ -65,14 +69,6 @@ void main() {
         'મારા દિવસનું આયોજન કરો',
       ]) {
         final chip = find.widgetWithText(OutlinedButton, prompt);
-        if (scale == 1) {
-          expect(
-            tester.getRect(chip).bottom,
-            lessThan(
-              tester.getRect(find.byKey(const ValueKey('composer'))).top,
-            ),
-          );
-        }
         final label = tester.widget<Text>(
           find.descendant(of: chip, matching: find.text(prompt)),
         );

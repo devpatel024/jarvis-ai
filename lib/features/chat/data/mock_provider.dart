@@ -6,10 +6,11 @@ class MockProvider implements LlmProvider {
     this.firstTokenDelay = const Duration(milliseconds: 450),
     this.tokenDelay = const Duration(milliseconds: 90),
     this.simulateFailure = false,
+    this.voiceStyle = false,
   });
   final Duration firstTokenDelay;
   final Duration tokenDelay;
-  final bool simulateFailure;
+  final bool simulateFailure, voiceStyle;
   static const englishReply =
       'This is a scripted demo reply, not AI. Your message stays in this session. '
       'Ollama setup arrives in Phase 2.';
@@ -56,6 +57,14 @@ class MockProvider implements LlmProvider {
       );
       return;
     }
+    final prompt = messages.last.text.toLowerCase();
+    final smallTalk = RegExp(r'\b(hello|hi|hey)\b').hasMatch(prompt)
+        ? 'Hello! How are you today?'
+        : prompt.contains('how are you')
+        ? 'I am ready to help. What would you like to do today?'
+        : prompt.contains('good') || prompt.contains('fine')
+        ? 'That is good to hear. What are you planning next?'
+        : null;
     final gujarati = RegExp(r'[\u0A80-\u0AFF]').hasMatch(messages.last.text);
     // Whitespace tokens preserve combining marks and the complete sample text.
     final tokens = RegExp(r'\S+\s*').allMatches(
@@ -63,6 +72,8 @@ class MockProvider implements LlmProvider {
           ? gujaratiReply
           : messages.last.text.toLowerCase().contains('code')
           ? codeReply
+          : voiceStyle
+          ? smallTalk ?? 'What would you like help with today?'
           : englishReply,
     );
     for (final token in tokens) {

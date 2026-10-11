@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/readme/banner.svg" alt="JARVIS: your local-first assistant, with an Aurora core orb" width="1440">
 
-  <p>A local-first Flutter assistant: English AI chat today, a voice-first future.</p>
+  <p>A local-first Flutter assistant: English local AI chat with opt-in offline desktop voice.</p>
 
   <img src="https://img.shields.io/badge/Flutter-3.47.7-67E8F9?style=flat-square&amp;labelColor=0A0E27" alt="Flutter 3.47.7" width="116" height="20">
   <img src="https://img.shields.io/badge/Dart-3.13.5-AD94FF?style=flat-square&amp;labelColor=0A0E27" alt="Dart 3.13.5" width="101" height="20">
@@ -14,7 +14,7 @@
   <p><a href="#quick-start">Quick start</a> · <a href="#screenshots">Screenshots</a> · <a href="docs/PERFORMANCE.md">Measured performance</a> · <a href="docs/PLAN.md">Plan and Costs</a></p>
 </div>
 
-**Local Ollama chat works in English.** Gujarati input, display and lossless chat storage work; Gujarati AI answer quality is poor in the small models tested. Notes and tasks are planned and must preserve Gujarati text when delivered. Voice is planned; no microphone capture or spoken conversation is implemented yet. Project **licence to be decided**; no project licence has been selected.
+**Local Ollama chat works in English.** Gujarati input, display and lossless chat storage work; Gujarati AI answer quality is poor in the small models tested. Notes and tasks are planned and must preserve Gujarati text when delivered. Opt-in English voice is implemented with memory-only audio and separate offline engine processes. The Linux synthetic STT→Ollama→speaker pipeline is measured; live mic/accent/echo acceptance is still pending. See [voice setup](docs/VOICE_SETUP.md). Project **licence to be decided**; no project licence has been selected.
 
 <a id="contents"></a>
 ## 🧭 Contents
@@ -63,7 +63,7 @@ Optimized previews are below 40 KB each; original captures and provenance remain
 | Model and memory controls | ✅ Built | Context/output bounds, idle unload, resident-model guard, Linux RAM warning and app RSS |
 | Windows / mobile | 🚧 Validation pending | Manual Windows CI not yet run; Android/iOS source, no current mobile LAN configuration |
 | Notes, tasks, calendar and habits | 🗺️ Planned | Offline productivity with lossless Gujarati text; not implemented yet |
-| English voice conversation | 🗺️ Planned | Engine comparison/approval first; push-to-talk, conversation mode and interruption later |
+| English voice conversation | 🚧 Linux implementation | Whisper tiny.en, eSpeak NG, push-to-talk/conversation/interrupt; synthetic pipeline measured, live mic checks pending; [setup](docs/VOICE_SETUP.md) |
 | Gujarati voice | 🗺️ Experimental later | Disabled until real audio evaluation; limited accuracy must be labeled honestly |
 | Tools, memory, RAG, reminders | 🗺️ Planned | Local execution and permission boundaries; no active tool execution today |
 | Gujarati cloud “smart mode” | 🗺️ Optional, planned | Off by default; explicit destination/data consent, separate account/key/cost approval; never required |
@@ -85,7 +85,7 @@ flowchart LR
   RP --> V[Theme, orb and bounded frame metrics]
 ```
 
-Feature-first presentation/domain/data layers keep provider transport and storage out of domain contracts. Cancellation, timeouts and generation fences prevent late streams overwriting newer chats. Chat history is ordinary unencrypted SQLite. Future voice, tools and memory are design commitments, not nodes pretending to be implemented. Read [architecture decisions](docs/ARCHITECTURE.md).
+Feature-first presentation/domain/data layers keep provider transport and storage out of domain contracts. Cancellation, timeouts and generation fences prevent late streams overwriting newer chats. Chat history is ordinary unencrypted SQLite. Voice domain contracts and a cancellable state machine drive process adapters. Tools and memory remain planned. Read [architecture decisions](docs/ARCHITECTURE.md).
 
 <a id="quick-start"></a>
 ## 🚀 Quick start
@@ -161,7 +161,7 @@ Large histories currently load fully and use snapshot writes. No background inde
 <a id="privacy-and-cost"></a>
 ## 🔒 Privacy and cost promise
 
-The baseline runs locally after setup: no paid API, required account/key, telemetry, cloud backend, hosted database or sync. Chat requests go only to localhost Ollama. The app does not silently download models or record audio; voice is not implemented. Chats and settings are saved locally in **unencrypted SQLite**, protected by OS account/file permissions. Logical chat deletion is not forensic erasure; export and full app-data deletion remain planned.
+The baseline runs locally after setup: no paid API, required account/key, telemetry, cloud backend, hosted database or sync. Chat requests go only to localhost Ollama. The app does not silently download models or record audio; voice is opt-in; raw audio stays in bounded memory and the mic is closed during transcription and playback. Spoken transcripts are ordinary local chat text. Chats and settings are saved locally in **unencrypted SQLite**, protected by OS account/file permissions. Logical chat deletion is not forensic erasure; export and full app-data deletion remain planned.
 
 $0 refers to baseline software/service charges. Hardware, electricity, storage and initial connectivity still cost resources; signing/store distribution may cost money. Optional future cloud Gujarati smart mode may require accounts/keys and variable charges, stays off by default, and requires explicit consent before sending personal context. No provider or free tier has been adopted. Full package, native artifact and font terms are in [Costs](docs/PLAN.md#costs).
 
@@ -173,7 +173,7 @@ $0 refers to baseline software/service charges. Hardware, electricity, storage a
 | 0 / 1a / 1b / 1b.2 / Slice A | ✅ Delivered | Planning, shell, orb/Mock chat, developer controls and visual polish |
 | Part 2 / Phase 2 | 🚧 Desktop core built | Local Ollama and persistence; mobile LAN/richer onboarding still open |
 | Part 3 | ✅ README delivered | Honest project page, previews and runner size bounds; Windows sizing unverified |
-| 1b.3 | 🚧 Approval gate | [Engine comparison documented](docs/VOICE_ENGINE_COMPARISON.md); English voice integration not started |
+| 1b.3 | 🚧 Hardware acceptance pending | English voice foundation built and synthetic Linux pipeline measured; live mic/echo and Windows checks pending |
 | 1c | 🗺️ Not started | Broader tests and CI; narrow SQLite Windows workflow exists separately |
 | 3–4 | 🗺️ Planned | Notes/tasks/calendar/habits and reminders, lossless Gujarati text |
 | 5 | 🗺️ Planned | Broader speech evaluation; Gujarati experimental only after real samples |
@@ -222,4 +222,9 @@ Start with [AGENTS](AGENTS.md), [Setup](docs/SETUP.md), [Architecture](docs/ARCH
 | Space Grotesk / Noto Sans Gujarati / JetBrains Mono | 2.000 / 2.106 / 2.211 | Approved SIL OFL 1.1; bundled notices |
 | README banner / palette strip | Original repository assets | No external logo or image source; project licence undecided |
 
-Fonts: [source pins](assets/fonts/SOURCES.json), [Space Grotesk notice](assets/fonts/SpaceGrotesk-OFL.txt), [Gujarati notice](assets/fonts/NotoSansGujarati-OFL.txt), [JetBrains Mono notice](assets/fonts/JetBrainsMono-OFL.txt). [JNI native notice](assets/licenses/JNI-NATIVE.txt). Every resolved package and native SQLite download/hash is recorded in [Costs](docs/PLAN.md#costs). Speech candidates are proposals only until approval; model and voice licences are reviewed independently.
+Fonts: [source pins](assets/fonts/SOURCES.json), [Space Grotesk notice](assets/fonts/SpaceGrotesk-OFL.txt), [Gujarati notice](assets/fonts/NotoSansGujarati-OFL.txt), [JetBrains Mono notice](assets/fonts/JetBrainsMono-OFL.txt). [JNI native notice](assets/licenses/JNI-NATIVE.txt). Every resolved package and native SQLite download/hash is recorded in [Costs](docs/PLAN.md#costs). Whisper tiny.en, Vosk small English and personal non-distributed eSpeak NG are approved. Exact voice sizes/hashes and native notices are recorded in [comparison](docs/VOICE_ENGINE_COMPARISON.md). GPL distribution obligations remain unresolved; models/voices are reviewed independently.
+
+
+English voice measurements on the reference laptop: synthetic greeting STT2.06 s, TTS first audio queued243 ms, end-capture-to-first-queued-audio15.16 s, full round trip21.23 s. These are pipeline/queue timings, not acoustic speaker-onset or human-mic accuracy. The resident-Ollama comparison is slower under its recorded load: [full results and limitations](docs/VOICE_ENGINE_COMPARISON.md#reference-hardware-measurements-and-choice). Voice dependencies are optional local setup for personal builds, not redistributable release assets. Historical gallery images show Mock demo text UI, not verified voice/mic captures; new voice screenshots remain pending manual capture.
+
+Final prerecorded Linux voice recheck: 1.71 s STT, 57 ms to first TTS PCM queued, 9.51 s from end of input to first queued audio, 15.44 s through playback completion. See [measured results](docs/PERFORMANCE.md); these are synthetic-clip measurements, not live microphone acceptance or acoustic onset.

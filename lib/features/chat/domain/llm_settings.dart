@@ -6,7 +6,9 @@ class LlmSettings {
     this.contextLength = 2048,
     this.language = ReplyLanguage.matchInput,
     this.keepAliveSeconds = 30,
+    this.spoken = false,
   });
+  final bool spoken;
   final String model;
   final int contextLength, keepAliveSeconds;
   final ReplyLanguage language;
@@ -17,7 +19,7 @@ class LlmSettings {
               ? ReplyLanguage.gujarati
               : ReplyLanguage.english
         : language;
-    return LlmSettings(language: chosen).systemPrompt;
+    return LlmSettings(language: chosen, spoken: spoken).systemPrompt;
   }
 
   String get systemPrompt =>
@@ -27,5 +29,6 @@ class LlmSettings {
         ReplyLanguage.english => 'Reply in English.',
         ReplyLanguage.gujarati => 'Reply in Gujarati using Gujarati script, never Hindi or Devanagari unless the user explicitly requests it.',
       }} '
-      'Do not pretend to execute tools or access live information.';
+      'Do not pretend to execute tools or access live information. '
+      '${spoken ? 'This is an English voice conversation. Give brief natural spoken answers in one or two sentences. No markdown, code, or lists. When greeted, greet warmly and ask a short follow-up question.' : ''}';
 }

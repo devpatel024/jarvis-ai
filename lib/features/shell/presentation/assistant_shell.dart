@@ -1,10 +1,18 @@
+import 'dart:async';
+import '../../voice/presentation/voice_providers.dart';
+import '../../voice/domain/voice_contracts.dart';
+import '../../voice/presentation/voice_controls.dart';
+
 import 'dart:io';
+
 import '../../../core/storage/local_store.dart';
 import '../../chat/presentation/local_provider_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../app/jarvis_app.dart';
 import '../../../core/design/app_theme.dart';
 import '../../../core/design/aurora_background.dart';
@@ -139,14 +147,21 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
     _reduced =
         ref.watch(reduceMotionProvider) ||
         MediaQuery.disableAnimationsOf(context);
-    _tier = _reduced ? OrbTier.lite : ref.watch(qualityProvider).tier;
+    _tier =
+        _reduced ||
+            ref.watch(voiceSessionProvider.select((s) => s.phase)) ==
+                VoicePhase.transcribing
+        ? OrbTier.lite
+        : ref.watch(qualityProvider).tier;
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.keyK, control: true):
             _commandPalette,
         const SingleActivator(LogicalKeyboardKey.keyN, control: true): _new,
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            ref.read(chatProvider.notifier).stop(),
+        const SingleActivator(LogicalKeyboardKey.escape): () {
+          ref.read(chatProvider.notifier).stop();
+          unawaited(ref.read(voiceSessionProvider.notifier).stop());
+        },
       },
       child: Focus(
         autofocus: true,
@@ -183,6 +198,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
                     ],
                   ),
                   actions: [
+                    const GlobalVoiceIndicator(),
                     if (rail)
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -630,15 +646,18 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       const SizedBox(height: AppTheme.spacing),
       const LocalProviderSettings(),
       const SizedBox(height: AppTheme.spacing),
+      const VoiceSettingsPanel(),
+      const SizedBox(height: AppTheme.spacing),
       Text('Private by design', style: Theme.of(context).textTheme.titleLarge),
       const SizedBox(height: AppTheme.smallSpacing),
       const Text(
-        'Real chat uses only local Ollama. Mock demo is scripted. No cloud, microphone capture, audio or telemetry. English and Gujarati text are supported; Gujarati voice is unverified. Interface language is English.',
+        'Real chat uses only local Ollama. Mock demo is scripted. No cloud or telemetry. English voice is opt-in and uses offline engines; audio stays in memory. English and Gujarati text are supported; Gujarati voice is unverified. Interface language is English.',
       ),
       const SizedBox(height: AppTheme.spacing),
       ExpansionTile(
         title: const Text('Developer'),
         children: [
+          const VoiceDeveloperReadout(),
           SwitchListTile(
             title: const Text('Flutter performance overlay'),
             subtitle: const Text(
@@ -668,7 +687,7 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
             ],
           ),
           const Text(
-            'Demo controls · visual only; microphone and audio remain off.',
+            'Demo controls · visual only; active voice overrides orb previews.',
           ),
           DropdownButtonFormField<OrbState?>(
             key: ValueKey(ref.watch(orbPreviewProvider)),

@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../core/storage/local_store.dart';
 import '../data/ollama_provider.dart';
 import '../domain/llm_settings.dart';

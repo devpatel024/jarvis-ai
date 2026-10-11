@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-11T13:19:14Z",
+  "fixture": "Synthetic eSpeak NG en-us 150 words/min; linear resample to 16 kHz. Not real speaker/microphone accuracy.",
+  "conditions": "One cold STT process per clip, latency includes startup/load/transcription. llama3.2:1b CPU 2 threads/context2048 loaded but idle; no generation or builds during cases. Single run, uncontrolled desktop load.",
+  "memory": "STT process VmRSS and sum of Ollama/runner VmRSS sampled every 50ms, shared pages may double-count. Not total system RAM.",
+  "results": [
+    {
+      "engine": "whisper",
+      "clip": "greeting",
+      "reference": "Hello Jarvis. How are you today?",
+      "transcript": "Hello Jarvis, how are you today?",
+      "audio_seconds": 2.7968125,
+      "latency_seconds": 6.331604924000203,
+      "real_time_factor": 2.2638646401931495,
+      "word_error_rate": 0.0,
+      "word_accuracy_percent": 100.0,
+      "peak_stt_rss_bytes": 183291904,
+      "peak_ollama_rss_bytes": 1491582976
+    },
+    {
+      "engine": "whisper",
+      "clip": "question",
+      "reference": "What should I do first this morning?",
+      "transcript": "What should I do first this morning?",
+      "audio_seconds": 2.37575,
+      "latency_seconds": 5.810209761000806,
+      "real_time_factor": 2.445631805114514,
+      "word_error_rate": 0.0,
+      "word_accuracy_percent": 100.0,
+      "peak_stt_rss_bytes": 183463936,
+      "peak_ollama_rss_bytes": 1491582976
+    },
+    {
+      "engine": "whisper",
+      "clip": "numbers",
+      "reference": "Set a timer for twenty five minutes and remind me at nine thirty.",
+      "transcript": "Set a timer for 25 minutes and remind me at 9.30",
+      "audio_seconds": 4.6729375,
+      "latency_seconds": 7.4502188629994635,
+      "real_time_factor": 1.5943330855590223,
+      "word_error_rate": 0.3076923076923077,
+      "word_accuracy_percent": 69.23076923076923,
+      "peak_stt_rss_bytes": 183664640,
+      "peak_ollama_rss_bytes": 1491582976
+    },
+    {
+      "engine": "vosk",
+      "clip": "greeting",
+      "reference": "Hello Jarvis. How are you today?",
+      "transcript": "the low jarvis how are you today",
+      "audio_seconds": 2.7968125,
+      "latency_seconds": 11.13838346599914,
+      "real_time_factor": 3.9825277761734617,
+      "word_error_rate": 0.3333333333333333,
+      "word_accuracy_percent": 66.66666666666667,
+      "peak_stt_rss_bytes": 190947328,
+      "peak_ollama_rss_bytes": 1491582976
+    },
+    {
+      "engine": "vosk",
+      "clip": "question",
+      "reference": "What should I do first this morning?",
+      "transcript": "what should i do first this morning",
+      "audio_seconds": 2.37575,
+      "latency_seconds": 9.014266107000367,
+      "real_time_factor": 3.794282271703827,
+      "word_error_rate": 0.0,
+      "word_accuracy_percent": 100.0,
+      "peak_stt_rss_bytes": 189480960,
+      "peak_ollama_rss_bytes": 1491451904
+    },
+    {
+      "engine": "vosk",
+      "clip": "numbers",
+      "reference": "Set a timer for twenty five minutes and remind me at nine thirty.",
+      "transcript": "timer for twenty five minutes and reminded me up to i'm thirty",
+      "audio_seconds": 4.6729375,
+      "latency_seconds": 11.877344218999497,
+      "real_time_factor": 2.5417297404468813,
+      "word_error_rate": 0.5384615384615384,
+      "word_accuracy_percent": 46.15384615384615,
+      "peak_stt_rss_bytes": 201457664,
+      "peak_ollama_rss_bytes": 1491451904
+    }
+  ],
+  "resident": {
+    "models": [
+      {
+        "name": "llama3.2:1b",
+        "model": "llama3.2:1b",
+        "size": 1450086235,
+        "digest": "baf6a787fdffd633537aa2eb51cfd54cb93ff08e28040095462bb63daf552878",
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "llama",
+          "families": [
+            "llama"
+          ],
+          "parameter_size": "1.2B",
+          "quantization_level": "Q8_0"
+        },
+        "expires_at": "2026-10-11T19:04:25.333909539+05:30",
+        "size_vram": 0,
+        "context_length": 2048,
+        "runner": "llamacpp"
+      }
+    ]
+  },
+  "resident_after": {
+    "models": []
+  },
+  "number_accuracy_note": "Literal WER penalizes Whisper digit formatting: 25 and 9.30 correspond to twenty five and nine thirty in this time prompt. With these sample-specific formatting substitutions, Whisper numbers match all reference words (100%). Raw WER is retained, not relabeled semantic accuracy."
+}

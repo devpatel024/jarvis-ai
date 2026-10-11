@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/home/dev/Documents/Codex/jarvis-voice-scratch/whisper-build/bin/whisper-cli",
+    "bytes": 1015112,
+    "sha256": "f3e0ad3ee318e090ed8702c55d3af520bdf15c9fb028959e71b57edfeefabe7a",
+    "verification": "computed locally on 2026-10-11, not publisher-verified",
+    "committed": false
+  },
+  {
+    "path": "/home/dev/Documents/Codex/jarvis-voice-scratch/whisper-build/bin/libwhisper.so",
+    "bytes": 646528,
+    "sha256": "f10c24e5a87837cf3957702adbbb84742c9adaae854584f2259c2e65065cbf28",
+    "verification": "computed locally on 2026-10-11, not publisher-verified",
+    "committed": false
+  },
+  {
+    "path": "/home/dev/Documents/Codex/jarvis-voice-scratch/voice-vosk",
+    "bytes": 16488,
+    "sha256": "90eb88e84e3a830a2fd15af48a0e46ec62cb6a137ff61a09cc5e7d250b605342",
+    "verification": "computed locally on 2026-10-11, not publisher-verified",
+    "committed": false
+  },
+  {
+    "path": "/usr/bin/espeak-ng",
+    "bytes": 27088,
+    "sha256": "cabf197cbeed22550b237f38f64f1891e34705f1ed0e33ea5ac451865a27eee6",
+    "verification": "computed locally on 2026-10-11, not publisher-verified",
+    "committed": false
+  }
+]
