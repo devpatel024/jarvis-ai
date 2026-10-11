@@ -51,6 +51,59 @@ Future<void> completeReply(WidgetTester tester) async {
 }
 
 void main() {
+  for (final scale in [1.0, 2.0]) {
+    testWidgets('Every phone suggestion can scroll above composer at $scale', (
+      tester,
+    ) async {
+      tester.platformDispatcher.textScaleFactorTestValue = scale;
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await launch(tester, size: const Size(390, 900));
+      for (final prompt in [
+        'Plan my day',
+        'Show a code example',
+        'નમસ્તે',
+        'મારા દિવસનું આયોજન કરો',
+      ]) {
+        final chip = find.widgetWithText(OutlinedButton, prompt);
+        if (scale == 1) {
+          expect(
+            tester.getRect(chip).bottom,
+            lessThan(
+              tester.getRect(find.byKey(const ValueKey('composer'))).top,
+            ),
+          );
+        }
+        final label = tester.widget<Text>(
+          find.descendant(of: chip, matching: find.text(prompt)),
+        );
+        expect(label.maxLines, 4);
+        expect(label.overflow, TextOverflow.visible);
+        await tester.ensureVisible(chip);
+        await tester.pumpAndSettle();
+        final rect = tester.getRect(chip);
+        final composer = tester.getRect(find.byKey(const ValueKey('composer')));
+        expect(rect.bottom, lessThan(composer.top));
+        expect(rect.left, greaterThanOrEqualTo(0));
+        expect(rect.right, lessThanOrEqualTo(390));
+        expect(chip.hitTestable(), findsOneWidget);
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
+  test('Gujarati fallback and typography weights match across themes', () {
+    final dark = AppTheme.build(Brightness.dark);
+    final light = AppTheme.build(Brightness.light);
+    for (final styles in [
+      (dark.textTheme.bodyMedium, light.textTheme.bodyMedium),
+      (dark.textTheme.titleLarge, light.textTheme.titleLarge),
+      (dark.textTheme.headlineLarge, light.textTheme.headlineLarge),
+    ]) {
+      expect(styles.$1!.fontWeight, styles.$2!.fontWeight);
+      expect(styles.$1!.fontFamilyFallback, contains('NotoSansGujarati'));
+      expect(styles.$2!.fontFamilyFallback, contains('NotoSansGujarati'));
+    }
+  });
+
   for (final width in [390.0, 850.0, 1200.0]) {
     testWidgets('Chat History Settings navigation at $width', (tester) async {
       await launch(tester, size: Size(width, 1000));

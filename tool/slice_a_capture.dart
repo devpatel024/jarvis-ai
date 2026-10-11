@@ -52,7 +52,44 @@ Future<void> _capture() async {
       }
     }
   }
+  for (final brightness in Brightness.values) {
+    await harnessKey.currentState!.scene(
+      AppPalette.aurora,
+      brightness,
+      390,
+      false,
+      scale: 2,
+    );
+    await Future<void>.delayed(const Duration(milliseconds: 1500));
+    // Show the suggestions fully after scrolling the empty state at large text.
+    final scrollable = findScrollable(captureKey.currentContext!);
+    scrollable?.position.jumpTo(scrollable.position.maxScrollExtent);
+    await WidgetsBinding.instance.endOfFrame;
+    final boundary =
+        captureKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+    final image = await boundary.toImage(pixelRatio: 1);
+    final data = await image.toByteData(format: ui.ImageByteFormat.png);
+    await File(
+      '${directory.path}/aurora-${brightness.name}-390-large-text-suggestions.png',
+    ).writeAsBytes(data!.buffer.asUint8List());
+    image.dispose();
+  }
   exit(0);
+}
+
+ScrollableState? findScrollable(BuildContext context) {
+  ScrollableState? result;
+  void visit(Element element) {
+    if (result != null) return;
+    if (element is StatefulElement && element.state is ScrollableState) {
+      final state = element.state as ScrollableState;
+      if (state.position.axis == Axis.vertical) result = state;
+    }
+    element.visitChildren(visit);
+  }
+
+  context.visitChildElements(visit);
+  return result;
 }
 
 class _CaptureHarness extends StatefulWidget {
@@ -64,13 +101,15 @@ class _CaptureHarness extends StatefulWidget {
 class _CaptureHarnessState extends State<_CaptureHarness> {
   ProviderContainer _container = ProviderContainer();
   double _width = 1200;
+  double _scale = 1;
   int _scene = 0;
   Future<void> scene(
     AppPalette palette,
     Brightness brightness,
     double width,
-    bool conversation,
-  ) async {
+    bool conversation, {
+    double scale = 1,
+  }) async {
     final previous = _container;
     final next = ProviderContainer(
       overrides: [
@@ -99,6 +138,7 @@ class _CaptureHarnessState extends State<_CaptureHarness> {
     setState(() {
       _container = next;
       _width = width;
+      _scale = scale;
       _scene++;
     });
     await WidgetsBinding.instance.endOfFrame;
@@ -126,7 +166,10 @@ class _CaptureHarnessState extends State<_CaptureHarness> {
             width: _width,
             height: 900,
             child: MediaQuery(
-              data: MediaQueryData(size: Size(_width, 900)),
+              data: MediaQueryData(
+                size: Size(_width, 900),
+                textScaler: TextScaler.linear(_scale),
+              ),
               child: UncontrolledProviderScope(
                 key: ValueKey(_scene),
                 container: _container,

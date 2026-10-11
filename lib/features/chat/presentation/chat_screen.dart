@@ -170,80 +170,85 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         Expanded(
           child: Stack(
             children: [
-              ListView.builder(
+              Scrollbar(
                 controller: _scroll,
-                padding: const EdgeInsets.all(AppTheme.spacing),
-                itemCount: chat.entries.isEmpty
-                    ? 1
-                    : chat.entries.length + (chat.failure != null ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (chat.entries.isEmpty) {
-                    return _empty(context, state, reduced);
-                  }
-                  if (index == chat.entries.length) {
+                thumbVisibility: chat.entries.isEmpty,
+                child: ListView.builder(
+                  controller: _scroll,
+                  padding: const EdgeInsets.all(AppTheme.spacing),
+                  itemCount: chat.entries.isEmpty
+                      ? 1
+                      : chat.entries.length + (chat.failure != null ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (chat.entries.isEmpty) {
+                      return _empty(context, state, reduced);
+                    }
+                    if (index == chat.entries.length) {
+                      return Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxWidth: AppTheme.readingWidth,
+                          ),
+                          child: GlassPanel(
+                            child: Padding(
+                              padding: const EdgeInsets.all(
+                                AppTheme.messagePadding,
+                              ),
+                              child: Column(
+                                children: [
+                                  const Icon(Icons.error_outline),
+                                  Text(chat.failure!.message),
+                                  TextButton(
+                                    onPressed: ref
+                                        .read(chatProvider.notifier)
+                                        .retry,
+                                    child: const Text('Retry reply'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    final entry = chat.entries[index];
+                    final lastUser =
+                        index ==
+                        chat.entries.lastIndexWhere(
+                          (e) => e.role == MessageRole.user,
+                        );
+                    final lastAssistant =
+                        index == chat.entries.length - 1 &&
+                        entry.role == MessageRole.assistant;
                     return Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(
                           maxWidth: AppTheme.readingWidth,
                         ),
-                        child: GlassPanel(
-                          child: Padding(
-                            padding: const EdgeInsets.all(
-                              AppTheme.messagePadding,
-                            ),
-                            child: Column(
-                              children: [
-                                const Icon(Icons.error_outline),
-                                Text(chat.failure!.message),
-                                TextButton(
-                                  onPressed: ref
-                                      .read(chatProvider.notifier)
-                                      .retry,
-                                  child: const Text('Retry reply'),
-                                ),
-                              ],
-                            ),
-                          ),
+                        child: MessageBubble(
+                          key: ValueKey('${chat.activeId}-$index'),
+                          entry: entry,
+                          index: index,
+                          streaming:
+                              lastAssistant &&
+                              chat.phase == ChatPhase.streaming,
+                          thinking:
+                              lastAssistant && chat.phase == ChatPhase.thinking,
+                          reduced: reduced || widget.tier == OrbTier.lite,
+                          tier: widget.tier,
+                          onEdit: lastUser && !chat.busy
+                              ? () => _edit(entry.text)
+                              : null,
+                          onRegenerate: lastAssistant && !chat.busy
+                              ? ref.read(chatProvider.notifier).regenerate
+                              : null,
                         ),
                       ),
                     );
-                  }
-                  final entry = chat.entries[index];
-                  final lastUser =
-                      index ==
-                      chat.entries.lastIndexWhere(
-                        (e) => e.role == MessageRole.user,
-                      );
-                  final lastAssistant =
-                      index == chat.entries.length - 1 &&
-                      entry.role == MessageRole.assistant;
-                  return Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: AppTheme.readingWidth,
-                      ),
-                      child: MessageBubble(
-                        key: ValueKey('${chat.activeId}-$index'),
-                        entry: entry,
-                        index: index,
-                        streaming:
-                            lastAssistant && chat.phase == ChatPhase.streaming,
-                        thinking:
-                            lastAssistant && chat.phase == ChatPhase.thinking,
-                        reduced: reduced || widget.tier == OrbTier.lite,
-                        tier: widget.tier,
-                        onEdit: lastUser && !chat.busy
-                            ? () => _edit(entry.text)
-                            : null,
-                        onRegenerate: lastAssistant && !chat.busy
-                            ? ref.read(chatProvider.notifier).regenerate
-                            : null,
-                      ),
-                    ),
-                  );
-                },
+                  },
+                ),
               ),
-              if (!_atBottom)
+              if (!_atBottom && chat.entries.isNotEmpty)
                 Positioned(
                   right: AppTheme.messagePadding,
                   bottom: AppTheme.messagePadding,
@@ -379,73 +384,112 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     );
   }
 
-  Widget _empty(BuildContext context, OrbState state, bool reduced) => Center(
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: AppTheme.readingWidth),
-      child: Column(
-        children: [
-          CoreOrb(
-            state: state,
-            reduceMotion: reduced,
-            tier: widget.tier,
-            size: MediaQuery.sizeOf(context).width < AppTheme.railBreakpoint
-                ? AppTheme.phoneOrbSize
-                : AppTheme.heroOrbSize,
-          ),
-          TweenAnimationBuilder<double>(
-            tween: Tween(
-              begin: reduced || widget.tier == OrbTier.lite ? 1 : 0,
-              end: 1,
+  Widget _empty(BuildContext context, OrbState state, bool reduced) => Padding(
+    padding: EdgeInsets.only(
+      top: MediaQuery.sizeOf(context).width >= AppTheme.desktopBreakpoint
+          ? AppTheme.heroTopSpacing
+          : 0,
+      bottom: AppTheme.spacing,
+    ),
+    child: Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: AppTheme.readingWidth),
+        child: Column(
+          children: [
+            CoreOrb(
+              state: state,
+              reduceMotion: reduced,
+              tier: widget.tier,
+              size: MediaQuery.sizeOf(context).width < AppTheme.railBreakpoint
+                  ? AppTheme.phoneOrbSize
+                  : AppTheme.heroOrbSize,
             ),
-            duration: reduced ? Duration.zero : AppTheme.transition,
-            builder: (context, value, child) => Transform.translate(
-              offset: Offset(0, (1 - value) * AppTheme.messagePadding),
-              child: child,
+            TweenAnimationBuilder<double>(
+              tween: Tween(
+                begin: reduced || widget.tier == OrbTier.lite ? 1 : 0,
+                end: 1,
+              ),
+              duration: reduced ? Duration.zero : AppTheme.transition,
+              builder: (context, value, child) => Transform.translate(
+                offset: Offset(0, (1 - value) * AppTheme.messagePadding),
+                child: child,
+              ),
+              child: Text(
+                'A little spark.\nA world of possibilities.',
+                textAlign: TextAlign.center,
+                style:
+                    MediaQuery.sizeOf(context).width < AppTheme.railBreakpoint
+                    ? Theme.of(context).textTheme.headlineMedium
+                    : Theme.of(context).textTheme.headlineLarge,
+              ),
             ),
-            child: Text(
-              'A little spark.\nA world of possibilities.',
+            const SizedBox(height: AppTheme.messagePadding),
+            Text(
+              'Hello / નમસ્તે',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppTheme.smallSpacing),
+            Text(
+              'A local, scripted demo. No AI provider connected.\nNothing is saved. No requests leave your device.',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineLarge,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-          ),
-          const SizedBox(height: AppTheme.messagePadding),
-          Text('Hello / નમસ્તે', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: AppTheme.smallSpacing),
-          Text(
-            'A local, scripted demo. No AI provider connected.\nNothing is saved. No requests leave your device.',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: AppTheme.spacing),
-          Wrap(
-            spacing: AppTheme.smallSpacing,
-            runSpacing: AppTheme.smallSpacing,
-            alignment: WrapAlignment.center,
-            children: [
-              for (final (i, prompt) in [
-                'Plan my day',
-                'Show a code example',
-                'નમસ્તે',
-                'મારા દિવસનું આયોજન કરો',
-              ].indexed)
-                ActionChip(
-                  avatar: Icon(
-                    [
-                      Icons.wb_sunny_outlined,
-                      Icons.code,
-                      Icons.auto_awesome_outlined,
-                      Icons.explore_outlined,
-                    ][i],
+            const SizedBox(height: AppTheme.spacing),
+            Wrap(
+              spacing: AppTheme.smallSpacing,
+              runSpacing: AppTheme.smallSpacing,
+              alignment: WrapAlignment.center,
+              children: [
+                for (final (i, prompt) in [
+                  'Plan my day',
+                  'Show a code example',
+                  'નમસ્તે',
+                  'મારા દિવસનું આયોજન કરો',
+                ].indexed)
+                  OutlinedButton.icon(
+                    icon: Icon(
+                      [
+                        Icons.wb_sunny_outlined,
+                        Icons.code,
+                        Icons.auto_awesome_outlined,
+                        Icons.explore_outlined,
+                      ][i],
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: JarvisColors.of(context).ink,
+                      backgroundColor: JarvisColors.of(
+                        context,
+                      ).accents[i % 3].withValues(alpha: AppTheme.chipTint),
+                      padding: const EdgeInsets.all(AppTheme.smallSpacing),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.controlRadius,
+                        ),
+                      ),
+                    ),
+                    label: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth:
+                            MediaQuery.sizeOf(context).width <
+                                AppTheme.railBreakpoint
+                            ? MediaQuery.sizeOf(context).width -
+                                  AppTheme.spacing * 2 -
+                                  AppTheme.compactOrbSize
+                            : AppTheme.readingWidth / 2,
+                      ),
+                      child: Text(
+                        prompt,
+                        softWrap: true,
+                        maxLines: 4,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ),
+                    onPressed: () => _send(prompt),
                   ),
-                  backgroundColor: JarvisColors.of(
-                    context,
-                  ).accents[i % 3].withValues(alpha: AppTheme.chipTint),
-                  label: Text(prompt),
-                  onPressed: () => _send(prompt),
-                ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );

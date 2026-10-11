@@ -1,6 +1,6 @@
 # JARVIS plan
 
-Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: UI redesign Slice A only, replacing earlier polish. Stop for user feedback after Slice A. Voice 1b.3, 1c and Phase 2 are not authorized in this session.
+Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: accepted Slice A follow-up in three ordered parts, each committed and pushed: (1) small UI fixes, (2) Phase 2 real local Ollama chat and approved persistence, (3) GitHub README redesign. Voice 1b.3 and 1c remain excluded. Stop at a clean completed part if context/credits are low and record the exact resume point in HANDOFF.
 
 ## Structure and decisions
 
@@ -143,3 +143,15 @@ Quality: automatic starts Lite after reference-machine measurements showed the h
 All conversations/settings/scratchpad are session only. Switching/new chat cancels active streaming, retaining partial text. Rename is local; delete confirms exact chat and stops its active job. Message copy explicitly writes clipboard; regeneration replaces the latest assistant reply, edit replaces the last user/reply pair. No actual AI/tool execution, network, telemetry, persistence or audio.
 
 Slice A verification evidence: reference-machine profile and 24 native synthetic viewport screenshots are documented in PERFORMANCE and screenshots/README. Linux selects built-in Skia after observed Impeller stalls; no new native library/tool. Final forced-tier raster p95 Ultra 90.146 / Balanced 85.208 / Lite 84.876 ms, peak app RSS 223.6 MiB. 30/60fps NOT MET; Lite is the conservative start and reduced motion is fully static. These limits remain release/performance gates rather than marketing claims.
+
+### Accepted Slice A follow-up — Part 1 (2026-10-11)
+
+Phone hero is 120 px with headlineMedium typography; empty-state suggestions wrap within available width and remain in the scrollable content above the composer, with a visible scrollbar. At 390 px, all four suggestions fit above the composer at normal text and can be scrolled fully into view at 2× text; regression tests check bounds and hit testing; button layout grows with wrapped labels rather than clipping multi-line Gujarati inside a fixed chip. Desktop empty-state hero has 64 px top breathing room, independent of animation/state. Bundled variable fonts explicitly register weights 300–700 for consistent Flutter weight selection across scripts/themes; no font bytes, sources, licenses or dependency versions change. Space Grotesk fvar default is 300 (range 300–700), Noto Sans Gujarati default 400 (100–900), JetBrains Mono default 400 (100–800). Existing font approvals/Costs apply; $0, zero downloads. Text theme weights/fallbacks match dark/light in tests.
+
+Part 2 pending: package-specific approval required by latest user request before adding any package, even standing permissive approval. Proposed Drift 2.35.2 MIT, sqlite3 3.7.0 MIT / SQLite public domain, path_provider 2.1.6 BSD-3-Clause; official pub.dev pages verified 2026-10-11, not installed. Audit resolved transitive/native licenses, sizes and lockfile before adoption. Ollama HTTP can use dart:io without a package. Existing models must not be pulled again.
+
+Conflicts to preserve: PLAN places export/complete deletion in Phase 6, so those remain there pending schedule clarification; Phase 2 requires alternatives in the model comparison, while newest request makes testing alternatives contingent on measured poor Gujarati results and approval. Do not silently download alternatives or declare final defaults without satisfying that gate. Current 1b/3b selection remains the provisional hardware baseline. No voice or 1c work is authorized.
+
+Part 1 verification completed: format 24 files / 0 changes, analyze no issues, 35 tests passed, Linux profile capture/release builds passed, 26 final native screenshots (24 refreshed + two 2× phone captures), diff whitespace check clean. Part 1 is the context-limited stopping point; Part 2 awaits its package approval, Part 3 remains queued.
+
+Part 1 is completed and committed locally; GitHub push remains blocked by stalled upload/response (bounded retry exit 124). Remote main verified still at accepted Slice A a823276. Retry and verify the push before Part 2. No failed push is claimed successful.

@@ -22,9 +22,36 @@ flutter:
     - family: SpaceGrotesk
       fonts:
         - asset: assets/fonts/SpaceGrotesk.ttf
+          weight: 300
+        - asset: assets/fonts/SpaceGrotesk.ttf
+          weight: 400
+        - asset: assets/fonts/SpaceGrotesk.ttf
+          weight: 500
+        - asset: assets/fonts/SpaceGrotesk.ttf
+          weight: 600
+        - asset: assets/fonts/SpaceGrotesk.ttf
+          weight: 700
     - family: NotoSansGujarati
       fonts:
         - asset: assets/fonts/NotoSansGujarati.ttf
+          weight: 300
+        - asset: assets/fonts/NotoSansGujarati.ttf
+          weight: 400
+        - asset: assets/fonts/NotoSansGujarati.ttf
+          weight: 500
+        - asset: assets/fonts/NotoSansGujarati.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSansGujarati.ttf
+          weight: 700
     - family: JetBrainsMono
       fonts:
         - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 300
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 400
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 500
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 600
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 700

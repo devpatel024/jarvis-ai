@@ -66,9 +66,10 @@ abstract final class AppTheme {
       focusWidth = 2.0;
   static const spacing = 24.0, smallSpacing = 8.0, messagePadding = 16.0;
   static const radius = 24.0, controlRadius = 16.0, pillRadius = 40.0;
+  static const heroTopSpacing = 64.0;
   static const orbSize = 144.0,
       heroOrbSize = 260.0,
-      phoneOrbSize = 190.0,
+      phoneOrbSize = 120.0,
       compactOrbSize = 62.0;
   static const railWidth = 88.0, sidebarWidth = 224.0, readingWidth = 780.0;
   static const desktopBreakpoint = 1100.0, railBreakpoint = 700.0;

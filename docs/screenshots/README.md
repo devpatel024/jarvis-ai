@@ -1,4 +1,4 @@
-# Slice A native captures
+# Slice A native captures (Part 1 refreshed)
 
 Captured from the actual JarvisApp in a Linux profile build using the final Skia default, using synthetic English/Gujarati messages only. Every palette has both dark/light variants, desktop 1200×900 empty/chat captures. Aurora also has phone-layout 390×900 empty/chat captures. These are constrained native Linux renders, not physical Android or Windows screenshots. Captures force Lite + reduced motion for repeatability; animation performance is measured separately. No external images or runtime fonts.
 
@@ -19,3 +19,5 @@ Reproduce from repo root:
 ```
 
 Review all generated PNGs after code/font changes. Phone empty states and conversations can scroll; code fences use horizontal scrolling rather than clipping long lines. Timestamp values reflect capture time; no personal user content is captured.
+
+Part 1 refresh: all original views regenerated for explicit font weight registration and empty-state layout changes. Additional 390×900, 2× text captures scroll to the suggestions: [dark](aurora-dark-390-large-text-suggestions.png) and [light](aurora-light-390-large-text-suggestions.png). These show the scroll-accessible layout rather than promising every chip fits simultaneously with the hero at large text.
