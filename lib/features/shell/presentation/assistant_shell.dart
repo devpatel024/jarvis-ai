@@ -26,63 +26,106 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       return Scaffold(
         appBar: AppBar(title: const Text('JARVIS')),
         body: SafeArea(
-          child: Row(children: [
-            if (wide) NavigationRail(
-              selectedIndex: _page,
-              onDestinationSelected: (value) => setState(() => _page = value),
-              labelType: NavigationRailLabelType.all,
-              destinations: const [
-                NavigationRailDestination(icon: Icon(Icons.home_outlined), label: Text('Home')),
-                NavigationRailDestination(icon: Icon(Icons.settings_outlined), label: Text('Settings')),
-              ],
-            ),
-            Expanded(child: Center(child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 960),
-              child: ListView(padding: const EdgeInsets.all(AppTheme.spacing), children: content),
-            ))),
-          ]),
+          child: Row(
+            children: [
+              if (wide)
+                NavigationRail(
+                  selectedIndex: _page,
+                  onDestinationSelected: (value) =>
+                      setState(() => _page = value),
+                  labelType: NavigationRailLabelType.all,
+                  destinations: const [
+                    NavigationRailDestination(
+                      icon: Icon(Icons.home_outlined),
+                      label: Text('Home'),
+                    ),
+                    NavigationRailDestination(
+                      icon: Icon(Icons.settings_outlined),
+                      label: Text('Settings'),
+                    ),
+                  ],
+                ),
+              Expanded(
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 960),
+                    child: ListView(
+                      padding: const EdgeInsets.all(AppTheme.spacing),
+                      children: content,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        bottomNavigationBar: wide ? null : NavigationBar(
-          selectedIndex: _page,
-          onDestinationSelected: (value) => setState(() => _page = value),
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
-            NavigationDestination(icon: Icon(Icons.settings_outlined), label: 'Settings'),
-          ],
-        ),
+        bottomNavigationBar: wide
+            ? null
+            : NavigationBar(
+                selectedIndex: _page,
+                onDestinationSelected: (value) => setState(() => _page = value),
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    label: 'Home',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.settings_outlined),
+                    label: 'Settings',
+                  ),
+                ],
+              ),
       );
     },
   );
 
   List<Widget> _home(BuildContext context) => [
-    Text('Your space. Your assistant.', style: Theme.of(context).textTheme.headlineMedium),
+    Text(
+      'Your space. Your assistant.',
+      style: Theme.of(context).textTheme.headlineMedium,
+    ),
     const SizedBox(height: 16),
-    const Card(child: Padding(padding: EdgeInsets.all(20), child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('No AI provider connected'),
-        SizedBox(height: 8),
-        Text('This shell runs locally. Chat arrives in Phase 1b; Ollama setup arrives in Phase 2.'),
-        SizedBox(height: 8),
-        Text('Microphone off • No requests sent'),
-      ],
-    ))),
+    const Card(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('No AI provider connected'),
+            SizedBox(height: 8),
+            Text(
+              'This shell runs locally. Chat arrives in Phase 1b; Ollama setup arrives in Phase 2.',
+            ),
+            SizedBox(height: 8),
+            Text('Microphone off • No requests sent'),
+          ],
+        ),
+      ),
+    ),
     const SizedBox(height: 24),
     Text('Text input', style: Theme.of(context).textTheme.titleLarge),
     const SizedBox(height: 8),
-    const Text('English and Gujarati text can be entered here. This is a session-only scratchpad; it is not saved.'),
+    const Text(
+      'English and Gujarati text can be entered here. This is a session-only scratchpad; it is not saved.',
+    ),
     const SizedBox(height: 12),
     TextField(
       controller: _text,
       minLines: 4,
       maxLines: 12,
-      decoration: const InputDecoration(labelText: 'Scratchpad', hintText: 'Hello / નમસ્તે'),
+      decoration: const InputDecoration(
+        labelText: 'Scratchpad',
+        hintText: 'Hello / નમસ્તે',
+      ),
     ),
     const SizedBox(height: 8),
-    Align(alignment: Alignment.centerLeft, child: TextButton(
-      onPressed: _text.clear,
-      child: const Text('Clear scratchpad'),
-    )),
+    Align(
+      alignment: Alignment.centerLeft,
+      child: TextButton(
+        onPressed: _text.clear,
+        child: const Text('Clear scratchpad'),
+      ),
+    ),
   ];
 
   List<Widget> _settings(BuildContext context) => [
@@ -101,10 +144,16 @@ class _AssistantShellState extends ConsumerState<AssistantShell> {
       },
     ),
     const SizedBox(height: 24),
-    const Text('Privacy: this shell stores no data and makes no network requests. Theme and scratchpad reset when the app closes.'),
+    const Text(
+      'Privacy: this shell stores no data and makes no network requests. Theme and scratchpad reset when the app closes.',
+    ),
     const SizedBox(height: 16),
-    const Text('Voice is unavailable in this phase. English voice is planned for Phase 5. Gujarati voice requires measured evaluation before it can be offered.'),
+    const Text(
+      'Voice is unavailable in this phase. English voice is planned for Phase 5. Gujarati voice requires measured evaluation before it can be offered.',
+    ),
     const SizedBox(height: 16),
-    const Text('Interface language: English. Gujarati interface localization is planned for a later phase.'),
+    const Text(
+      'Interface language: English. Gujarati interface localization is planned for a later phase.',
+    ),
   ];
 }

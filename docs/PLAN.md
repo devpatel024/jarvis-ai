@@ -47,7 +47,7 @@ Standing approval from user (2026-10-10): Flutter/Dart SDK, pub.dev packages ver
 
 English is the baseline including voice. Gujarati text is required from Phase 1: font coverage, Unicode input/rendering and lossless note/task storage when Phase 3 ships; UI localization later. No Gujarati voice claim before real reference-hardware audio tests. Phase 5 compares licensed Whisper sizes, Vosk Gujarati if available, Piper/espeak-ng/OS voices, reports accuracy/latency and labels unsatisfactory voice experimental. Phase 2 compares 1b/3b with one or two small local alternatives on matched English/Gujarati prompts before final defaults. No silent cloud fallback; any optional cloud setting off by default with explicit consent.
 
-Current 1a status: source scaffold/shell prepared, execution unverified. SDK absent; official release metadata request failed. No SDK/native/model download or system installation performed. Native runners cannot yet be generated. Do not mark 1a complete or advance to 1b until runners/checks are resolved.
+Current 1a status: committed and pushed at 4a0e066; user reports Linux build/run success. Actual checkout /home/dev/projects/jarvis-ai, existing Flutter 3.47.7 / Dart 3.13.5 verified 2026-10-11. This follow-up fixes shell widget coverage only; no 1b work. Gujarati Unicode editing is covered by tests; glyph shaping/font quality and reference-hardware performance still require visual/manual checks.
 
 ## Costs
 
@@ -55,8 +55,9 @@ Official sources reviewed 2026-10-10. Candidate versions are discovery snapshots
 
 | Component / version | Role/status/platform | License and distribution obligations | Personal cost, needs/limits | Source / verification |
 |---|---|---|---|---|
-| Flutter/Dart, version unselected | Required SDK/build tooling; W/L/A/iOS | Flutter BSD-3; retain notices; Dart and engine third-party notices reviewed at pin | $0; SDK download/disk size pending exact archive; target native tools separate | https://docs.flutter.dev/install/archive ; https://docs.flutter.dev/resources/faq |
-| flutter_riverpod 3.4.3 | Required proposed state/composition; W/L/A/iOS | MIT; retain copyright/license | $0; package and transitives sizes pending | https://pub.dev/packages/flutter_riverpod |
+| Flutter 3.47.7 / Dart 3.13.5 | Required SDK/build tooling; W/L/A/iOS | Flutter BSD-3; retain notices; Dart and engine third-party notices reviewed at pin | $0; SDK download/disk size pending exact archive; target native tools separate | https://docs.flutter.dev/install/archive ; https://docs.flutter.dev/resources/faq |
+| flutter_riverpod 3.4.3 | Required installed state/composition; W/L/A/iOS | MIT; retain copyright/license | $0 personal use, no account/key or service quota; existing local package, no new download | https://pub.dev/packages/flutter_riverpod/versions/3.4.3 ; lockfile and installed LICENSE verified 2026-10-11 |
+| flutter_lints 6.0.0 | Required installed dev-only analysis; all Dart/Flutter targets | BSD-3-Clause; retain copyright/license/disclaimer, no endorsement | $0 personal use; existing local package; no runtime service or model asset; transitive lints 6.1.0 BSD-3-Clause | https://pub.dev/packages/flutter_lints/versions/6.0.0 ; lockfile and installed LICENSE verified 2026-10-11 |
 | drift 2.35.2 | Required proposed persistence; W/L/A/iOS | MIT; retain notices; SQLite native dependency review separate | $0; generators/native runtime unselected | https://pub.dev/packages/drift |
 | flutter_secure_storage 11.2.0 | Required proposed secure settings; W/L/A/iOS | BSD-3; retain notices; federated packages separate audit | $0; Android API 23+ per docs; Linux keyring/native prerequisites pending | https://pub.dev/packages/flutter_secure_storage |
 | SDK scaffold/test/lint, generators and transitive packages: unselected | Required only when introduced | Every resolved artifact/license pending; standing permissive-package approval; exception gates apply | $0 baseline requirement; sizes pending lockfile; no downloads now | package manifests/lockfile audit required |
@@ -89,7 +90,7 @@ Default CI synthetic tests only, no models or credentials. PR checks on Linux, e
 
 | Component/version | License/cost | Approval/status/obligations |
 |---|---|---|
-| flutter_riverpod 3.4.3 | MIT; $0 | Standing pre-approval; official https://pub.dev/packages/flutter_riverpod reviewed 2026-10-10; retain notice; manifest pin only, no download/lockfile yet; transitives unresolved. |
-| flutter/flutter_test SDK packages, version pending SDK | BSD-3 plus bundled notices; $0 | Standing SDK approval; exact SDK archive/version/size unresolved, download gate applies; not installed. |
+| flutter_riverpod 3.4.3 | MIT; $0 | Standing pre-approval; official https://pub.dev/packages/flutter_riverpod reviewed 2026-10-10; retain notice; installed package and existing lockfile verified 2026-10-11; no lockfile changes in this follow-up. |
+| flutter/flutter_test SDK packages, Flutter 3.47.7 | BSD-3 plus bundled notices; $0 | Standing SDK approval; existing SDK version verified 2026-10-11; no download performed, download gate still applies to future installations. |
 
 Existing llama3.2 tags observed at 1.3/2.0 GB still require explicit download approval despite model pre-approval. Gujarati font asset not selected: no assumption of bundled font coverage, no unapproved font download; actual shaping/glyph QA is a 1a completion gate. OFL fonts would need separate approval under the current policy.
