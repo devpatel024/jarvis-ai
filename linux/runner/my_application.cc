@@ -14,6 +14,43 @@ struct _MyApplication {
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
+// GTK sizes are logical pixels. Leave room for decorations and desktop panels.
+static void apply_window_bounds(GtkWindow* window, gboolean initial) {
+  GdkDisplay* display = gtk_widget_get_display(GTK_WIDGET(window));
+  GdkWindow* native = gtk_widget_get_window(GTK_WIDGET(window));
+  GdkMonitor* monitor = native ? gdk_display_get_monitor_at_window(display, native)
+                               : gdk_display_get_primary_monitor(display);
+  if (monitor == nullptr && gdk_display_get_n_monitors(display) > 0) {
+    monitor = gdk_display_get_monitor(display, 0);
+  }
+  GdkRectangle area = {0, 0, 1312, 880};
+  if (monitor != nullptr) gdk_monitor_get_workarea(monitor, &area);
+  const gint max_width = MAX(1, area.width - 32);
+  const gint max_height = MAX(1, area.height - 80);
+  GdkGeometry bounds = {};
+  bounds.min_width = MIN(360, max_width);
+  bounds.min_height = MIN(640, max_height);
+  bounds.max_width = max_width;
+  bounds.max_height = max_height;
+  gtk_window_set_geometry_hints(window, nullptr, &bounds,
+      static_cast<GdkWindowHints>(GDK_HINT_MIN_SIZE | GDK_HINT_MAX_SIZE));
+  if (initial) {
+    gtk_window_set_default_size(window, MIN(1280, max_width), MIN(800, max_height));
+    gtk_window_set_position(window, GTK_WIN_POS_CENTER);
+  } else {
+    gint width, height;
+    gtk_window_get_size(window, &width, &height);
+    if (width > max_width || height > max_height) {
+      gtk_window_resize(window, MIN(width, max_width), MIN(height, max_height));
+    }
+  }
+}
+
+static gboolean window_configure_cb(GtkWidget* window, GdkEventConfigure*, gpointer) {
+  apply_window_bounds(GTK_WINDOW(window), FALSE);
+  return FALSE;
+}
+
 // Called when first Flutter frame received.
 static void first_frame_cb(MyApplication* self, FlView* view) {
   gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
@@ -52,7 +89,8 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "JARVIS");
   }
 
-  gtk_window_set_default_size(window, 1280, 720);
+  apply_window_bounds(window, TRUE);
+  g_signal_connect(window, "configure-event", G_CALLBACK(window_configure_cb), nullptr);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   // Reference HD 520: measured Impeller OpenGLESSDF raster stalls were severe.

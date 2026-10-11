@@ -1,5 +1,10 @@
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include "win32_window.h"
 
+#include <algorithm>
 #include <dwmapi.h>
 #include <flutter_windows.h>
 
@@ -134,10 +139,18 @@ bool Win32Window::Create(const std::wstring& title,
   UINT dpi = FlutterDesktopGetDpiForMonitor(monitor);
   double scale_factor = dpi / 96.0;
 
+  MONITORINFO info = {sizeof(MONITORINFO)};
+  if (!GetMonitorInfo(monitor, &info)) return false;
+  RECT frame = {0, 0, Scale(size.width, scale_factor), Scale(size.height, scale_factor)};
+  AdjustWindowRectEx(&frame, WS_OVERLAPPEDWINDOW, FALSE, 0);
+  const int width = std::min<int>(frame.right - frame.left, info.rcWork.right - info.rcWork.left);
+  const int height = std::min<int>(frame.bottom - frame.top, info.rcWork.bottom - info.rcWork.top);
+  const int left = info.rcWork.left + (info.rcWork.right - info.rcWork.left - width) / 2;
+  const int top = info.rcWork.top + (info.rcWork.bottom - info.rcWork.top - height) / 2;
+
   HWND window = CreateWindow(
       window_class, title.c_str(), WS_OVERLAPPEDWINDOW,
-      Scale(origin.x, scale_factor), Scale(origin.y, scale_factor),
-      Scale(size.width, scale_factor), Scale(size.height, scale_factor),
+      left, top, width, height,
       nullptr, nullptr, GetModuleHandle(nullptr), this);
 
   if (!window) {
@@ -187,12 +200,39 @@ Win32Window::MessageHandler(HWND hwnd,
       }
       return 0;
 
+    case WM_GETMINMAXINFO: {
+      auto bounds = reinterpret_cast<MINMAXINFO*>(lparam);
+      MONITORINFO info = {sizeof(MONITORINFO)};
+      if (GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &info)) {
+        const UINT dpi = FlutterDesktopGetDpiForMonitor(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST));
+        RECT minimum = {0, 0, Scale(360, dpi / 96.0), Scale(640, dpi / 96.0)};
+        AdjustWindowRectEx(&minimum, WS_OVERLAPPEDWINDOW, FALSE, 0);
+        const LONG width = info.rcWork.right - info.rcWork.left;
+        const LONG height = info.rcWork.bottom - info.rcWork.top;
+        bounds->ptMinTrackSize.x = std::min<LONG>(minimum.right - minimum.left, width);
+        bounds->ptMinTrackSize.y = std::min<LONG>(minimum.bottom - minimum.top, height);
+        bounds->ptMaxTrackSize = {width, height};
+        bounds->ptMaxSize = {width, height};
+        bounds->ptMaxPosition = {info.rcWork.left - info.rcMonitor.left,
+                                info.rcWork.top - info.rcMonitor.top};
+      }
+      return 0;
+    }
     case WM_DPICHANGED: {
       auto newRectSize = reinterpret_cast<RECT*>(lparam);
       LONG newWidth = newRectSize->right - newRectSize->left;
       LONG newHeight = newRectSize->bottom - newRectSize->top;
 
-      SetWindowPos(hwnd, nullptr, newRectSize->left, newRectSize->top, newWidth,
+      MONITORINFO info = {sizeof(MONITORINFO)};
+      int left = newRectSize->left;
+      int top = newRectSize->top;
+      if (GetMonitorInfo(MonitorFromRect(newRectSize, MONITOR_DEFAULTTONEAREST), &info)) {
+        newWidth = std::min<LONG>(newWidth, info.rcWork.right - info.rcWork.left);
+        newHeight = std::min<LONG>(newHeight, info.rcWork.bottom - info.rcWork.top);
+        left = std::max<LONG>(info.rcWork.left, std::min<LONG>(left, info.rcWork.right - newWidth));
+        top = std::max<LONG>(info.rcWork.top, std::min<LONG>(top, info.rcWork.bottom - newHeight));
+      }
+      SetWindowPos(hwnd, nullptr, left, top, newWidth,
                    newHeight, SWP_NOZORDER | SWP_NOACTIVATE);
 
       return 0;

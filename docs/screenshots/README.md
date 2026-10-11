@@ -21,3 +21,6 @@ Reproduce from repo root:
 Review all generated PNGs after code/font changes. Phone empty states and conversations can scroll; code fences use horizontal scrolling rather than clipping long lines. Timestamp values reflect capture time; no personal user content is captured.
 
 Part 1 refresh: all original views regenerated for explicit font weight registration and empty-state layout changes. Additional 390×900, 2× text captures scroll to the suggestions: [dark](aurora-dark-390-large-text-suggestions.png) and [light](aurora-light-390-large-text-suggestions.png). These show the scroll-accessible layout rather than promising every chip fits simultaneously with the hero at large text.
+
+
+Part 3 README uses optimized derivatives in [assets/readme](../../assets/readme/SOURCES.json), with originals unchanged here. Every derivative is explicitly labeled historical scripted demo; none is real Ollama evidence. Current persistence/provider labels differ from these earlier UI captures.

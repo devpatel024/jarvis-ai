@@ -1,6 +1,6 @@
 # JARVIS plan
 
-Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: accepted Slice A follow-up in three ordered parts, each committed locally for the user to push: (1) small UI fixes, (2) Phase 2 real local Ollama chat and approved persistence, (3) GitHub README redesign. Voice 1b.3 and 1c remain excluded. Stop at a clean completed part if context/credits are low and record the exact resume point in HANDOFF.
+Phase 0 planning completed and committed. Earlier missing-repository/SDK blockers were resolved in the actual checkout at /home/dev/projects/jarvis-ai. Phase 1a and its test closeout are committed/pushed (4a0e066, df45f55). Phase 1b core is delivered at b6a6030. Phase 1b.2 is delivered at 8e6f557. Current authorization: accepted Slice A follow-up in three ordered parts, each committed locally for the user to push: (1) small UI fixes, (2) Phase 2 real local Ollama chat and approved persistence, (3) GitHub README redesign. Latest authorization adds bounded Linux/Windows runner sizing to Part 3, followed by Phase 1b.3 Step 1 research only; voice downloads/integration require approval, and 1c remains excluded. Stop at a clean completed part if context/credits are low and record the exact resume point in HANDOFF.
 
 ## Structure and decisions
 
@@ -40,7 +40,7 @@ Execute one authorized phase per next. If a phase is too large, propose bounded 
 | 10 | Physical Android widget/share/camera/notifications; permission/lifecycle checks; iOS source/configuration review with builds pending without macOS. |
 | 11 | Opt-in proactivity and automations with previews, cooldowns/dedup/quiet hours; local synthetic evaluation, feedback; optional external information only after terms approval and outage fallback. |
 | 12 | No-key/account end-to-end offline test after setup; reference-hardware accessibility/performance and disk/RAM/latency report; runnable Linux/Windows bundles, APK/AAB; signing/store costs separated. |
-| 13 | Only explicitly requested optional cloud adapters, disabled by default; consent and cost controls; local embeddings stay local; no fallback. |
+| 13 | Only explicitly requested optional cloud adapters, including planned Gujarati cloud smart mode: off by default, explicit destination/data consent and cost/account/key approval, local embeddings stay local; no silent fallback. |
 
 All implementation gates: format, flutter analyze, flutter test, relevant integration/build checks, resolve failures, review diff/secret exposure, update records, local focused commit, stop. No fake successes or unfinished controls in delivered features.
 
@@ -254,3 +254,21 @@ Comparison only; do not change app defaults without asking. Both licenses checke
 | qwen2.5:1.5b Q4_K_M | Apache-2.0; $0; explicitly approved download/test only | https://ollama.com/library/qwen2.5:1.5b ; all layers 986,061,405; largest 986,048,512; 65ec06548149b04c096a120e4a6da9d4017ea809c91734ea5631e89f96ddc57b |
 | qwen3:0.6b Q4_K_M | Apache-2.0; $0; explicitly approved download/test only; thinking disabled | https://ollama.com/library/qwen3:0.6b ; all layers 522,653,277; largest 522,640,096; 7df6b6e09427a769808717c0a93cadc4ae99ed4eb8bf5ca557c90846becea435 |
 | Python 3.14.4 (existing) | PSF License; $0; existing developer-only benchmark interpreter, no download/adoption as app dependency | Host version verified; stdlib only benchmark tool; no pip packages or system installs |
+
+## Part 3 status — 2026-10-11
+
+Original Aurora SVG hero and palette strip, GitHub-supported README with explicit anchors, dark/light picture and optimized WebP gallery. Previews retain original captures and synthetic demo provenance, each under 40 KB. No real Ollama screenshot claim: native app capture unavailable in this restricted session. English 1b/3b TTFT/tokens-per-second/RSS evidence was already complete in PERFORMANCE and is reproduced in README; no unnecessary model rerun/download. Notes/tasks remain Phase 3 planned, despite latest shorthand asking to describe their Gujarati support as already built; lossless Gujarati chat/text is built, notes/tasks support is required when implemented. Optional cloud Gujarati smart mode is roadmap-only in Phase 13, off by default and consent/cost/account gated. Defaults unchanged.
+
+Native runner exception explicitly authorized by user: about 1280×800 client request, about 360×640 minimum subject to smaller work area, capped to current usable monitor geometry. Linux uses logical GTK units and decoration margin; Windows uses monitor DPI/work area with normal/min/max tracking and DPI-change clamps. Window manager rules may override Linux hints; Windows runtime/multi-monitor checks pending. No new app dependency or project LICENSE. Part 3 prepared in a writable local clone because session filesystem policy denied writes to original checkout; user applies the commit bundle before pushing.
+
+### Part 3 asset and tooling Costs
+
+| Component / version | Terms, status and personal cost | Source / verification |
+|---|---|---|
+| Original README banner.svg / palettes.svg | Original code, project licence undecided; $0, required documentation assets, SVG under 60 KB; no external logos/fonts downloaded | Repo assets/readme, 2026-10-11; palette values from AppTheme |
+| Six optimized WebP previews | Existing native scripted-demo screenshots; project licence undecided; $0, no remote media; 14.7–37.7 KB each; no UI content alteration | assets/readme/SOURCES.json hashes; originals retained in docs/screenshots |
+| Pillow 12.1.1 (existing interpreter library) | Existing local developer-only optimization tool, no package added to app or download; MIT-CMU Pillow licence, $0 | Host PIL version / installed metadata; PNG→WebP resize/encoding only |
+| Bundled sharp 0.35.5 (existing Codex runtime) | Apache-2.0 wrapper, bundled libvips LGPL-2.1-or-later and renderer notices; existing offline developer tooling only, not installed/adopted/distributed with JARVIS; $0 | Existing runtime package version/notices; local SVG raster QA only, no new binary/download |
+| Static shields.io badge URLs | Optional README rendering only, no runtime app request or service dependency; $0, hosted availability not guaranteed | Explicit static labels; native GitHub display remains manual |
+
+Verification: Dart formatting unchanged, analyzer clean, Linux release build passed using copies of existing SDK/pub/native caches. Flutter tests attempted but all harnesses blocked before execution by EPERM binding 127.0.0.1; not a passing test run. Prior Part 2 61-test result remains historical. README paths/anchors/image metadata/SVG XML reviewed, raster assets inspected locally. Windows build/runtime, actual native window fit and live Ollama capture NOT RUN under current platform/access limits. GitHub banner/badges/Mermaid/theme switching/manual TOC checks pending after user push.

@@ -1,3 +1,17 @@
+# Handoff — Part 3 README and bounded runner sizing
+
+2026-10-11. Latest Part 3 authorized including runner changes. Original checkout is read-only under current session permissions; no additional access was granted. Work is in a local writable clone with existing history and identity, to be delivered as a commit bundle for user application. No push. Part 2 base is 3473589aa4057ad6fa42eded7304005d4db27f90. No package/model download or voice installation.
+
+README now has original Aurora banner/palette SVGs, static badges, explicit TOC anchors, dark/light picture, optimized five-palette gallery, honest feature/platform/language statuses, Mermaid of current layers, setup, both English Llama benchmark rows, measured frame limits, privacy, roadmap and credits. Demo screenshots clearly historical/synthetic; real Ollama capture unavailable. Notes/tasks are planned, not claimed built. Optional Gujarati cloud smart mode roadmap-only/off-by-default/explicit consent. Project licence remains undecided; ask user rather than adding LICENSE. AGENTS now requires phase-end README status/roadmap/screenshots upkeep.
+
+Runners request about 1280×800, min about 360×640 when screen permits, capped to usable monitor bounds. Linux respects logical GTK coordinates and margins; Windows clamps DPI-scaled normal sizes/min/max/DPI-change rectangles. Linux release build and analyzer PASS; Dart format 35 files unchanged. Tests attempted but NOT EXECUTED: Flutter tester cannot bind 127.0.0.1 socket (EPERM) under this session network policy. Use `flutter test --no-pub` on unrestricted local machine; do not substitute the previous 61-pass result for this run. Native graphics capture/window walkthrough NOT RUN (restricted socket/native display access), Windows build/runtime NOT RUN (Linux host). English 1b and 3b numbers already present in PERFORMANCE; no new benchmark required. Internal links/anchors/image sizes/XML and local SVG/screenshot visual QA verified. GitHub rendering of banner, badges, picture theme switch, Mermaid, TOC and gallery remains manual after user applies/pushes.
+
+Exact next task in this turn: commit Part 3 locally in this clone, then Phase 1b.3 Step 1 engine research only; show comparison/recommendation and STOP for explicit approval before any speech/model install/download or Step 2 code. Keep English voice baseline, Gujarati disabled/experimental until Phase 5 samples; no 1c. Neural Piper synthesis concurrent with streamed Ollama conflicts with PLAN's no concurrent text/speech-model inference rule; recommend formant eSpeak NG (GPL approval required) for first sentence streaming or obtain an explicit plan exception. Never infer licence/dependency consent from “next.”
+
+---
+
+## Historical Part 2 handoff
+
 # Handoff — Part 2 verification and Gujarati comparison
 
 2026-10-11, existing main checkout. Part 1 commit 3698537 was pushed by the user. Never push from this agent; commit locally and report the hash. Part 2 is authorized; Part 3 README remains queued. Voice 1b.3, broader 1c and productivity Phase 3 are excluded.

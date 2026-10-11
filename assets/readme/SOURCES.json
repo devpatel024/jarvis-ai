@@ -1,0 +1,44 @@
+[
+  {
+    "image": "aurora-dark-demo.webp",
+    "source": "docs/screenshots/aurora-dark-1200-chat.png",
+    "label": "Native Linux scripted Mock demo, historical Slice A; not Ollama",
+    "bytes": 37672,
+    "sha256": "c0e2e19cc6a4026a4b4e31c36e12d965416e2b2d8f0dd80099f8719859c7441f"
+  },
+  {
+    "image": "aurora-light-demo.webp",
+    "source": "docs/screenshots/aurora-light-1200-chat.png",
+    "label": "Native Linux scripted Mock demo, historical Slice A; not Ollama",
+    "bytes": 33908,
+    "sha256": "a9ea1fc2acd4137d3e194e01803b1e5a346238a3ae938cf29d0d5a6c4303c6d2"
+  },
+  {
+    "image": "neonCyber-dark-demo.webp",
+    "source": "docs/screenshots/neonCyber-dark-1200-chat.png",
+    "label": "Native Linux scripted Mock demo, historical Slice A; not Ollama",
+    "bytes": 15906,
+    "sha256": "3d7f77c6015253bc8b2a1d4ee1aa54b5073ec3b7292fe42b93fc75ae13438435"
+  },
+  {
+    "image": "sunset-dark-demo.webp",
+    "source": "docs/screenshots/sunset-dark-1200-chat.png",
+    "label": "Native Linux scripted Mock demo, historical Slice A; not Ollama",
+    "bytes": 15550,
+    "sha256": "5390701e453a2f0913991b197d126f30238f9e6e75e03e508408e5722d358187"
+  },
+  {
+    "image": "emerald-dark-demo.webp",
+    "source": "docs/screenshots/emerald-dark-1200-chat.png",
+    "label": "Native Linux scripted Mock demo, historical Slice A; not Ollama",
+    "bytes": 15332,
+    "sha256": "a6e401b4b34b45d1cd85a0a26f3e89e862b3e4b197729f6c0056230c444870d8"
+  },
+  {
+    "image": "monoGlow-dark-demo.webp",
+    "source": "docs/screenshots/monoGlow-dark-1200-chat.png",
+    "label": "Native Linux scripted Mock demo, historical Slice A; not Ollama",
+    "bytes": 14726,
+    "sha256": "f11553475deba281e867b0ef806cf4fe7f21f07653810e4749b80fd71c3ec804"
+  }
+]

@@ -105,6 +105,8 @@ For each implementation phase:
 8. Report behavior, verification, commit hash, limitations, manual steps, and next phase.
 9. Stop for `next`.
 
+At the end of each phase, update README status tables, roadmap and screenshots; label demo captures and keep validation claims aligned with measured evidence.
+
 Phase 0 Flutter checks are not applicable.
 Unavailable checks must be marked NOT RUN with reason and exact command.
 Preserve unrelated user changes. Never invent git identity, push, or publish automatically.
