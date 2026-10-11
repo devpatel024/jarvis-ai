@@ -1,0 +1,42 @@
+[
+  {
+    "name": "whisper-source.tar.gz",
+    "url": "https://github.com/ggml-org/whisper.cpp/archive/d1be6fde11ac6e0407606b4e42fe72d34add8037.tar.gz",
+    "bytes": 9631456,
+    "sha256": "645445da884df6dbd52b30f82d7be7c01d1767c938714e477e786b88d529e9f4",
+    "publisher_sha256": null,
+    "verification": "computed locally on 2026-10-11, not publisher-verified"
+  },
+  {
+    "name": "ggml-tiny.en.bin",
+    "url": "https://huggingface.co/ggerganov/whisper.cpp/resolve/80da2d8bfee42b0e836fc3a9890373e5defc00a6/ggml-tiny.en.bin",
+    "bytes": 77704715,
+    "sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+    "publisher_sha256": "921e4cf8686fdd993dcd081a5da5b6c365bfde1162e72b08d75ac75289920b1f",
+    "verification": "publisher match"
+  },
+  {
+    "name": "vosk-model-small-en-us-0.15.zip",
+    "url": "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip",
+    "bytes": 41205931,
+    "sha256": "30f26242c4eb449f948e42cb302dd7a686cb29a3423a8367f99ff41780942498",
+    "publisher_sha256": null,
+    "verification": "computed locally on 2026-10-11, not publisher-verified"
+  },
+  {
+    "name": "vosk-linux-x86_64-0.3.45.zip",
+    "url": "https://github.com/alphacep/vosk-api/releases/download/v0.3.45/vosk-linux-x86_64-0.3.45.zip",
+    "bytes": 7185065,
+    "sha256": "bbdc8ed85c43979f6443142889770ea95cbfbc56cffb5c5dcd73afa875c5fbb2",
+    "publisher_sha256": null,
+    "verification": "computed locally on 2026-10-11, not publisher-verified"
+  },
+  {
+    "name": "vosk-win64-0.3.45.zip",
+    "url": "https://github.com/alphacep/vosk-api/releases/download/v0.3.45/vosk-win64-0.3.45.zip",
+    "bytes": 14882445,
+    "sha256": "f1dcc9cca460630f81ea8f71794f69c80bed6556d2a4e6237b5785e1d2dff34b",
+    "publisher_sha256": null,
+    "verification": "computed locally on 2026-10-11, not publisher-verified"
+  }
+]
